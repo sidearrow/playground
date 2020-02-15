@@ -17,6 +17,23 @@ db_connection = pymysql.connections.Connection(
 )
 
 
+def get_channel_list_info(channel_id):
+    cursor = db_connection.cursor()
+    cursor.execute(
+        'select * from channel where id = %s order by id',
+        (channel_id)
+    )
+    channels = cursor.fetchall()
+    description = ''
+
+    for channel in channels:
+        if channel['id'] == channel_id:
+            description = c['description']
+            break
+
+    return channels, description
+
+
 @view_config(
     route_name='index',
     renderer='./templates/index.html',
@@ -49,7 +66,22 @@ def action_login_post(request: Request):
     return httpexceptions.HTTPPermanentRedirect('/')
 
 
+@view_config(
+    route_name='channel',
+    renderer='./templates/channel.html',
+)
+def action_channel(request: Request):
+    channel_id = request.matchdict['channel_id']
+    channels, description = get_channel_list_info(channel_id)
+    return {
+        'channels': channels,
+        'channel_id': channel_id,
+        'description': description,
+    }
+
+
 def includeme(config: Configurator):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('index', '/')
     config.add_route('login', '/login')
+    config.add_route('channel', 'channel/{channel_id}')
