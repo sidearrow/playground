@@ -1,6 +1,3 @@
 {
-  "python.autoComplete.extraPaths": [
-    "venv/lib/python3.6/site-packages"
-  ],
   "python.pythonPath": "venv/bin/python"
 }
