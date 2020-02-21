@@ -16,6 +16,7 @@ from pyramid.config import Configurator
 
 avatar_max_size = 1 * 1024 * 102
 
+
 def dbh():
     connection = pymysql.connections.Connection(
         host='localhost',
@@ -53,14 +54,15 @@ def get_channel_list_info(channel_id=None):
 
 def login_required(func):
     @functools.wraps(func)
-    def wrapper(request):
-        if not 'user_id' in request.session:
+    def wrapper(request: Request):
+        if not 'user_id' in request.session or not request.session['user_id']:
             return httpexceptions.HTTPSeeOther('/login')
         request.user_id = user_id = request.session['user_id']
         cur = dbh().cursor()
-        cur.execute('select * from user where id = %s', (user_id))
+        cur.execute("select * from user where id = %s", (user_id))
         user = cur.fetchone()
         if not user:
+            request.session['user_id'] = None
             return httpexceptions.HTTPSeeOther('/login')
         request.user = user
         return func(request)
@@ -70,7 +72,7 @@ def login_required(func):
 @view_config(
     route_name='initialize'
 )
-def action_initialize():
+def action_initialize(request: Request):
     cur = dbh().cursor()
     cur.execute("DELETE FROM user WHERE id > 1000")
     cur.execute("DELETE FROM image WHERE id > 1001")
@@ -110,9 +112,17 @@ def action_login_post(request: Request):
     cur.execute("select * from user where name = %s", (name,))
     row = cur.fetchone()
     if not row or row['password'] != hashlib.sha1((row['salt'] + request.POST['password']).encode('utf-8')).hexdigest():
-        raise httpexceptions.exception_response(403)
+        return httpexceptions.exception_response(403)
     request.session['user_id'] = row['id']
-    return httpexceptions.HTTPPermanentRedirect('/')
+    return httpexceptions.HTTPSeeOther('/')
+
+
+@view_config(
+    route_name='logout'
+)
+def action_logout(request: Request):
+    request.session['user_id'] = None
+    return httpexceptions.HTTPSeeOther('/')
 
 
 @view_config(
@@ -148,7 +158,7 @@ def action_register_post(request: Request):
     name = request.POST['name']
     pw = request.POST['password']
     if not name or not pw:
-        httpexceptions.exception_response(400)
+        return httpexceptions.exception_response(400)
 
     cur = dbh().cursor()
     salt = ''.join([random.choice(string.ascii_letters + string.digits)
@@ -163,7 +173,7 @@ def action_register_post(request: Request):
         cur.execute("select last_insert_id() as last_insert_id")
         user_id = cur.fetchone()['last_insert_id']
     except pymysql.IntegrityError:
-        httpexceptions.exception_response(409)
+        return httpexceptions.exception_response(409)
 
     request.session['user_id'] = user_id
 
@@ -177,12 +187,13 @@ def action_register_post(request: Request):
 )
 def action_message_get(request: Request):
     if 'user_id' not in request.session:
-        httpexceptions.exception_response(403)
+        return httpexceptions.exception_response(403)
 
+    user_id = request.session['user_id']
     channel_id = request.GET['channel_id']
     last_message_id = request.GET['last_message_id']
-    cursor = dbh().cursor()
-    cursor.execute(
+    cur = dbh().cursor()
+    cur.execute(
         "select msg.id, msg.created_at, msg.content, usr.name, usr.display_name, usr.avatar_icon"
         " from message msg"
         " left join user usr on usr.id = msg.user_id"
@@ -190,7 +201,7 @@ def action_message_get(request: Request):
         " order by msg.id desc limit 100",
         (last_message_id, channel_id)
     )
-    rows = cursor.fetchall()
+    rows = cur.fetchall()
     response = []
     for row in rows:
         r = {}
@@ -204,6 +215,14 @@ def action_message_get(request: Request):
         r['content'] = row['content']
         response.append(r)
     response.reverse()
+
+    max_message_id = max(r['id'] for r in rows) if rows else 0
+    cur.execute(
+        'INSERT INTO haveread (user_id, channel_id, message_id, updated_at, created_at)'
+        ' VALUES (%s, %s, %s, NOW(), NOW())'
+        ' ON DUPLICATE KEY UPDATE message_id = %s, updated_at = NOW()',
+        (user_id, channel_id, max_message_id, max_message_id)
+    )
 
     return response
 
@@ -220,7 +239,7 @@ def action_message_post(request: Request):
     message = request.POST.get('message')
     channel_id = request.POST.get('channel_id')
     if not user or not message or not channel_id:
-        httpexceptions.exception_response(403)
+        return httpexceptions.exception_response(403)
     cur.execute(
         "insert into message (channel_id, user_id, content, created_at) values (%s, %s, %s, now())",
         (channel_id, user_id, message)
@@ -232,13 +251,14 @@ def action_message_post(request: Request):
     route_name='history',
     renderer='./templates/history.html',
 )
+@login_required
 def action_history(request: Request):
     channel_id = request.matchdict['channel_id']
     page = request.GET.get('page')
     if not page:
         page = '1'
     if not page.isnumeric():
-        httpexceptions.exception_response(400)
+        return httpexceptions.exception_response(400)
     page = int(page)
 
     N = 20
@@ -250,7 +270,7 @@ def action_history(request: Request):
     if not max_page:
         max_page = 1
     if not 1 <= page <= max_page:
-        httpexceptions.exception_response(400)
+        return httpexceptions.exception_response(400)
 
     cur.execute(
         "select * from message where channel_id = %s order by id desc limit %s offset %s",
@@ -287,7 +307,7 @@ def action_history(request: Request):
 )
 def action_fetch(request: Request):
     if 'user_id' not in request.session:
-        httpexceptions.exception_response(403)
+        return httpexceptions.exception_response(403)
 
     time.sleep(1.0)
 
@@ -321,7 +341,9 @@ def action_fetch(request: Request):
             'unread': int(cur.fetchone()['cnt']),
         })
 
-    cur.close()
+    print({
+        'user_id': user_id
+    })
 
     return res
 
@@ -331,6 +353,7 @@ def action_fetch(request: Request):
     renderer='./templates/add_channel.html',
     request_method='GET',
 )
+@login_required
 def action_add_channel_get(request: Request):
     channels, _ = get_channel_list_info()
     return {'channels': channels}
@@ -340,11 +363,12 @@ def action_add_channel_get(request: Request):
     route_name='add_channel',
     request_method='POST',
 )
+@login_required
 def actions_add_channel_post(request: Request):
     name = request.POST.get('name')
     description = request.POST.get('description')
     if not name or not description:
-        httpexceptions.exception_response(400)
+        return httpexceptions.exception_response(400)
     cur = dbh().cursor()
     cur.execute(
         'insert into channel (name, description, updated_at, created_at) values (%s, %s, now(), now())',
@@ -368,7 +392,7 @@ def action_profile(request: Request):
     user = cur.fetchone()
 
     if not user:
-        httpexceptions.exception_response(404)
+        return httpexceptions.exception_response(404)
 
     self_profile = request.session['user_id'] == user['id']
 
@@ -386,13 +410,13 @@ def action_profile(request: Request):
 def action_profile_update(request: Request):
     user_id = request.session['user_id']
     if not user_id:
-        httpexceptions.exception_response(403)
+        return httpexceptions.exception_response(403)
 
     cur = dbh().cursor()
-    cur.execute("select * from user where name = %s", (user_id))
+    cur.execute("select * from user where id = %s", (user_id))
     user = cur.fetchone()
     if not user:
-        httpexceptions.exception_response(403)
+        return httpexceptions.exception_response(403)
 
     display_name = request.POST.get('display_name')
     avatar_name = None
@@ -401,16 +425,17 @@ def action_profile_update(request: Request):
     if 'avatar_icon' in request.POST:
         file = request.POST['avatar_icon']
         if file.filename:
-            ext = os.path.splitext(file.filename)[1] if '.' in file.filename else ''
+            ext = os.path.splitext(file.filename)[
+                1] if '.' in file.filename else ''
             if ext not in ('.jpg', '.jpeg', '.png', '.gif'):
-                httpexceptions.exception_response(400)
+                return httpexceptions.exception_response(400)
 
             with tempfile.TemporaryFile() as f:
                 shutil.copyfileobj(file.file, f)
                 f.flush()
 
                 if avatar_max_size < f.tell():
-                    httpexceptions.exception_response(400)
+                    return httpexceptions.exception_response(400)
 
                 f.seek(0)
                 data = f.read()
@@ -468,6 +493,7 @@ def includeme(config: Configurator):
     config.add_route('initialize', '/initialize')
     config.add_route('index', '/')
     config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
     config.add_route('channel', '/channel/{channel_id}')
     config.add_route('add_channel', '/add_channel')
     config.add_route('history', '/history/{channel_id}')
