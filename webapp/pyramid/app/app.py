@@ -1,3 +1,4 @@
+import functools
 import hashlib
 import math
 import os
@@ -31,7 +32,7 @@ def dbh():
     return connection
 
 
-def get_channel_list_info(channel_id):
+def get_channel_list_info(channel_id=None):
     cur = dbh().cursor()
     cur.execute(
         'select * from channel order by id',
@@ -45,6 +46,22 @@ def get_channel_list_info(channel_id):
             break
 
     return channels, description
+
+
+def login_required(func):
+    @functools.wraps(func)
+    def wrapper(request):
+        if not 'user_id' in request.session:
+            return httpexceptions.HTTPSeeOther('/login')
+        request.user_id = user_id = request.session['user_id']
+        cur = dbh().cursor()
+        cur.execute('select * from user where id = %s', (user_id))
+        user = cur.fetchone()
+        if not user:
+            return httpexceptions.HTTPSeeOther('/login')
+        request.user = user
+        return func(request)
+    return wrapper
 
 
 @view_config(
@@ -116,7 +133,8 @@ def action_register_post(request: Request):
         httpexceptions.exception_response(400)
 
     cur = dbh().cursor()
-    salt = ''.join([random.choice(string.ascii_letters + string.digits) for i in range(20)])
+    salt = ''.join([random.choice(string.ascii_letters + string.digits)
+                    for i in range(20)])
     pass_digest = hashlib.sha1((salt + pw).encode('utf-8')).hexdigest()
     try:
         cur.execute(
@@ -186,7 +204,8 @@ def action_history(request: Request):
 
     N = 20
     cur = dbh().cursor()
-    cur.execute("select count(*) as cnt from message where channel_id = %s", (channel_id))
+    cur.execute(
+        "select count(*) as cnt from message where channel_id = %s", (channel_id))
     cnt = int(cur.fetchone()['cnt'])
     max_page = math.ceil(cnt / N)
     if not max_page:
@@ -204,7 +223,8 @@ def action_history(request: Request):
     for row in rows:
         r = {}
         r['id'] = row['id']
-        cur.execute("SELECT name, display_name, avatar_icon FROM user WHERE id = %s", (row['user_id'],))
+        cur.execute(
+            "SELECT name, display_name, avatar_icon FROM user WHERE id = %s", (row['user_id'],))
         r['user'] = cur.fetchone()
         r['date'] = row['created_at'].strftime("%Y/%m/%d %H:%M:%S")
         r['content'] = row['content']
@@ -267,6 +287,31 @@ def action_fetch(request: Request):
     return res
 
 
+@view_config(
+    route_name="profile",
+    renderer="./templates/profile.html",
+)
+@login_required
+def action_profile(request: Request):
+    user_name = request.matchdict['user_name']
+    channels, _ = get_channel_list_info()
+
+    cur = dbh().cursor()
+    cur.execute("select * from user where name = %s", (user_name))
+    user = cur.fetchone()
+
+    if not user:
+        httpexceptions.exception_response(404)
+
+    self_profile = request.session['user_id'] == user['id']
+
+    return {
+        'channels': channels,
+        'user': user,
+        'self_profile': self_profile
+    }
+
+
 def ext2mime(ext):
     if ext in ('.jpg', 'jpeg'):
         return 'image/jpeg'
@@ -299,6 +344,7 @@ def includeme(config: Configurator):
     config.add_route('channel', '/channel/{channel_id}')
     config.add_route('history', '/history/{channel_id}')
     config.add_route('register', '/register')
+    config.add_route('profile', '/profile/{user_name}')
     config.add_route('message', '/message')
     config.add_route('fetch', '/fetch')
     config.add_route('icons', '/icons/{file_name}')
