@@ -15,6 +15,7 @@ from pyramid.response import Response
 from pyramid.config import Configurator
 
 avatar_max_size = 1 * 1024 * 102
+public_folder = os.path.join(os.path.dirname(__file__), '../../public')
 
 
 def dbh():
@@ -341,10 +342,6 @@ def action_fetch(request: Request):
             'unread': int(cur.fetchone()['cnt']),
         })
 
-    print({
-        'user_id': user_id
-    })
-
     return res
 
 
@@ -430,9 +427,8 @@ def action_profile_update(request: Request):
             if ext not in ('.jpg', '.jpeg', '.png', '.gif'):
                 return httpexceptions.exception_response(400)
 
-            with tempfile.TemporaryFile() as f:
+            with tempfile.NamedTemporaryFile(delete=False) as f:
                 shutil.copyfileobj(file.file, f)
-                f.flush()
 
                 if avatar_max_size < f.tell():
                     return httpexceptions.exception_response(400)
@@ -442,13 +438,17 @@ def action_profile_update(request: Request):
                 digest = hashlib.sha1(data).hexdigest()
 
                 avatar_name = digest + ext
-                avatar_data = data
+                file_path = public_folder + '/icons/' + avatar_name
+                shutil.move(f.name, file_path)
+                os.chmod(file_path, 0o664)
 
-    if avatar_name and avatar_data:
+    if avatar_name:
+        '''
         cur.execute(
             "INSERT INTO image (name, data) VALUES (%s, _binary %s)",
             (avatar_name, avatar_data)
         )
+        '''
         cur.execute(
             "UPDATE user SET avatar_icon = %s WHERE id = %s",
             (avatar_name, user_id)
@@ -473,6 +473,7 @@ def ext2mime(ext):
     return ''
 
 
+'''
 @view_config(
     route_name='icons'
 )
@@ -486,7 +487,7 @@ def icons_get(request: Request):
     mime = ext2mime(ext)
     if row and mime:
         return Response(row['data'], content_type=mime)
-
+'''
 
 def includeme(config: Configurator):
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -502,4 +503,4 @@ def includeme(config: Configurator):
     config.add_route('profile_update', '/profile')
     config.add_route('message', '/message')
     config.add_route('fetch', '/fetch')
-    config.add_route('icons', '/icons/{file_name}')
+    # config.add_route('icons', '/icons/{file_name}')
