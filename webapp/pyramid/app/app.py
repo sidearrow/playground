@@ -68,6 +68,20 @@ def login_required(func):
 
 
 @view_config(
+    route_name='initialize'
+)
+def action_initialize():
+    cur = dbh().cursor()
+    cur.execute("DELETE FROM user WHERE id > 1000")
+    cur.execute("DELETE FROM image WHERE id > 1001")
+    cur.execute("DELETE FROM channel WHERE id > 10")
+    cur.execute("DELETE FROM message WHERE id > 10000")
+    cur.execute("DELETE FROM haveread")
+    cur.close()
+    return httpexceptions.exception_response(204)
+
+
+@view_config(
     route_name='index',
     renderer='./templates/index.html',
 )
@@ -451,6 +465,7 @@ def icons_get(request: Request):
 
 def includeme(config: Configurator):
     config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_route('initialize', '/initialize')
     config.add_route('index', '/')
     config.add_route('login', '/login')
     config.add_route('channel', '/channel/{channel_id}')
