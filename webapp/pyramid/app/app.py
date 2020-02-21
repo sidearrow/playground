@@ -4,7 +4,9 @@ import math
 import os
 import pymysql
 import random
+import shutil
 import string
+import tempfile
 import time
 from pyramid import httpexceptions
 from pyramid.view import view_config
@@ -12,6 +14,7 @@ from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.config import Configurator
 
+avatar_max_size = 1 * 1024 * 102
 
 def dbh():
     connection = pymysql.connections.Connection(
@@ -362,6 +365,65 @@ def action_profile(request: Request):
     }
 
 
+@view_config(
+    route_name='profile_update'
+)
+@login_required
+def action_profile_update(request: Request):
+    user_id = request.session['user_id']
+    if not user_id:
+        httpexceptions.exception_response(403)
+
+    cur = dbh().cursor()
+    cur.execute("select * from user where name = %s", (user_id))
+    user = cur.fetchone()
+    if not user:
+        httpexceptions.exception_response(403)
+
+    display_name = request.POST.get('display_name')
+    avatar_name = None
+    avatar_data = None
+
+    if 'avatar_icon' in request.POST:
+        file = request.POST['avatar_icon']
+        if file.filename:
+            ext = os.path.splitext(file.filename)[1] if '.' in file.filename else ''
+            if ext not in ('.jpg', '.jpeg', '.png', '.gif'):
+                httpexceptions.exception_response(400)
+
+            with tempfile.TemporaryFile() as f:
+                shutil.copyfileobj(file.file, f)
+                f.flush()
+
+                if avatar_max_size < f.tell():
+                    httpexceptions.exception_response(400)
+
+                f.seek(0)
+                data = f.read()
+                digest = hashlib.sha1(data).hexdigest()
+
+                avatar_name = digest + ext
+                avatar_data = data
+
+    if avatar_name and avatar_data:
+        cur.execute(
+            "INSERT INTO image (name, data) VALUES (%s, _binary %s)",
+            (avatar_name, avatar_data)
+        )
+        cur.execute(
+            "UPDATE user SET avatar_icon = %s WHERE id = %s",
+            (avatar_name, user_id)
+        )
+
+    if display_name:
+        cur.execute(
+            "UPDATE user SET display_name = %s WHERE id = %s",
+            (display_name, user_id)
+        )
+
+    return httpexceptions.HTTPSeeOther('/')
+
+
 def ext2mime(ext):
     if ext in ('.jpg', 'jpeg'):
         return 'image/jpeg'
@@ -396,6 +458,7 @@ def includeme(config: Configurator):
     config.add_route('history', '/history/{channel_id}')
     config.add_route('register', '/register')
     config.add_route('profile', '/profile/{user_name}')
+    config.add_route('profile_update', '/profile')
     config.add_route('message', '/message')
     config.add_route('fetch', '/fetch')
     config.add_route('icons', '/icons/{file_name}')
