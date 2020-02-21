@@ -42,7 +42,7 @@
   <div class="container-fluid">
     <div class="row">
       <nav class="col-sm-3 col-md-3 hidden-xs-down bg-faded sidebar">
-        {% if request.user %}
+        {% if is_login %}
         <ul class="nav nav-pills flex-column">
           {% for channel in channels %}
           <li class="nav-item">
