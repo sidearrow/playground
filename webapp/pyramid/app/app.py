@@ -102,6 +102,7 @@ def action_login_post(request: Request):
     route_name='channel',
     renderer='./templates/channel.html',
 )
+@login_required
 def action_channel(request: Request):
     channel_id = request.matchdict['channel_id']
     channels, description = get_channel_list_info(channel_id)
@@ -154,9 +155,10 @@ def action_register_post(request: Request):
 
 @view_config(
     route_name='message',
-    renderer='json'
+    request_method='GET',
+    renderer='json',
 )
-def action_message(request: Request):
+def action_message_get(request: Request):
     if 'user_id' not in request.session:
         httpexceptions.exception_response(403)
 
@@ -187,6 +189,26 @@ def action_message(request: Request):
     response.reverse()
 
     return response
+
+
+@view_config(
+    route_name='message',
+    request_method='POST',
+)
+def action_message_post(request: Request):
+    user_id = request.session['user_id']
+    cur = dbh().cursor()
+    cur.execute('select * from user where id = %s', (user_id))
+    user = cur.fetchone()
+    message = request.POST.get('message')
+    channel_id = request.POST.get('channel_id')
+    if not user or not message or not channel_id:
+        httpexceptions.exception_response(403)
+    cur.execute(
+        "insert into message (channel_id, user_id, content, created_at) values (%s, %s, %s, now())",
+        (channel_id, user_id, message)
+    )
+    return httpexceptions.exception_response(204)
 
 
 @view_config(
@@ -288,8 +310,36 @@ def action_fetch(request: Request):
 
 
 @view_config(
-    route_name="profile",
-    renderer="./templates/profile.html",
+    route_name='add_channel',
+    renderer='./templates/add_channel.html',
+    request_method='GET',
+)
+def action_add_channel_get(request: Request):
+    channels, _ = get_channel_list_info()
+    return {'channels': channels}
+
+
+@view_config(
+    route_name='add_channel',
+    request_method='POST',
+)
+def actions_add_channel_post(request: Request):
+    name = request.POST.get('name')
+    description = request.POST.get('description')
+    if not name or not description:
+        httpexceptions.exception_response(400)
+    cur = dbh().cursor()
+    cur.execute(
+        'insert into channel (name, description, updated_at, created_at) values (%s, %s, now(), now())',
+        (name, description)
+    )
+    channel_id = cur.lastrowid
+    return httpexceptions.HTTPSeeOther('/channel/' + str(channel_id))
+
+
+@view_config(
+    route_name='profile',
+    renderer='./templates/profile.html',
 )
 @login_required
 def action_profile(request: Request):
@@ -342,6 +392,7 @@ def includeme(config: Configurator):
     config.add_route('index', '/')
     config.add_route('login', '/login')
     config.add_route('channel', '/channel/{channel_id}')
+    config.add_route('add_channel', '/add_channel')
     config.add_route('history', '/history/{channel_id}')
     config.add_route('register', '/register')
     config.add_route('profile', '/profile/{user_name}')
