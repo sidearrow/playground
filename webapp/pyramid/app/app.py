@@ -463,32 +463,6 @@ def action_profile_update(request: Request):
     return httpexceptions.HTTPSeeOther('/')
 
 
-def ext2mime(ext):
-    if ext in ('.jpg', 'jpeg'):
-        return 'image/jpeg'
-    if ext == '.png':
-        return 'image/png'
-    if ext == '.gif':
-        return 'image/gif'
-    return ''
-
-
-'''
-@view_config(
-    route_name='icons'
-)
-def icons_get(request: Request):
-    file_name = request.matchdict['file_name']
-    cur = dbh().cursor()
-    cur.execute('select * from image where name = %s', (file_name))
-    row = cur.fetchone()
-    cur.close()
-    ext = os.path.splitext(file_name)[1] if '.' in file_name else ''
-    mime = ext2mime(ext)
-    if row and mime:
-        return Response(row['data'], content_type=mime)
-'''
-
 def includeme(config: Configurator):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('initialize', '/initialize')
@@ -503,4 +477,3 @@ def includeme(config: Configurator):
     config.add_route('profile_update', '/profile')
     config.add_route('message', '/message')
     config.add_route('fetch', '/fetch')
-    # config.add_route('icons', '/icons/{file_name}')
