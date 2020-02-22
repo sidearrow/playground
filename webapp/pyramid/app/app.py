@@ -315,31 +315,29 @@ def action_fetch(request: Request):
     user_id = request.session['user_id']
 
     cur = dbh().cursor()
-    cur.execute('select id from channel')
-    rows = cur.fetchall()
-    channel_ids = [row['id'] for row in rows]
+    cur.execute(
+        'select msg.channel_id, count(*) as cnt from message msg group by msg.channel_id')
+    channels = cur.fetchall()
+
+    cur.execute(
+        'select msg.channel_id, count(case when hr.message_id < msg.id then 1 else null end) as cnt'
+        ' from message msg'
+        ' left join haveread hr on hr.channel_id = msg.channel_id'
+        ' where hr.user_id = %s'
+        ' group by msg.channel_id',
+        (user_id)
+    )
+    channels_hr = cur.fetchall()
+
+    channels_hr_dict = {}
+    for channel in channels_hr:
+        channels_hr_dict[channel['channel_id']] = channel['cnt']
 
     res = []
-    for channel_id in channel_ids:
-        cur.execute(
-            'select * from haveread where user_id = %s and channel_id = %s',
-            (user_id, channel_id)
-        )
-        row = cur.fetchone()
-        if row:
-            cur.execute(
-                'select count(*) as cnt from message where channel_id = %s and %s < id',
-                (channel_id, row['message_id'])
-            )
-        else:
-            cur.execute(
-                'select count(*) as cnt from message where channel_id = %s',
-                (channel_id)
-            )
-
+    for channel in channels:
         res.append({
-            'channel_id': channel_id,
-            'unread': int(cur.fetchone()['cnt']),
+            'channel_id': channel['channel_id'],
+            'unread': channels_hr_dict.get(channel['channel_id'], channel['cnt']),
         })
 
     return res
