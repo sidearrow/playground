@@ -274,21 +274,27 @@ def action_history(request: Request):
         return httpexceptions.exception_response(400)
 
     cur.execute(
-        "select * from message where channel_id = %s order by id desc limit %s offset %s",
+        "select msg.id, msg.content, date_format(msg.created_at, '%%Y/%%m/%%d %%h:%%i:%%s') created_at"
+        ' ,usr.name , usr.display_name, usr.avatar_icon'
+        ' from message msg'
+        ' left join user usr on usr.id = msg.user_id'
+        ' where channel_id = %s order by id desc limit %s offset %s',
         (channel_id, N, (page - 1) * N)
     )
     rows = cur.fetchall()
 
     messages = []
     for row in rows:
-        r = {}
-        r['id'] = row['id']
-        cur.execute(
-            "SELECT name, display_name, avatar_icon FROM user WHERE id = %s", (row['user_id'],))
-        r['user'] = cur.fetchone()
-        r['date'] = row['created_at'].strftime("%Y/%m/%d %H:%M:%S")
-        r['content'] = row['content']
-        messages.append(r)
+        messages.append({
+            'id': row['id'],
+            'date': row['created_at'],
+            'content': row['content'],
+            'user': {
+                'name': row['name'],
+                'display_name': row['display_name'],
+                'avatar_icon': row['avatar_icon'],
+            }
+        })
     messages.reverse()
 
     channels, _ = get_channel_list_info(channel_id)
