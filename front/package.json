@@ -1,6 +1,7 @@
 {
   "name": "railway-dictionary-front",
   "dependencies": {
+    "axios": "^0.19.2",
     "gatsby": "^2.19.7",
     "gatsby-image": "^2.2.39",
     "gatsby-plugin-manifest": "^2.2.39",
