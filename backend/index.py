@@ -64,24 +64,29 @@ def action_line_detail(line_code=None):
     cur = connection.cursor()
     cur.execute('select * from line_station ls'
                 ' left join line l on l.line_id = ls.line_id'
+                ' left join company c on c.company_id = l.company_id'
                 ' left join station s on s.station_id = ls.station_id'
                 ' where l.line_code = %s',
                 (line_code))
     rows = cur.fetchall()
 
     stations = []
-    line_name = ''
-    line_code = ''
     for row in rows:
-        line_name = row['line_name']
-        line_code = row['line_code']
+        company = {
+            'companyName': row['company_name'],
+            'companyCode': row['company_code'],
+        }
+        line = {
+            'lineName': row['line_name'],
+            'lineCode': row['line_code'],
+        }
         stations.append({
             'stationName': row['station_name'],
         })
 
     return jsonify({
-        'lineName': line_name,
-        'lineCode': line_code,
+        'company': company,
+        'line': line,
         'stations': stations,
     })
 
