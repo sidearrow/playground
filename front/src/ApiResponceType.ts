@@ -2,7 +2,7 @@ export declare module ApiResponceType {
   export type Company = {
     companyCode: string;
     companyName: string;
-    companyTypeName: string;
+    companyTypeName?: string;
   };
 
   export type Line = {
@@ -20,7 +20,8 @@ export declare module ApiResponceType {
   };
 
   export type LineDetail = {
-    lineName: string;
+    company: Company;
+    line: Line;
     stations: Station[];
   };
 }

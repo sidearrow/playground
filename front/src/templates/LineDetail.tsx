@@ -12,8 +12,9 @@ const Component: React.FC<{
     <Layout>
       <span>
         <Link to='company'>事業者一覧</Link>
+        <Link to={'company/' + lineDetail.company.companyCode}>{lineDetail.company.companyName}</Link>
       </span>
-      <h1>{lineDetail.lineName}</h1>
+      <h1>{lineDetail.line.lineName} {lineDetail.company.companyName}</h1>
       {lineDetail.stations.map(station => (<div>{station.stationName}</div>))}
     </Layout>
   );
