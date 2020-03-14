@@ -59,5 +59,29 @@ def action_company_detail(company_code=None):
     })
 
 
+@app.route('/line/<line_code>')
+def action_line_detail(line_code=None):
+    cur = connection.cursor()
+    cur.execute('select * from line_station ls'
+                ' left join line l on l.line_id = ls.line_id'
+                ' left join station s on s.station_id = ls.station_id'
+                ' where l.line_code = %s',
+                (line_code))
+    rows = cur.fetchall()
+
+    stations = []
+    line_name = ''
+    for row in rows:
+        line_name = row['line_name']
+        stations.append({
+            'stationName': row['station_name'],
+        })
+
+    return jsonify({
+        'lineName': line_name,
+        'stations': stations,
+    })
+
+
 if __name__ == '__main__':
     app.run(debug=True)
