@@ -44,14 +44,19 @@ def action_company_detail(company_code=None):
                 (company_code))
     rows = cur.fetchall()
 
-    res = []
+    lines = []
+    company_name = ''
     for row in rows:
-        res.append({
+        company_name = row['company_name']
+        lines.append({
             'lineName': row['line_name'],
             'lineCode': row['line_code'],
         })
 
-    return jsonify(res)
+    return jsonify({
+        'companyName': company_name,
+        'lines': lines,
+    })
 
 
 if __name__ == '__main__':
