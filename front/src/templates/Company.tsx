@@ -26,7 +26,7 @@ const Component: React.FC<{
       <div>
         <h1>{type}</h1>
         <div>{companiesGroupByType[type].map(company => (
-          <Link to='/' className="d-inline-block" style={{ marginRight: '1rem' }}>{company.companyName}</Link>
+          <Link to={'company/' + company.companyCode} className="d-inline-block" style={{ marginRight: '1rem' }}>{company.companyName}</Link>
         ))}</div>
       </div>
     ))}</Layout>
