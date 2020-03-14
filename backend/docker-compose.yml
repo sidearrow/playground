@@ -2,16 +2,19 @@ version: '3.7'
 
 services:
   app:
-    build: .
+    build: ./app
     tty: true
     volumes:
-      - .:/go/src/station
+      - ./app:/go/src/app
     ports:
       - "3000:3000"
   db:
-    image: mysql:8.0.19
+    build: ./db
+    command: "--innodb_use_native_aio=0"
     environment:
       MYSQL_ROOT_PASSWORD: password
       TZ: 'Asia/Tokyo'
+    volumes:
+      - ./db/data:/var/lib/mysql
     ports:
-    - 3306:3306
+      - 3306:3306

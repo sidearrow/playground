@@ -4,7 +4,7 @@
         "..\\docker-compose.yml"
     ],
     "service": "app",
-    "workspaceFolder": "/go/src/station",
+    "workspaceFolder": "/go/src/app",
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
         "go.gopath": "/go"
