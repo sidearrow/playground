@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 const IndexPage = () => (
   <Layout>
     <p>趣味で鉄道のデータを収集しています</p>
-    <Link to="/companies">事業者一覧</Link>
+    <Link to="/company">事業者一覧</Link>
   </Layout>
 )
 

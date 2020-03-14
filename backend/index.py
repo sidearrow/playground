@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import pymysql
+import enum
 
 
 app = Flask(__name__)

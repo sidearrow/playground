@@ -22,7 +22,7 @@ const Component: React.FC<{
   });
 
   return (
-    <Layout>{Object.keys(companiesGroupByType).map(type => (
+    <Layout title='事業者一覧'>{Object.keys(companiesGroupByType).map(type => (
       <div>
         <h1>{type}</h1>
         <div>{companiesGroupByType[type].map(company => (

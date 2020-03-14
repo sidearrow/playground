@@ -9,12 +9,12 @@ const Component: React.FC<{
   }
 }> = ({ pageContext: { lineDetail } }) => {
   return (
-    <Layout>
+    <Layout title={lineDetail.line.lineName + ' | ' + lineDetail.company.companyName}>
       <span>
         <Link to='company'>事業者一覧</Link>
-        <Link to={'company/' + lineDetail.company.companyCode}>{lineDetail.company.companyName}</Link>
+        <Link className="ml-1" to={'company/' + lineDetail.company.companyCode}>{lineDetail.company.companyName}</Link>
       </span>
-      <h1>{lineDetail.line.lineName} {lineDetail.company.companyName}</h1>
+      <h1>{lineDetail.line.lineName}<small className="ml-1">（{lineDetail.company.companyName}）</small></h1>
       {lineDetail.stations.map(station => (<div>{station.stationName}</div>))}
     </Layout>
   );

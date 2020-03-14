@@ -1,6 +1,7 @@
 {
   "name": "railway-dictionary-front",
   "dependencies": {
+    "@types/react-helmet": "^5.0.15",
     "axios": "^0.19.2",
     "gatsby": "^2.19.7",
     "gatsby-image": "^2.2.39",

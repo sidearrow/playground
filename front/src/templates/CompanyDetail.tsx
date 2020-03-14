@@ -9,7 +9,7 @@ const Component: React.FC<{
   }
 }> = ({ pageContext: { company } }) => {
   return (
-    <Layout>
+    <Layout title={company.companyName}>
       <span>
         <Link to='company'>事業者一覧</Link>
       </span>
