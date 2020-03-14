@@ -1,0 +1,41 @@
+@import "../../../node_modules/normalize.css/normalize.css";
+
+/*
+* {
+  box-sizing: border-box;
+}
+*/
+
+html {
+  font-size: 14px;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  max-width: 720px;
+  margin-right: auto;
+  margin-left : auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+header {
+  padding-top: 0.5rem;
+  a {
+    font-size: 1.25rem;
+    text-decoration: none;
+    color: #000;
+  }
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: normal;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
