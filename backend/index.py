@@ -71,14 +71,17 @@ def action_line_detail(line_code=None):
 
     stations = []
     line_name = ''
+    line_code = ''
     for row in rows:
         line_name = row['line_name']
+        line_code = row['line_code']
         stations.append({
             'stationName': row['station_name'],
         })
 
     return jsonify({
         'lineName': line_name,
+        'lineCode': line_code,
         'stations': stations,
     })
 
