@@ -3,6 +3,7 @@ export declare module ApiResponceType {
     companyCode: string;
     companyName: string;
     companyTypeName?: string;
+    length: number;
   };
 
   export type Line = {

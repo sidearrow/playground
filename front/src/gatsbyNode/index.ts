@@ -58,6 +58,13 @@ export const createPages: GatsbyNode['createPages'] = async ({
       'companies': companiesData.data,
     },
   });
+  createPage({
+    path: 'eigyo-kilo',
+    component: path.resolve('src/templates/EigyoKilo.tsx'),
+    context: {
+      'companies': companiesData.data,
+    },
+  });
 
   for (const company of companiesData.data) {
     try {

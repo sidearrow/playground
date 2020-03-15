@@ -51,6 +51,7 @@ h2 {
 table {
   margin-top: 2rem;
   border-collapse: collapse;
+  width: 100%;
   th, td {
     border: 1.5px solid;
     padding: 0.25rem 0.5rem;
@@ -67,4 +68,16 @@ table {
 
 .ml-1 {
   margin-left: 1rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
 }
