@@ -6,6 +6,9 @@
 }
 */
 
+$link-color: #1a0dab;
+$link-color-visited: #609;
+
 html {
   font-size: 14px;
   font-family: sans-serif;
@@ -15,7 +18,7 @@ html {
 body {
   max-width: 720px;
   margin-right: auto;
-  margin-left : auto;
+  margin-left: auto;
   padding-right: 1rem;
   padding-left: 1rem;
 }
@@ -48,13 +51,32 @@ h2 {
   margin-bottom: 0.75rem;
 }
 
-table {
-  margin-top: 2rem;
-  border-collapse: collapse;
-  width: 100%;
-  th, td {
-    border: 1.5px solid;
-    padding: 0.25rem 0.5rem;
+a {
+  text-decoration: none;
+  color: $link-color;
+  :visited {
+    color: $link-color-visited;
+  }
+}
+
+.link {
+  text-decoration: none;
+  color: $link-color;
+  cursor: pointer;
+}
+
+.data-table {
+  font-family: monospace;
+  font-size: 0.9rem;
+  padding: 0.125rem;
+  border: 1px solid #e4e4e4;
+  table {
+    border-collapse: collapse;
+    th,
+    td {
+      border: 0.5px solid #e4e4e4;
+      padding: 0.125rem 0.25rem;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
 type TableData = (string | number | null)[][];
 
@@ -16,40 +16,40 @@ const MetaInfo: React.FC<{
 );
 
 const Table: React.FC<{ tableData: TableData }> = ({ tableData }) => {
-  const lengthPerPage = 30;
+  const lengthPerPage = 20;
   const length = tableData.length;
   const maxPage = Math.ceil(length / lengthPerPage);
 
   const [pageNum, setPageNum] = useState(1);
-  const [pageData, setPageData] = useState({
-    start: 0,
-    end: lengthPerPage - 1,
-    data: tableData.slice(0, lengthPerPage),
-  });
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(lengthPerPage - 1);
 
-  useEffect(() => {
-    setPageData(Object.assign({}, {
-      start: lengthPerPage * (pageNum - 1),
-      end: pageNum === maxPage ? length - 1 : lengthPerPage * pageNum - 1,
-      data: tableData.slice(pageData.start, pageData.end + 1),
-    }));
+  const pageData = useMemo(() => {
+    const start = lengthPerPage * (pageNum - 1);
+    const end = pageNum === maxPage ? length - 1 : lengthPerPage * pageNum - 1;
+    setStart(start);
+    setEnd(end);
+
+    return tableData.slice(start, end);
   }, [pageNum]);
 
   return (
     <>
-      <table>
-        <tbody>
-          {pageData.data.map(tr => (
-            <tr>{tr.map(td => (
-              <td>{td}</td>
-            ))}</tr>
-          ))}
-        </tbody>
-      </table>
+      <div className='data-table'>
+        <table>
+          <tbody>
+            {pageData.map((tr, i) => (
+              <tr key={i}>{tr.map((td, j) => (
+                <td key={j}>{td}</td>
+              ))}</tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className='mt-1 text-center'>{[...Array(maxPage)].map((_, i) => (
-        <span className='mr-1' onClick={() => setPageNum(i + 1)}>{i + 1}</span>
+        <span className={`mr-1 ${pageNum === (i + 1) ? '' : 'link'}`} onClick={() => setPageNum(i + 1)} key={i}>{i + 1}</span>
       ))}</div>
-      <MetaInfo start={pageData.start} end={pageData.end} length={length} />
+      <MetaInfo start={start} end={end} length={length} />
     </>
   );
 };
