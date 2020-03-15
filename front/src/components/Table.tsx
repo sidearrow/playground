@@ -1,7 +1,5 @@
 import React, { useState, useMemo } from 'react';
 
-type TableData = (string | number | null)[][];
-
 const MetaInfo: React.FC<{
   start: number;
   end: number;
@@ -15,9 +13,13 @@ const MetaInfo: React.FC<{
   </div>
 );
 
-const Table: React.FC<{ tableData: TableData }> = ({ tableData }) => {
+const Table: React.FC<{
+  elThead: JSX.Element;
+  data: (string | number | null)[][];
+  cells: ((v: string | number | null) => JSX.Element)[];
+}> = ({ elThead, data, cells }) => {
   const lengthPerPage = 20;
-  const length = tableData.length;
+  const length = data.length;
   const maxPage = Math.ceil(length / lengthPerPage);
 
   const [pageNum, setPageNum] = useState(1);
@@ -30,17 +32,18 @@ const Table: React.FC<{ tableData: TableData }> = ({ tableData }) => {
     setStart(start);
     setEnd(end);
 
-    return tableData.slice(start, end);
+    return data.slice(start, end);
   }, [pageNum]);
 
   return (
     <>
       <div className='data-table'>
         <table>
+          <thead>{elThead}</thead>
           <tbody>
             {pageData.map((tr, i) => (
               <tr key={i}>{tr.map((td, j) => (
-                <td key={j}>{td}</td>
+                cells[j](td)
               ))}</tr>
             ))}
           </tbody>
