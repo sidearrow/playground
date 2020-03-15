@@ -14,15 +14,17 @@ connection = pymysql.connections \
 
 
 @app.route('/')
-def hello_world():
-    return "Hello World!"
+def action_index():
+    return 'ok'
 
 
 @app.route('/company')
 def action_company():
     cur = connection.cursor()
     cur.execute('select * from company c'
-                ' left join company_type ct on ct.company_type_id = c.company_type_id')
+                ' left join company_type ct on ct.company_type_id = c.company_type_id'
+                ' where c.abolition_flg = 0'
+                ' order by c.company_id')
     rows = cur.fetchall()
 
     res = []
@@ -31,6 +33,7 @@ def action_company():
             'companyCode': row['company_code'],
             'companyName': row['company_name'],
             'companyTypeName': row['company_type_name'],
+            'length': float(row['length'])
         })
 
     return jsonify(res)
