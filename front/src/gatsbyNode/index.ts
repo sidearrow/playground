@@ -6,8 +6,49 @@ import { ApiResponceType } from '../ApiResponceType';
 axios.defaults.baseURL = 'http://localhost:5000';
 
 export const createPages: GatsbyNode['createPages'] = async ({
-  actions: { createPage }
+  actions: { createPage },
+  graphql
 }) => {
+  (async () => {
+    type AllMarkdown = {
+      allMarkdownRemark: {
+        edges: {
+          node: {
+            frontmatter: {
+              path: string;
+            }
+          }
+        }[]
+      }
+    };
+
+    const allMarkdown: { data?: AllMarkdown } = await graphql(`
+    {
+      allMarkdownRemark(limit: 1000) {
+        edges {
+          node {
+            frontmatter {
+              path
+            }
+          }
+        }
+      }
+    }
+  `);
+
+    if (allMarkdown.data === undefined) {
+      return;
+    }
+
+    allMarkdown.data.allMarkdownRemark.edges.forEach(({ node }) => {
+      createPage({
+        path: node.frontmatter.path,
+        component: path.resolve('src/templates/Markdown.tsx'),
+        context: {},
+      });
+    });
+  })();
+
   const companiesData: { data: ApiResponceType.Company[] } = await axios.get('company');
 
   createPage({
