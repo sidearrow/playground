@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Layout from '../components/Layout';
 import { ApiResponceType } from '../ApiResponceType';
-import Table from '../components/Table';
+import Table from '../components/DataTable/DataTable';
 
 const Component: React.FC<{
   pageContext: {
@@ -23,12 +23,14 @@ const Component: React.FC<{
       <Table
         data={tableData}
         cells={cells}
-        elThead={
-          <>
-            <th>事業者名</th>
-            <th>営業キロ</th>
-          </>
-        }
+        headers={[
+          { text: '事業者名' },
+          { text: '営業キロ', isSort: true },
+        ]}
+        defaultSort={{
+          index: 1,
+          isAsc: false,
+        }}
       />
     </Layout>
   );
