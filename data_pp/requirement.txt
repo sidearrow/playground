@@ -1,2 +1,4 @@
 PyMySQL
 autopep8
+beautifulsoup4
+requests
