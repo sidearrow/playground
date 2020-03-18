@@ -3,8 +3,12 @@ import glob
 import urllib
 import re
 import requests
+import sys
 import time
 from bs4 import BeautifulSoup
+
+sys.path.append('../')
+import database  # nopep
 
 BASE_URL = 'https://ja.wikipedia.org'
 
@@ -81,12 +85,36 @@ def parse_station_list_html():
                 continue
             text = link.text
             if re.match(r'(.*)(駅|停留場)(|.*\(.*\))$', title):
-                name =re.findall('(.*)(駅|停留場)(|.*\(.*\))$', title)[0][0]
+                name = re.findall('(.*)(駅|停留場)(|.*\(.*\))$', title)[0][0]
                 furigana = re.findall('.*（(.*)(えき|ていりゅうじょう).*）$', li.text)
                 furigana = '' if len(furigana) == 0 else furigana[0][0]
                 csv_w.writerow([name, title, furigana])
-            else :
+            else:
                 print(title)
 
 
-parse_station_list_html()
+def update_db():
+    csv_r = csv.reader(open('./files/station.csv'))
+    csv_w = csv.writer(open('./files/station_skip.csv', mode='w'))
+    con = database.getConnection()
+    for i, row in enumerate(csv_r):
+        if i % 500 == 0:
+            print('[INFO] {} rows processed ...'.format(i))
+            con.commit()
+        cur = con.cursor()
+        cur.execute(
+            'select count(*) cnt from station where station_name = %s', (row[0]))
+        cnt = cur.fetchone()['cnt']
+        '''
+        if cnt == 1:
+            cur.execute('update station set station_name_kana = %s, station_name_wiki = %s where station_name = %s', (row[2], row[1], row[0]))
+        '''
+        if cnt > 1:
+            cur.execute('update station set station_name_kana = %s where station_name = %s', (row[2], row[0]))
+        else:
+            csv_w.writerow(row)
+    con.commit()
+
+
+# parse_station_list_html()
+update_db()
