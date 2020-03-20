@@ -1,5 +1,6 @@
 import csv
 import argparse
+import datetime
 import re
 import sys
 
@@ -44,17 +45,22 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dry-run', action='store_true')
 args = parser.parse_args()
 
+write_file_name = './output/{}_{}.csv' \
+    .format(LINE_ID, datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 csv_r = csv.DictReader(open('./input.csv'))
+csv_w = csv.writer(open(write_file_name, mode='w'))
+csv_w.writerow(['station_id', 'station_name', 'length', 'length_between'])
 
-print(args.dry_run)
 try:
     for row in csv_r:
         station_name = clean_station_name(row['station_name'])
         station_id = get_station_id(station_name)
+        res_row = [station_id, station_name,
+                   row['length'], row['length_between']]
         if args.dry_run:
-            print('{}, {}, {}, {}'.format(
-                station_id, station_name, row['length'], row['length_between']))
+            print(res_row)
         else:
+            csv_w.writerow(res_row)
             update_station(station_id, row['length'], row['length_between'])
     cur.close()
     con.commit()
