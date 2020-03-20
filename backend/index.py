@@ -66,7 +66,24 @@ def action_company_detail(company_code=None):
 @app.route('/line/<line_code>')
 def action_line_detail(line_code=None):
     cur = connection.cursor()
-    cur.execute('select * from line_station ls'
+    cur.execute('select c.company_name, c.company_code,'
+                ' l.line_id, l.line_name, l.line_code'
+                ' from line l'
+                ' left join company c on c.company_id = l.company_id'
+                ' where l.line_code = %s',
+                (line_code))
+    line_row = cur.fetchone()
+    company = {
+        'companyName': line_row['company_name'],
+        'companyCode': line_row['company_code'],
+    }
+    line = {
+        'lineName': line_row['line_name'],
+        'lineCode': line_row['line_code'],
+    }
+
+    cur.execute('select c.company_name, c.company_code, l.line_name, l.line_code,'
+                ' s.station_name, s.station_name_kana, ls.length, s.status from line_station ls'
                 ' left join line l on l.line_id = ls.line_id'
                 ' left join company c on c.company_id = l.company_id'
                 ' left join station s on s.station_id = ls.station_id'
@@ -76,16 +93,11 @@ def action_line_detail(line_code=None):
 
     stations = []
     for row in rows:
-        company = {
-            'companyName': row['company_name'],
-            'companyCode': row['company_code'],
-        }
-        line = {
-            'lineName': row['line_name'],
-            'lineCode': row['line_code'],
-        }
         stations.append({
             'stationName': row['station_name'],
+            'stationNameKana': row['station_name_kana'],
+            'length': row['length'],
+            'status': row['status'],
         })
 
     return jsonify({

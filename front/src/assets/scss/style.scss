@@ -85,6 +85,10 @@ a {
   margin-top: 1rem;
 }
 
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
 .pb-1 {
   padding-bottom: 1rem;
 }
@@ -99,4 +103,27 @@ a {
 
 .text-center {
   text-align: center;
+}
+
+.table-wrapper {
+  font-family: monospace;
+  font-size: 0.9rem;
+  padding: 0.125rem;
+  padding-bottom: 0.5rem;
+  border: 1px solid #e4e4e4;
+}
+
+table {
+  border-collapse: collapse;
+  th,
+  td {
+    border: 0.5px solid #e4e4e4;
+    padding: 0.125rem 0.375rem;
+  }
+  th .sort-arrow {
+    font-weight: normal;
+    &:not(.active) {
+      color: #e4e4e4;
+    }
+  }
 }

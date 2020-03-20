@@ -1,6 +1,7 @@
 .venv
 *.csv
 *.csv#
+*.tsv
 *.json
 *.sql
 *.pyc
