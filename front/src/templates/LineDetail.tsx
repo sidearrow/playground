@@ -38,13 +38,14 @@ const Component: React.FC<{
               <th>駅名かな</th>
               <th>営業キロ</th>
               <th>廃止</th>
+              <th>接続路線</th>
             </tr>
           </thead>
           <tbody>
             {lineDetail.stations.length === 0 && (
               <tr>
                 <td colSpan={4} className="text-center">準備中</td>
-                </tr>
+              </tr>
             )}
             {stations.map(station => (
               <tr>
@@ -52,6 +53,11 @@ const Component: React.FC<{
                 <td>{station.stationNameKana}</td>
                 <td className="text-right">{station.length === null ? '' : station.length.toFixed(1)}</td>
                 <td className="text-center">{station.status === 0 ? '' : '○'}</td>
+                <td>{station.connectLines.map((line) => (
+                  <div>
+                    <Link to={'line/' + line.lineCode}>{line.lineName}</Link>
+                  </div>
+                ))}</td>
               </tr>
             ))}
           </tbody>

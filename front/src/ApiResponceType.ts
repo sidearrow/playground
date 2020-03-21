@@ -16,6 +16,10 @@ export declare module ApiResponceType {
     stationNameKana: string;
     length: number;
     status: number;
+    connectLines: {
+      lineName: string;
+      lineCode: string;
+    }[];
   };
 
   export type CompanyDetail = {
