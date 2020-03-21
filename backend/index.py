@@ -84,7 +84,7 @@ def action_line_detail(line_code=None):
 
     line_id = line_row['line_id']
 
-    cur.execute('select s.station_id, l.line_name from line_station ls'
+    cur.execute('select s.station_id, l.line_name, l.line_code from line_station ls'
                 ' left join line_station ls2'
                 '   on ls2.station_id = ls.station_id'
                 ' left join station s'
@@ -100,7 +100,10 @@ def action_line_detail(line_code=None):
     for row in rows:
         if row['station_id'] not in connect_lines:
             connect_lines[row['station_id']] = []
-        connect_lines[row['station_id']].append(row['line_name'])
+        connect_lines[row['station_id']].append({
+            'lineName': row['line_name'],
+            'lineCode': row['line_code'],
+        })
 
     cur.execute('select s.station_id, c.company_name, c.company_code, l.line_name, l.line_code,'
                 ' s.station_name, s.station_name_kana, ls.length, s.status from line_station ls'
@@ -118,8 +121,8 @@ def action_line_detail(line_code=None):
             'stationNameKana': row['station_name_kana'],
             'length': row['length'],
             'status': row['status'],
-            'connect_lines': connect_lines[row['station_id']] \
-                if row['station_id'] in connect_lines else []
+            'connectLines': connect_lines[row['station_id']]
+            if row['station_id'] in connect_lines else []
         })
 
     return jsonify({
