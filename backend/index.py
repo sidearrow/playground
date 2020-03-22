@@ -105,12 +105,12 @@ def action_line_detail(line_code=None):
             'lineCode': row['line_code'],
         })
 
-    cur.execute('select s.station_id, c.company_name, c.company_code, l.line_name, l.line_code,'
-                ' s.station_name, s.station_name_kana, ls.length, s.status from line_station ls'
-                ' left join line l on l.line_id = ls.line_id'
-                ' left join company c on c.company_id = l.company_id'
+    cur.execute('select s.station_id, l1.line_name, l2.line_name branch_line_name, s.station_name,'
+                ' s.station_name_kana, ls.length, ls.length_between, s.status from line_station ls'
+                ' left join line l1 on l1.line_id = ls.line_id'
+                ' left join line l2 on l2.line_id = ls.branch_line_id'
                 ' left join station s on s.station_id = ls.station_id'
-                ' where l.line_code = %s',
+                ' where l1.line_code = %s',
                 (line_code))
     rows = cur.fetchall()
 
@@ -119,7 +119,9 @@ def action_line_detail(line_code=None):
         stations.append({
             'stationName': row['station_name'],
             'stationNameKana': row['station_name_kana'],
+            'branchLineName': row['branch_line_name'],
             'length': row['length'],
+            'lengthBetween': row['length_between'],
             'status': row['status'],
             'connectLines': connect_lines[row['station_id']]
             if row['station_id'] in connect_lines else []

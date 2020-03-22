@@ -12,9 +12,11 @@ export declare module ApiResponceType {
   };
 
   export type Station = {
+    branchLineName: string | null;
     stationName: string;
     stationNameKana: string;
     length: number;
+    lengthBetween: number;
     status: number;
     connectLines: {
       lineName: string;
