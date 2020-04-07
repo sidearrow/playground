@@ -10,6 +10,7 @@
 
 <body class="container">
     <div class="content">@yield('content')</div>
+    @yield('script')
 </body>
 
 </html>

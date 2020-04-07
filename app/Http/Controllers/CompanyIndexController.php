@@ -16,7 +16,13 @@ class CompanyIndexController extends Controller
 
         $res = [];
         foreach ($companies as $company) {
-            $res[] = $company->toArray();
+            $data = $company->toArray();
+            $res[] = [
+                'companyCode' => $data['companyCode'],
+                'companyName' => $data['companyName'],
+                'companyNameKana' => $data['companyNameKana'],
+                'lineUrl' => url('/company/' . $data['companyCode'] . '/line'),
+            ];
         }
 
         return view('pages.company.index', [
