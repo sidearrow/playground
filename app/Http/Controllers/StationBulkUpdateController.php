@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StationBulkUpdateRequest;
+use App\UseCases\StationBulkUpdateUseCase;
 
 class StationBulkUpdateController extends Controller
 {
-    public function __invoke(Request $request)
+
+    public function __invoke(StationBulkUpdateRequest $request)
     {
-        //
+        $bulkUpdateData = $request->post('bulkUpdateData');
+
+        $stationBulkSetupUseCase = new StationBulkUpdateUseCase($bulkUpdateData);
     }
 }
