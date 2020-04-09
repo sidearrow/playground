@@ -1,3 +1,5 @@
+import csv
+from io import StringIO
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -15,6 +17,7 @@ def action_index(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
 
 
+@app.get('/line')
 def action_line_index(request: Request):
     db_lines = session.query(LineModel).all()
 
@@ -42,17 +45,30 @@ def action_line_detail(request: Request, line_id: str):
         'line_name': db_line.line_name,
     }
     view_stations = []
+    view_station_id_name_tsv = ''
     for line_station, station in db_line_stations:
+        view_station_id_name_tsv += '{}\t{}\n'.format(station.station_id, station.station_name)
         view_stations.append({
             'station_detail_url': '/station/{}'.format(station.station_id),
             'sort_no': line_station.sort_no,
+            'station_id': station.station_id,
             'station_name': station.station_name,
             'station_name_kana': station.station_name_kana or '',
             'length': line_station.length,
             'length_between': line_station.length_between or '',
         })
 
-    return templates.TemplateResponse('line_detail.html', {'request': request, 'line': view_line, 'stations': view_stations})
+    return templates.TemplateResponse('line_detail.html', {'request': request, 'line': view_line, 'stations': view_stations, 'station_id_name_tsv': view_station_id_name_tsv})
+
+
+@app.post('/station/bulk-update')
+async def action_station_bulk_update(request: Request):
+    data = await request.form()
+
+    for row in csv.DictReader(StringIO(data['bulkUpdateData'].strip()), delimiter='\t'):
+        print(row)
+
+    return row
 
 
 @app.get('/station/{station_id}')
