@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>路線一覧</h1>
+<div>
+  {% for line in lines %}
+  <div>{{ line.line_name }}</div>
+  {% endfor %}
+</div>
+{% endblock %}
