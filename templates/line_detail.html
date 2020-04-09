@@ -4,7 +4,10 @@
 <h1>路線一覧</h1>
 <div>
   {% for line in lines %}
-  <div>{{ line.line_name }}</div>
+  <div>
+    <span>{{ line.line_name }}</span>
+    <span>（{{ line.company_name }}）</span>
+  </div>
   {% endfor %}
 </div>
 {% endblock %}
