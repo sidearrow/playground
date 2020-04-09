@@ -1,13 +1,33 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>路線一覧</h1>
-<div>
-  {% for line in lines %}
-  <div>
-    <span>{{ line.line_name }}</span>
-    <span>（{{ line.company_name }}）</span>
-  </div>
-  {% endfor %}
+<h1>駅一覧 {{ line.line_name }}</h1>
+<div class="table-responsive">
+  <table class="table table-sm table-bordered">
+    <thead>
+      <tr class="alert-primary">
+        <th class="text-center align-middle"></th>
+        <th class="text-center align-middle">#</th>
+        <th class="text-center align-middle">駅名</th>
+        <th class="text-center align-middle">駅名カナ</th>
+        <th class="text-center align-middle">営業キロ</th>
+        <th class="text-center align-middle">駅間<br />営業キロ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for station in stations %}
+      <tr>
+        <td class="text-nowrap">
+          <a href="{{ station.station_detail_url }}">編集</a>
+        </td>
+        <td class="text-nowrap text-right">{{ station.sort_no }}</td>
+        <td class="text-nowrap">{{ station.station_name }}</td>
+        <td class="text-nowrap">{{ station.station_name_kana }}</td>
+        <td class="text-nowrap text-right">{{ station.length }}</td>
+        <td class="text-nowrap text-right">{{ station.length_between }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body %}
+<form>
+  <div class="form-group">
+    <label>駅名</label>
+    <input type="text" class="form-control" value="{{ station.station_name }}" />
+  </div>
+  <div class="form-group">
+    <label>駅名かな</label>
+    <input type="text" class="form-control" value="{{ station.station_name_kana }}" />
+  </div>
+  <div class="form-group">
+    <label>駅名 Wiki</label>
+    <input type="text" class="form-control" value="{{ station.station_name_wiki }}" />
+  </div>
+  <div class="form-group">
+    <label>住所</label>
+    <input type="text" class="form-control" value="{{ station.address }}" />
+  </div>
+  <div class="form-row justify-content-center mt-4">
+    <div type="submit" class="col-6 col-md-4"><button class="btn btn-block btn-primary">保存</button></div>
+    <div type="button" class="col-6 col-md-4"><button class="btn btn-block btn-outline-secondary">戻る</button></div>
+  </div>
+</form>
+{% endblock %}

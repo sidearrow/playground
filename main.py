@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from database import session
-from models import LineModel
+from models import LineModel, LineStationModel, StationModel
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
@@ -27,6 +27,40 @@ def action_line_index(request: Request):
 
     return templates.TemplateResponse('line.html', {'request': request, 'lines': view_lines})
 
+
 @app.get('/line/{line_id}')
 def action_line_detail(request: Request, line_id: str):
-    return templates.TemplateResponse('line_detail.html', {'request': request})
+    db_line = session.query(LineModel).get(line_id)
+    db_line_stations = session.query(LineStationModel, StationModel) \
+        .join(StationModel, StationModel.station_id == LineStationModel.station_id) \
+        .filter(LineStationModel.line_id == line_id) \
+        .all()
+
+    view_line = {
+        'line_name': db_line.line_name,
+    }
+    view_stations = []
+    for line_station, station in db_line_stations:
+        view_stations.append({
+            'station_detail_url': '/station/{}'.format(station.station_id),
+            'sort_no': line_station.sort_no,
+            'station_name': station.station_name,
+            'station_name_kana': station.station_name_kana or '',
+            'length': line_station.length,
+            'length_between': line_station.length_between or '',
+        })
+
+    return templates.TemplateResponse('line_detail.html', {'request': request, 'line': view_line, 'stations': view_stations})
+
+
+@app.get('/station/{station_id}')
+def action_station_detail(request: Request, station_id: str):
+    db_station = session.query(StationModel).get(station_id)
+    station = {
+        'station_name': db_station.station_name,
+        'station_name_kana': db_station.station_name_kana,
+        'station_name_wiki': db_station.station_name_wiki,
+        'address': db_station.address,
+    }
+
+    return templates.TemplateResponse('station_detail.html', {'request': request, 'station': station})
