@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, DATE, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base, ENGINE
 
@@ -41,5 +41,7 @@ class StationModel(Base):
     station_name_kana = Column(String(255))
     station_name_wiki = Column(String(255))
     address = Column(String(255))
+    open_date = Column(DATE)
+    close_date = Column(DATE)
 
     line_stations = relationship('LineStationModel', back_populates='station')

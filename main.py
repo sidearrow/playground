@@ -1,18 +1,20 @@
 from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
+from starlette.responses import RedirectResponse
+
 from database import session
 from models import LineModel, LineStationModel, StationModel
-from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
 
 
 @app.get('/')
-def action_index():
-    return {'aa': 'aa'}
+def action_index(request: Request):
+    return templates.TemplateResponse('index.html', {'request': request})
 
 
-@app.get('/line')
 def action_line_index(request: Request):
     db_lines = session.query(LineModel).all()
 
@@ -56,11 +58,41 @@ def action_line_detail(request: Request, line_id: str):
 @app.get('/station/{station_id}')
 def action_station_detail(request: Request, station_id: str):
     db_station = session.query(StationModel).get(station_id)
+    db_lines = session.query(LineStationModel, LineModel) \
+        .join(LineModel, LineModel.line_id == LineStationModel.line_id) \
+        .filter(LineStationModel.station_id == station_id) \
+        .all()
+
     station = {
+        'station_update_url': '/station/{}'.format(station_id),
         'station_name': db_station.station_name,
         'station_name_kana': db_station.station_name_kana,
-        'station_name_wiki': db_station.station_name_wiki,
+        'station_name_wiki': db_station.station_name_wiki or '',
         'address': db_station.address,
+        'open_date': db_station.open_date,
+        'close_date': db_station.close_date,
     }
+    lines = []
+    for line_station, line in db_lines:
+        lines.append({
+            'line_id': line.line_id,
+            'line_name': line.line_name,
+            'line_detail_url': '/line/{}'.format(line.line_id),
+        })
 
-    return templates.TemplateResponse('station_detail.html', {'request': request, 'station': station})
+    return templates.TemplateResponse('station_detail.html', {'request': request, 'station': station, 'lines': lines})
+
+
+@app.post('/station/{station_id}')
+async def action_station_update(request: Request, station_id: str):
+    data = await request.form()
+
+    station: StationModel = StationModel.query.filter_by(station_id=station_id).first()
+    station.station_name = data['station_name']
+    station.station_name_kana = data['station_name_kana']
+    station.station_name_wiki = data['station_name_wiki']
+    station.open_date = data['open_date'] if data['open_date'] != '' else None
+    station.close_date = data['close_date'] if data['close_date'] != '' else None
+    session.commit()
+
+    return RedirectResponse(url='/station/{}'.format(station_id), status_code=302)
