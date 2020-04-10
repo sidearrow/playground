@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from starlette.responses import RedirectResponse
 
 from database import session
-from models import LineModel, LineStationModel, StationModel
+from models import CompanyModel, LineModel, LineStationModel, StationModel
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
@@ -19,14 +19,16 @@ def action_index(request: Request):
 
 @app.get('/line')
 def action_line_index(request: Request):
-    db_lines = session.query(LineModel).all()
+    db_lines = session.query(LineModel,CompanyModel) \
+        .join(CompanyModel, CompanyModel.company_id == LineModel.company_id) \
+        .all()
 
     view_lines = []
-    for line in db_lines:
+    for line, company in db_lines:
         view_lines.append({
             'line_id': line.line_id,
             'line_name': line.line_name,
-            'company_name': line.company.company_name,
+            'company_name': company.company_name,
             'line_detail_url': '/line/{}'.format(line.line_id)
         })
 
