@@ -1,25 +1,36 @@
 import csv
+import os
+import pymysql
 from io import StringIO
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
-from starlette.responses import RedirectResponse
+from dotenv import load_dotenv
+from flask import Flask, request, render_template
 
-from database import session
-from models import CompanyModel, LineModel, LineStationModel, StationModel
+load_dotenv('.env')
 
-app = FastAPI()
-templates = Jinja2Templates(directory='templates')
+app = Flask(__name__)
+
+db = pymysql.connections.Connection(
+    host=os.environ.get('DB_HOST'),
+    port=int(os.environ.get('DB_PORT')),
+    database=os.environ.get('DB_NAME'),
+    user=os.environ.get('DB_USER'),
+    password=os.environ.get('DB_PASSWORD'),
+    charset='utf8mb4',
+    cursorclass=MySQLdb.cursors.DictCursor,
+    autocommit=False,
+)
 
 
-@app.get('/')
-def action_index(request: Request):
-    return templates.TemplateResponse('index.html', {'request': request})
+def action_login():
+    return render_template('login.html')
 
 
-@app.get('/line')
-def action_line_index(request: Request):
-    db_lines = session.query(LineModel,CompanyModel) \
+def action_index():
+    return render_template('index.html')
+
+
+def action_line_index():
+    db_lines = session.query(LineModel, CompanyModel) \
         .join(CompanyModel, CompanyModel.company_id == LineModel.company_id) \
         .all()
 
@@ -32,11 +43,10 @@ def action_line_index(request: Request):
             'line_detail_url': '/line/{}'.format(line.line_id)
         })
 
-    return templates.TemplateResponse('line.html', {'request': request, 'lines': view_lines})
+    return render_template('line.html', lines=view_lines)
 
 
-@app.get('/line/{line_id}')
-def action_line_detail(request: Request, line_id: str):
+def action_line_detail(line_id):
     db_line = session.query(LineModel).get(line_id)
     db_line_stations = session.query(LineStationModel, StationModel) \
         .join(StationModel, StationModel.station_id == LineStationModel.station_id) \
@@ -60,12 +70,11 @@ def action_line_detail(request: Request, line_id: str):
             'length_between': line_station.length_between or '',
         })
 
-    return templates.TemplateResponse('line_detail.html', {'request': request, 'line': view_line, 'stations': view_stations, 'station_id_name_tsv': view_station_id_name_tsv})
+    return render_template('line_detail.html', line=view_line, stations=view_stations, station_id_name_tsv=view_station_id_name_tsv)
 
 
-@app.post('/station/bulk-update')
-async def action_station_bulk_update(request: Request):
-    data = await request.form()
+def action_station_bulk_update():
+    # data = await request.form()
 
     for row in csv.DictReader(StringIO(data['bulkUpdateData'].strip()), delimiter='\t'):
         print(row)
@@ -73,8 +82,7 @@ async def action_station_bulk_update(request: Request):
     return row
 
 
-@app.get('/station/{station_id}')
-def action_station_detail(request: Request, station_id: str):
+def action_station_detail(station_id):
     db_station = session.query(StationModel).get(station_id)
     db_lines = session.query(LineStationModel, LineModel) \
         .join(LineModel, LineModel.line_id == LineStationModel.line_id) \
@@ -98,12 +106,11 @@ def action_station_detail(request: Request, station_id: str):
             'line_detail_url': '/line/{}'.format(line.line_id),
         })
 
-    return templates.TemplateResponse('station_detail.html', {'request': request, 'station': station, 'lines': lines})
+    return render_template('station_detail.html', station=station, lines=lines)
 
 
-@app.post('/station/{station_id}')
-async def action_station_update(request: Request, station_id: str):
-    data = await request.form()
+def action_station_update(station_id):
+    # data = await request.form()
 
     station: StationModel = StationModel.query.filter_by(station_id=station_id).first()
     station.station_name = data['station_name']
@@ -114,3 +121,12 @@ async def action_station_update(request: Request, station_id: str):
     session.commit()
 
     return RedirectResponse(url='/station/{}'.format(station_id), status_code=302)
+
+
+app.add_url_rule('/login', view_func=action_login)
+app.add_url_rule('/', view_func=action_index)
+app.add_url_rule('/line', view_func=action_line_index)
+app.add_url_rule('/line/<line_id>', view_func=action_line_detail)
+app.add_url_rule('/station/bulk-update', view_func=action_station_bulk_update, methods=['POST'])
+app.add_url_rule('/station/<station_id>', view_func=action_station_detail)
+app.add_url_rule('/station/<station_id>', view_func=action_station_update, methods=['POST'])
