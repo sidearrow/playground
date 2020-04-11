@@ -261,5 +261,8 @@ app.add_url_rule('/station/<station_id>', view_func=action_station_detail)
 app.add_url_rule('/station/<station_id>', view_func=action_station_update, methods=['POST'])
 
 if __name__ == '__main__':
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(debug=True, use_reloader=True)
+    if os.environ.get('ENV') == 'development':
+        app.config['TEMPLATES_AUTO_RELOAD'] = True
+        app.run(debug=True, use_reloader=True)
+    if os.environ.get('ENV') == 'production':
+        app.run()

@@ -1,6 +1,0 @@
-runtime: python37
-entrypoint: gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker
-env: standard
-instance_class: F1
-automatic_scaling:
-  max_instances: 1
