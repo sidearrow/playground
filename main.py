@@ -5,12 +5,28 @@ import os
 import pymysql
 from io import StringIO
 from dotenv import load_dotenv
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, g
 
 load_dotenv('.env')
 
 app = Flask(__name__)
 app.secret_key = 'railway_statistic_admin'
+
+
+@app.before_request
+def before_request():
+    g.__old_input = session.get('__old_input', {})
+    session['__old_input'] = request.form
+
+
+@app.context_processor
+def app_context_processor():
+    data = {
+        'old': g.__old_input,
+    }
+
+    return data
+
 
 db = pymysql.connections.Connection(
     host=os.environ.get('DB_HOST'),
@@ -47,6 +63,7 @@ def action_login_post():
         return redirect('/login', 302)
     session['is_auth'] = True
     return redirect('/', 302)
+
 
 def action_logout():
     session['is_auth'] = False
@@ -94,6 +111,9 @@ def action_line_index():
 
 
 def action_line_detail(line_id):
+    is_bulk_update_error = session.get('is_bulk_update_error', False)
+    session['is_bulk_update_error'] = False
+
     cur = db.cursor()
     cur.execute('''
     select line_name from line where line_id = %s
@@ -115,10 +135,10 @@ def action_line_detail(line_id):
     db_data = cur.fetchall()
 
     view_stations = []
-    view_station_id_name_tsv = ''
+    view_station_id_name_tsv = 'line_id\tstation_id\tstation_name\n'
     for row in db_data:
-        view_station_id_name_tsv += '{}\t{}\n'.format(
-            row['station_id'], row['station_name'])
+        view_station_id_name_tsv += '{}\t{}\t{}\n'.format(
+            line_id, row['station_id'], row['station_name'])
         view_stations.append({
             'station_detail_url': '/station/{}'.format(row['station_id']),
             'sort_no': row['sort_no'],
@@ -131,18 +151,41 @@ def action_line_detail(line_id):
 
     return render_template(
         'line_detail.html',
+        is_bulk_update_error=is_bulk_update_error,
         line=view_line,
         stations=view_stations,
         station_id_name_tsv=view_station_id_name_tsv)
 
 
 def action_station_bulk_update():
-    # data = await request.form()
+    bulk_update_data = request.form['bulkUpdateData']
+    bulk_update_data_reader = csv.DictReader(StringIO(bulk_update_data.strip()), delimiter='\t')
 
-    for row in csv.DictReader(StringIO(data['bulkUpdateData'].strip()), delimiter='\t'):
-        print(row)
+    cur = db.cursor()
+    try:
+        for row in bulk_update_data_reader:
+            sql = 'update line_station set'
+            update_param = []
+            where_param = {}
+            for key in row:
+                if key in ['line_id', 'station_id', 'length', 'length_between']:
+                    if key in ['line_id', 'station_id']:
+                        where_param[key] = row[key]
+                    else:
+                        sql += ' {} = %s,'.format(key)
+                        update_param.append(row[key])
+            sql = sql[:-1]
+            sql += ' where line_id = %s and station_id = %s'
+            update_param.append(where_param['line_id'])
+            update_param.append(where_param['station_id'])
+            cur.execute(sql, tuple(update_param))
+    except Exception as e:
+        db.rollback()
+        session['is_bulk_update_error'] = True
+    else:
+        db.commit()
 
-    return row
+    return redirect(request.referrer, 302)
 
 
 def action_station_detail(station_id):

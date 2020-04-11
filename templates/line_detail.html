@@ -3,8 +3,7 @@
 {% block body %}
 <h1>駅一覧 {{ line.line_name }}</h1>
 <div class="my-3">
-  <button class="btn btn-primary" id="copyStationIdNameTsvBtn" data-text="{{ station_id_name_tsv }}">駅 ID・駅名 TSV
-    コピー</button>
+  <button class="btn btn-primary" id="copyStationIdNameTsvBtn" data-text="{{ station_id_name_tsv }}">TSV コピー</button>
   <button class="btn btn-primary ml-1" data-toggle="modal" data-target="#bulkUpdateModal">一括更新</button>
 </div>
 <div class="table-responsive">
@@ -38,23 +37,23 @@
   </table>
 </div>
 
-<div class="modal fade" id="bulkUpdateModal">
+<div class="modal fade" id="bulkUpdateModal" {{ 'data-modal-open' if is_bulk_update_error else '' }}>
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <form method="POST" action="/station/bulk-update">
-      <div class="modal-header">
-        <div class="modal-title">一括更新</div>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <textarea class="form-control" rows="20" name="bulkUpdateData"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-        <button type="submit" class="btn btn-primary">一括更新</button>
-      </div>
+        <div class="modal-header">
+          <div class="modal-title">一括更新</div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control" rows="20" name="bulkUpdateData">{{ old.get('bulkUpdateData', '') }}</textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-primary">一括更新</button>
+        </div>
       </form>
     </div>
   </div>
@@ -62,6 +61,12 @@
 
 <script>
   const elCopyStationIdNameTsvBtn = document.getElementById('copyStationIdNameTsvBtn');
-  navigator.clipboard.writeText(elCopyStationIdNameTsvBtn.getAttribute('data-text'));
+  elCopyStationIdNameTsvBtn.addEventListener('click', function () {
+    navigator.clipboard.writeText(elCopyStationIdNameTsvBtn.getAttribute('data-text'));
+    alert('コピー完了')
+  });
+  $('[data-modal-open]').each(function () {
+    $(this).modal('show')
+  });
 </script>
 {% endblock %}
