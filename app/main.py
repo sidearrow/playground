@@ -154,7 +154,8 @@ def action_line_detail(line_id):
         is_bulk_update_error=is_bulk_update_error,
         line=view_line,
         stations=view_stations,
-        station_id_name_tsv=view_station_id_name_tsv)
+        station_id_name_tsv=view_station_id_name_tsv,
+        station_add_url='/line/{}/station_add'.format(line_id))
 
 
 def action_station_bulk_update():
@@ -266,11 +267,6 @@ def action_station_index():
     ''', ('%{}%'.format(station_name)))
     db_stations = cur.fetchall()
 
-    cur.execute('''
-    select company_id, company_name from company
-    ''')
-    db_companies = cur.fetchall()
-
     stations = {}
     for station in db_stations:
         if station['station_id'] not in stations:
@@ -286,17 +282,9 @@ def action_station_index():
             'line_detail_url': '/line/{}'.format(station['line_id'])
         })
 
-    companies = []
-    for company in db_companies:
-        companies.append({
-            'company_id': company['company_id'],
-            'company_name': company['company_name'],
-        })
-
     return render_template(
         'station.html',
         stations=stations,
-        companies=companies,
         search={'station_name': station_name},
     )
 
@@ -308,6 +296,11 @@ def action_station_create():
     ''')
     db_companies = cur.fetchall()
 
+    cur.execute('''
+    select prefecture_id, prefecture_name from prefecture
+    ''')
+    db_prefecture = cur.fetchall()
+
     companies = []
     for company in db_companies:
         companies.append({
@@ -315,19 +308,21 @@ def action_station_create():
             'company_name': company['company_name'],
         })
 
-    return render_template('station_create.html', companies=companies)
+    return render_template('station_create.html', companies=companies, prefectures=db_prefecture)
 
 
 def action_station_create_post():
     station_id = request.form.get('station_id')
     station_name = request.form.get('station_name')
+    company_id = request.form.get('company_id')
 
     try:
         cur = db.cursor()
         cur.execute('''
-        insert into station values station_id = %s, station_name = %s
-        ''', (station_id, station_name))
-    except:
+        insert into station (station_id, station_name, company_id) values (%s, %s, %s)
+        ''', (station_id, station_name, company_id))
+    except Exception as e:
+        print(e)
         abort(500)
 
     db.commit()
@@ -335,18 +330,22 @@ def action_station_create_post():
     return redirect('/station?station_name={}'.format(station_name), 302)
 
 
-def action_station_add_line(station_id):
-    line_id = request.form.get('line_id')
+def action_line_add_station(line_id):
+    station_id = request.form.get('station_id')
+    sort_no = request.form.get('sort_no')
 
     try:
         cur = db.cursor()
         cur.execute('''
-        insert into line_station
-        values line_id = %s, station_id = %s,
-            sort_no = (select max(ifnull(sort_no, 0)) + 1 from line_station where line_id = %s)
-        ''', (line_id, station_id, station_id))
-    except:
+        insert into line_station (line_id, station_id, sort_no)
+        values (%s, %s, %s)
+        ''', (line_id, station_id, sort_no))
+    except Exception as e:
+        db.rollback()
+        print(e)
         abort(500)
+
+    db.commit()
 
     return redirect(request.referrer, 302)
 
@@ -357,13 +356,13 @@ app.add_url_rule('/logout', view_func=action_logout)
 app.add_url_rule('/', view_func=action_index)
 app.add_url_rule('/line', view_func=action_line_index)
 app.add_url_rule('/line/<line_id>', view_func=action_line_detail)
+app.add_url_rule('/line/<line_id>/station_add', view_func=action_line_add_station, methods=['POST'])
 app.add_url_rule('/station', view_func=action_station_index)
 app.add_url_rule('/station/create', view_func=action_station_create)
 app.add_url_rule('/station/create', view_func=action_station_create_post, methods=['POST'])
 app.add_url_rule('/station/bulk-update', view_func=action_station_bulk_update, methods=['POST'])
 app.add_url_rule('/station/<station_id>', view_func=action_station_detail)
 app.add_url_rule('/station/<station_id>', view_func=action_station_update, methods=['POST'])
-app.add_url_rule('/station/<station_id>/line', view_func=action_station_add_line, methods=['POST'])
 
 if __name__ == '__main__':
     if os.environ.get('ENV') == 'development':

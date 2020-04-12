@@ -27,37 +27,6 @@
     <tbody>
       {% for station_id, station in stations.items() %}
       <tr>
-        <td>
-          <button data-toggle="modal" data-target="#modalAddLine_{{ station['station_id'] }}">路線追加</button>
-          <div class="modal fade" id="modalAddLine_{{ station['station_id'] }}">
-            <div class="modal-dialog modal-xl">
-              <div class="modal-content">
-                <form method="POST" action="{{ station['line_add_url'] }}">
-                  <div class="modal-header">
-                    <h5 class="modal-title">路線追加</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-group">
-                      <label>路線</label>
-                      <select class="form-control form-control-sm" name="line_id">
-                        {% for company in companies %}
-                        <option value="{{ company['company_id'] }}">{{ company['company_name'] }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">キャンセル</button>
-                    <button type="button" class="btn btn-sm btn-primary">保存</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </td>
         <td class="align-middle">{{ station['station_id'] }}</td>
         <td class="align-middle">
           <a href="{{ station['station_detail_url'] }}">{{ station['station_name'] }}</a>

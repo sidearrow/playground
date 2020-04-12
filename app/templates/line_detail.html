@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>駅一覧 {{ line.line_name }}</h1>
+<h5>駅一覧 {{ line.line_name }}</h5>
 <div class="my-3">
-  <button class="btn btn-primary" id="copyStationIdNameTsvBtn" data-text="{{ station_id_name_tsv }}">TSV コピー</button>
-  <button class="btn btn-primary ml-1" data-toggle="modal" data-target="#bulkUpdateModal">一括更新</button>
+  <button class="btn btn-sm btn-primary" id="copyStationIdNameTsvBtn" data-text="{{ station_id_name_tsv }}">TSV
+    コピー</button>
+  <button class="btn btn-sm btn-primary ml-1" data-toggle="modal" data-target="#bulkUpdateModal">一括更新</button>
+  <button class="btn btn-sm btn-primary ml-1" data-toggle="modal" data-target="#addStationModal">駅追加</button>
 </div>
 <div class="table-responsive">
   <table class="table table-sm table-bordered">
@@ -51,8 +53,37 @@
           <textarea class="form-control" rows="20" name="bulkUpdateData">{{ old.get('bulkUpdateData', '') }}</textarea>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-          <button type="submit" class="btn btn-primary">一括更新</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-sm btn-primary">一括更新</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addStationModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form method="POST" action="{{ station_add_url }}">
+        <div class="modal-header">
+          <div class="modal-title">駅追加</div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <label>駅ID</label>
+            <input class="form-control form-control-sm" name="station_id" />
+          </div>
+          <div class="form-row">
+            <label>ソート番号</label>
+            <input class="form-control form-control-sm" name="sort_no" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-sm btn-primary">更新</button>
         </div>
       </form>
     </div>
