@@ -17,20 +17,33 @@
       <input type="text" name="station_name_kana" class="form-control form-control-sm" />
     </div>
     <div class="form-group">
+      <label>住所</label>
+      <input type="text" name="address" class="form-control form-control-sm" />
+    </div>
+    <div class="form-group">
       <label>会社名</label>
-      <select name="company_id" class="form-control form-control-sm">
+      <div class="form-inline mr-2">
         {% for company in companies %}
-        <option value="{{ company['company_id'] }}">{{ company['company_name'] }}</option>
+        <div class="form-check mr-2">
+          <input type="radio" id="inputCompanyId{{ company['company_id'] }}" name="company_id"
+            value="{{ company['company_id'] }}" />
+          <label for="inputCompanyId{{ company['company_id'] }}" class="ml-1">{{ company['company_name'] }}</label>
+        </div>
         {% endfor %}
-      </select>
+      </div>
     </div>
     <div class="form-group">
       <label>都道府県</label>
-      <select name="prefecture_id" class="form-control form-control-sm">
+      <div class="form-inline">
         {% for prefecture in prefectures %}
-        <option value="{{ prefecture['prefecture_id'] }}">{{ prefecture['prefecture_name'] }}</option>
+        <div class="form-check mr-2">
+          <input type="radio" id="inputPrefecture{{ prefecture['prefecture_id'] }}"
+            value="{{ prefecture['prefecture_id'] }}" name="prefecture_id" />
+          <label for="inputPrefecture{{ prefecture['prefecture_id'] }}"
+            class="ml-1">{{ prefecture['prefecture_name'] }}</label>
+        </div>
         {% endfor %}
-      </select>
+      </div>
     </div>
     <div class="mt-3 row justify-content-center">
       <div class="col-md-4">

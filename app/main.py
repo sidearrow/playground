@@ -15,29 +15,36 @@ app.secret_key = 'railway_statistic_admin'
 
 @app.before_request
 def before_request():
+    g.db = pymysql.connections.Connection(
+        host=os.environ.get('DB_HOST'),
+        port=int(os.environ.get('DB_PORT')),
+        database=os.environ.get('DB_NAME'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor,
+        autocommit=False,
+    )
+
     g.__old_input = session.get('__old_input', {})
     session['__old_input'] = request.form
+
+
+@app.after_request
+def after_request(response):
+    g.db.close()
+    return response
 
 
 @app.context_processor
 def app_context_processor():
     data = {
+        'is_auth': 'is_auth' in session and session['is_auth'] == True,
         'old': g.__old_input,
     }
 
     return data
 
-
-db = pymysql.connections.Connection(
-    host=os.environ.get('DB_HOST'),
-    port=int(os.environ.get('DB_PORT')),
-    database=os.environ.get('DB_NAME'),
-    user=os.environ.get('DB_USER'),
-    password=os.environ.get('DB_PASSWORD'),
-    charset='utf8mb4',
-    cursorclass=pymysql.cursors.DictCursor,
-    autocommit=False,
-)
 
 config = {
     'password': os.environ.get('SITE_PASSWORD')
@@ -73,7 +80,7 @@ def action_logout():
 
 @middleware_auth
 def action_index():
-    cur = db.cursor()
+    cur = g.db.cursor()
     cur.execute('select count(*) cnt from station')
     db_station_cnt = cur.fetchone()
 
@@ -89,32 +96,37 @@ def action_index():
 
 @middleware_auth
 def action_line_index():
-    cur = db.cursor()
+    cur = g.db.cursor()
     cur.execute('''
-    select l.line_id, l.line_name, c.company_name
+    select l.line_id, l.line_name, c.company_id, c.company_name_alias
     from line l
     left join company c
       on c.company_id = l.company_id
     ''')
     db_lines = cur.fetchall()
 
-    view_lines = []
+    view_lines = {}
     for row in db_lines:
-        view_lines.append({
+        if row['company_id'] not in view_lines:
+            view_lines[row['company_id']] = {
+                'company_name': row['company_name_alias'],
+                'lines': [],
+            }
+        view_lines[row['company_id']]['lines'].append({
             'line_id': row['line_id'],
             'line_name': row['line_name'],
-            'company_name': row['company_name'],
             'line_detail_url': '/line/{}'.format(row['line_id'])
         })
 
     return render_template('line.html', lines=view_lines)
 
 
+@middleware_auth
 def action_line_detail(line_id):
     is_bulk_update_error = session.get('is_bulk_update_error', False)
     session['is_bulk_update_error'] = False
 
-    cur = db.cursor()
+    cur = g.db.cursor()
     cur.execute('''
     select line_name from line where line_id = %s
     ''', (line_id))
@@ -147,6 +159,7 @@ def action_line_detail(line_id):
             'station_name_kana': row['station_name_kana'] or '',
             'length': row['length'] or '',
             'length_between': row['length_between'] or '',
+            'station_delete_url': '/line/{}/station/{}/delete'.format(line_id, row['station_id'])
         })
 
     return render_template(
@@ -158,11 +171,12 @@ def action_line_detail(line_id):
         station_add_url='/line/{}/station_add'.format(line_id))
 
 
+@middleware_auth
 def action_station_bulk_update():
     bulk_update_data = request.form['bulkUpdateData']
     bulk_update_data_reader = csv.DictReader(StringIO(bulk_update_data.strip()), delimiter='\t')
 
-    cur = db.cursor()
+    cur = g.db.cursor()
     try:
         for row in bulk_update_data_reader:
             sql = 'update line_station set'
@@ -181,16 +195,17 @@ def action_station_bulk_update():
             update_param.append(where_param['station_id'])
             cur.execute(sql, tuple(update_param))
     except Exception as e:
-        db.rollback()
+        g.db.rollback()
         session['is_bulk_update_error'] = True
     else:
-        db.commit()
+        g.db.commit()
 
     return redirect(request.referrer, 302)
 
 
+@middleware_auth
 def action_station_detail(station_id):
-    cur = db.cursor()
+    cur = g.db.cursor()
     cur.execute('''
     select *
     from station
@@ -228,8 +243,9 @@ def action_station_detail(station_id):
     return render_template('station_detail.html', station=station, lines=lines)
 
 
+@middleware_auth
 def action_station_update(station_id):
-    cur = db.cursor()
+    cur = g.db.cursor()
     cur.execute('''
     update station set
       station_name = %s,
@@ -246,25 +262,41 @@ def action_station_update(station_id):
         None if request.form['close_date'] == '' else request.form['close_date'],
         station_id
     ))
-    db.commit()
+    g.db.commit()
 
     return redirect('/station/{}'.format(station_id), 302)
 
 
+@middleware_auth
 def action_station_index():
-    station_name = request.args.get('station_name')
+    station_id = request.args.get('station_id', '')
+    station_name = request.args.get('station_name', '')
 
-    cur = db.cursor()
-    cur.execute('''
+    cur = g.db.cursor()
+
+    params = []
+    where_statement = []
+    if station_id != '':
+        params.append('%{}%'.format(station_id))
+        where_statement.append('s.station_id like %s')
+    if station_name != '':
+        params.append('%{}%'.format(station_name))
+        where_statement.append('s.station_name like %s')
+
+    where_statement_str = '' if len(where_statement) == 0 \
+        else 'where ' + ' and '.join(where_statement)
+
+    sql = '''
     select s.station_id, s.station_name, ls.line_id, l.line_name
     from station s
     left join line_station ls
         on ls.station_id = s.station_id
     left join line l
         on l.line_id = ls.line_id
-    where station_name like %s
-    limit 30
-    ''', ('%{}%'.format(station_name)))
+    {} limit 30
+    '''.format(where_statement_str)
+
+    cur.execute(sql, tuple(params))
     db_stations = cur.fetchall()
 
     stations = {}
@@ -289,10 +321,11 @@ def action_station_index():
     )
 
 
+@middleware_auth
 def action_station_create():
-    cur = db.cursor()
+    cur = g.db.cursor()
     cur.execute('''
-    select company_id, company_name from company
+    select company_id, company_name_alias from company
     ''')
     db_companies = cur.fetchall()
 
@@ -305,49 +338,75 @@ def action_station_create():
     for company in db_companies:
         companies.append({
             'company_id': company['company_id'],
-            'company_name': company['company_name'],
+            'company_name': company['company_name_alias'],
         })
 
     return render_template('station_create.html', companies=companies, prefectures=db_prefecture)
 
 
+@middleware_auth
 def action_station_create_post():
     station_id = request.form.get('station_id')
     station_name = request.form.get('station_name')
+    station_name_kana = request.form.get('station_name_kana')
+    address = request.form.get('address')
     company_id = request.form.get('company_id')
+    prefecture_id = request.form.get('prefecture_id')
 
     try:
-        cur = db.cursor()
+        cur = g.db.cursor()
         cur.execute('''
-        insert into station (station_id, station_name, company_id) values (%s, %s, %s)
-        ''', (station_id, station_name, company_id))
+        insert into station (
+            station_id, station_name, station_name_kana,
+            address, company_id, prefecture_id, status)
+        values (%s, %s, %s, %s, %s, %s, 0)
+        ''', (station_id, station_name, station_name_kana,
+              address, company_id, prefecture_id))
     except Exception as e:
         print(e)
         abort(500)
 
-    db.commit()
+    g.db.commit()
 
     return redirect('/station?station_name={}'.format(station_name), 302)
 
 
+@middleware_auth
 def action_line_add_station(line_id):
     station_id = request.form.get('station_id')
     sort_no = request.form.get('sort_no')
 
     try:
-        cur = db.cursor()
+        cur = g.db.cursor()
         cur.execute('''
         insert into line_station (line_id, station_id, sort_no)
         values (%s, %s, %s)
         ''', (line_id, station_id, sort_no))
     except Exception as e:
-        db.rollback()
+        g.db.rollback()
         print(e)
         abort(500)
 
-    db.commit()
+    g.db.commit()
 
     return redirect(request.referrer, 302)
+
+
+@middleware_auth
+def action_line_station_delete(line_id, station_id):
+    try:
+        cur = g.db.cursor()
+        cur.execute('''
+        delete from line_station
+        where line_id = %s and station_id = %s
+        ''', (line_id, station_id))
+    except Exception as e:
+        g.db.rollback()
+        abort(500)
+
+    g.db.commit()
+
+    return redirect('/line/{}'.format(line_id), 302)
 
 
 app.add_url_rule('/login', view_func=action_login)
@@ -357,6 +416,7 @@ app.add_url_rule('/', view_func=action_index)
 app.add_url_rule('/line', view_func=action_line_index)
 app.add_url_rule('/line/<line_id>', view_func=action_line_detail)
 app.add_url_rule('/line/<line_id>/station_add', view_func=action_line_add_station, methods=['POST'])
+app.add_url_rule('/line/<line_id>/station/<station_id>/delete', view_func=action_line_station_delete, methods=['POST'])
 app.add_url_rule('/station', view_func=action_station_index)
 app.add_url_rule('/station/create', view_func=action_station_create)
 app.add_url_rule('/station/create', view_func=action_station_create_post, methods=['POST'])
