@@ -93,13 +93,15 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="form-group">
           <div class="form-row">
             <label>駅ID</label>
             <input class="form-control form-control-sm" name="station_id" />
           </div>
           <div class="form-row">
             <label>ソート番号</label>
-            <input class="form-control form-control-sm" name="sort_no" />
+            <input class="form-control form-control-sm" name="sort_no" value="{{ next_sort_no }}" />
+          </div>
           </div>
         </div>
         <div class="modal-footer">

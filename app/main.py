@@ -148,7 +148,9 @@ def action_line_detail(line_id):
 
     view_stations = []
     view_station_id_name_tsv = 'line_id\tstation_id\tstation_name\n'
+    max_sort_no = 0
     for row in db_data:
+        max_sort_no = max(max_sort_no, row['sort_no'])
         view_station_id_name_tsv += '{}\t{}\t{}\n'.format(
             line_id, row['station_id'], row['station_name'])
         view_stations.append({
@@ -168,7 +170,8 @@ def action_line_detail(line_id):
         line=view_line,
         stations=view_stations,
         station_id_name_tsv=view_station_id_name_tsv,
-        station_add_url='/line/{}/station_add'.format(line_id))
+        station_add_url='/line/{}/station_add'.format(line_id),
+        next_sort_no=max_sort_no + 1)
 
 
 @middleware_auth
