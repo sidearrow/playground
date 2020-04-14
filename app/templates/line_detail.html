@@ -19,6 +19,8 @@
         <th class="text-center align-middle">駅名カナ</th>
         <th class="text-center align-middle">営業キロ</th>
         <th class="text-center align-middle">駅間<br />営業キロ</th>
+        <th class="text-center align-middle">実キロ</th>
+        <th class="text-center align-middle">駅間<br />実キロ</th>
       </tr>
     </thead>
     <tbody>
@@ -54,6 +56,8 @@
         <td class="text-nowrap">{{ station.station_name_kana }}</td>
         <td class="text-nowrap text-right">{{ station.length }}</td>
         <td class="text-nowrap text-right">{{ station.length_between }}</td>
+        <td class="text-nowrap text-right">{{ station.real_kilo }}</td>
+        <td class="text-nowrap text-right">{{ station.real_kilo_between }}</td>
       </tr>
       {% endfor %}
     </tbody>
