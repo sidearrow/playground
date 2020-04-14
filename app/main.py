@@ -337,6 +337,11 @@ def action_station_create():
     ''')
     db_prefecture = cur.fetchall()
 
+    cur.execute('''
+    select max(station_id) + 1 as next_id from station
+    ''')
+    next_id = cur.fetchone()['next_id']
+
     companies = []
     for company in db_companies:
         companies.append({
@@ -344,7 +349,7 @@ def action_station_create():
             'company_name': company['company_name_alias'],
         })
 
-    return render_template('station_create.html', companies=companies, prefectures=db_prefecture)
+    return render_template('station_create.html', companies=companies, prefectures=db_prefecture, next_id=next_id)
 
 
 @middleware_auth
