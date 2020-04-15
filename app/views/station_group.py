@@ -1,4 +1,4 @@
-from flask import g, redirect, render_template, request
+from flask import abort, g, redirect, render_template, request
 from flask.views import View
 
 
@@ -96,7 +96,7 @@ def station_delete(station_group_id, station_id):
         cur.execute('''
         delete from station_group_station
         where station_group_id = %s and station_id = %s
-        ''')
+        ''', (station_group_id, station_id))
     except:
         g.db.rollback()
         abort(500)

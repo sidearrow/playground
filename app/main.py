@@ -385,7 +385,7 @@ app.add_url_rule('/station-group/create', view_func=station_group.create, method
 app.add_url_rule('/station-group/<station_group_id>/station/create',
                  view_func=station_group.station_create, methods=['POST'])
 app.add_url_rule('/station-group/<station_group_id>/station/<station_id>/delete',
-                 view_func=station_group.station_create, methods=['POST'])
+                 view_func=station_group.station_delete, methods=['POST'])
 
 if __name__ == '__main__':
     if os.environ.get('ENV') == 'development':
