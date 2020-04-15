@@ -3,7 +3,7 @@ import functools
 import hashlib
 import os
 import pymysql
-from views import line_detail_view, station_group
+from views import station, line_detail_view, station_group
 from io import StringIO
 from dotenv import load_dotenv
 from flask import Flask, redirect, render_template, request, session, g, abort
@@ -219,60 +219,6 @@ def action_station_update(station_id):
 
 
 @middleware_auth
-def action_station_index():
-    station_id = request.args.get('station_id', '')
-    station_name = request.args.get('station_name', '')
-
-    cur = g.db.cursor()
-
-    params = []
-    where_statement = []
-    if station_id != '':
-        params.append('%{}%'.format(station_id))
-        where_statement.append('s.station_id like %s')
-    if station_name != '':
-        params.append('%{}%'.format(station_name))
-        where_statement.append('s.station_name like %s')
-
-    where_statement_str = '' if len(where_statement) == 0 \
-        else 'where ' + ' and '.join(where_statement)
-
-    sql = '''
-    select s.station_id, s.station_name, ls.line_id, l.line_name
-    from station s
-    left join line_station ls
-        on ls.station_id = s.station_id
-    left join line l
-        on l.line_id = ls.line_id
-    {} limit 30
-    '''.format(where_statement_str)
-
-    cur.execute(sql, tuple(params))
-    db_stations = cur.fetchall()
-
-    stations = {}
-    for station in db_stations:
-        if station['station_id'] not in stations:
-            stations[station['station_id']] = {
-                'station_id': station['station_id'],
-                'station_name': station['station_name'],
-                'station_detail_url': '/station/{}'.format(station['station_id']),
-                'line_add_url': '/station/{}/line'.format(station['station_id']),
-                'lines': [],
-            }
-        stations[station['station_id']]['lines'].append({
-            'line_name': station['line_name'],
-            'line_detail_url': '/line/{}'.format(station['line_id'])
-        })
-
-    return render_template(
-        'station.html',
-        stations=stations,
-        search={'station_name': station_name},
-    )
-
-
-@middleware_auth
 def action_station_create():
     cur = g.db.cursor()
     cur.execute('''
@@ -373,7 +319,8 @@ app.add_url_rule('/line', view_func=action_line_index)
 app.add_url_rule('/line/<line_id>', view_func=line_detail_view.LineDetailView.as_view('line_detail'))
 app.add_url_rule('/line/<line_id>/station_add', view_func=action_line_add_station, methods=['POST'])
 app.add_url_rule('/line/<line_id>/station/<station_id>/delete', view_func=action_line_station_delete, methods=['POST'])
-app.add_url_rule('/station', view_func=action_station_index)
+
+app.add_url_rule('/station', view_func=station.index, endpoint='station_index')
 app.add_url_rule('/station/create', view_func=action_station_create)
 app.add_url_rule('/station/create', view_func=action_station_create_post, methods=['POST'])
 app.add_url_rule('/station/bulk-update', view_func=action_station_bulk_update, methods=['POST'])

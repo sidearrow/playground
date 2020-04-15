@@ -1,5 +1,4 @@
 from flask import abort, g, redirect, render_template, request
-from flask.views import View
 
 
 def index():
