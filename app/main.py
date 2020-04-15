@@ -3,7 +3,7 @@ import functools
 import hashlib
 import os
 import pymysql
-from views import line_detail_view
+from views import line_detail_view, station_group
 from io import StringIO
 from dotenv import load_dotenv
 from flask import Flask, redirect, render_template, request, session, g, abort
@@ -379,6 +379,13 @@ app.add_url_rule('/station/create', view_func=action_station_create_post, method
 app.add_url_rule('/station/bulk-update', view_func=action_station_bulk_update, methods=['POST'])
 app.add_url_rule('/station/<station_id>', view_func=action_station_detail)
 app.add_url_rule('/station/<station_id>', view_func=action_station_update, methods=['POST'])
+
+app.add_url_rule('/station-group', view_func=station_group.index, methods=['GET'])
+app.add_url_rule('/station-group/create', view_func=station_group.create, methods=['POST'])
+app.add_url_rule('/station-group/<station_group_id>/station/create',
+                 view_func=station_group.station_create, methods=['POST'])
+app.add_url_rule('/station-group/<station_group_id>/station/<station_id>/delete',
+                 view_func=station_group.station_create, methods=['POST'])
 
 if __name__ == '__main__':
     if os.environ.get('ENV') == 'development':
