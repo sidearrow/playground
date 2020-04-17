@@ -33,6 +33,7 @@
         <th>駅 ID</th>
         <th>駅名</th>
         <th>路線</th>
+        <th>接続駅</th>
       </tr>
     </thead>
     <tbody>
@@ -46,6 +47,18 @@
           {% for line in station['lines'] %}
           <div>
             <a href="{{ line['line_detail_url'] }}">{{ line['line_name'] }}</a>
+          </div>
+          {% endfor %}
+        </td>
+        <td>
+          {% for station_id, station in station['group_stations'].items() %}
+          <div>
+            <a href="/station/{{ station_id }}">{{ station.station_name }}</a>
+            <span>（</span>
+            {% for line in station.lines %}
+            <span>{{ line.line_name }}</span>
+            {% endfor %}
+            <span>）</span>
           </div>
           {% endfor %}
         </td>
