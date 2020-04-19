@@ -20,7 +20,7 @@ def index():
         where station_name like %s
             and ex_s.station_id = sgs.station_id
     )
-    order by sg.station_group_id
+    order by sg.station_group_id desc
     limit 50
     ''', ('%{}%'.format(get_station_name)))
     db_station_groups = cur.fetchall()

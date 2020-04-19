@@ -134,7 +134,7 @@ def action_station_bulk_update():
             update_param = []
             where_param = {}
             for key in row:
-                if key in ['line_id', 'station_id', 'length', 'length_between']:
+                if key in ['line_id', 'station_id', 'op_kilo', 'op_kilo_between']:
                     if key in ['line_id', 'station_id']:
                         where_param[key] = row[key]
                     else:
@@ -146,6 +146,7 @@ def action_station_bulk_update():
             update_param.append(where_param['station_id'])
             cur.execute(sql, tuple(update_param))
     except Exception as e:
+        print(e)
         g.db.rollback()
         session['is_bulk_update_error'] = True
     else:
@@ -299,7 +300,7 @@ def action_line_station_delete(line_id, station_id):
     try:
         cur = g.db.cursor()
         cur.execute('''
-        delete from line_station
+        delete from line_section_station
         where line_id = %s and station_id = %s
         ''', (line_id, station_id))
     except Exception as e:

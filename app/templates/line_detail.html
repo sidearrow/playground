@@ -8,6 +8,7 @@
   <button class="btn btn-sm btn-primary ml-1" data-toggle="modal" data-target="#bulkUpdateModal">一括更新</button>
   <button class="btn btn-sm btn-primary ml-1" data-toggle="modal" data-target="#addStationModal">駅追加</button>
 </div>
+{% for line_section_id, line_section in stations.items() %}
 <div class="table-responsive">
   <table class="table table-sm table-bordered">
     <thead>
@@ -24,7 +25,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for station in stations %}
+      {% for station in line_section %}
       <tr>
         <td class="text-nowrap">
           <a class="btn btn-sm py-0 btn-primary" href="{{ station.station_detail_url }}">編集</a>
@@ -63,6 +64,7 @@
     </tbody>
   </table>
 </div>
+{% endfor %}
 
 <div class="modal fade" id="bulkUpdateModal" {{ 'data-modal-open' if is_bulk_update_error else '' }}>
   <div class="modal-dialog modal-xl">

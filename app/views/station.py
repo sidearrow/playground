@@ -10,25 +10,25 @@ def index():
     where_statement = []
     if station_id != '':
         params.append('%{}%'.format(station_id))
-        where_statement.append('s.station_id like %s')
+        where_statement.append('station_id like %s')
     if station_name != '':
         params.append('%{}%'.format(station_name))
-        where_statement.append('s.station_name like %s')
+        where_statement.append('station_name like %s')
 
     where_statement_str = '' if len(where_statement) == 0 \
         else 'where ' + ' and '.join(where_statement)
 
     sql = '''
-    select s.station_id, s.station_name, ls.line_id,
+    select s.station_id, s.station_name, lss.line_id,
         l.line_name, c.company_name_alias
     from (
         select station_id, station_name
         from station {} limit 20
     ) s
-    left join line_station ls
-        on ls.station_id = s.station_id
+    left join line_section_station lss
+        on lss.station_id = s.station_id
     left join line l
-        on l.line_id = ls.line_id
+        on l.line_id = lss.line_id
     left join company c
         on c.company_id = l.company_id
     '''.format(where_statement_str)
@@ -62,10 +62,10 @@ def index():
         on sgs2.station_group_id = sgs1.station_group_id
     left join station s
         on s.station_id = sgs2.station_id
-    left join line_station ls
-        on ls.station_id = s.station_id
+    left join line_section_station lss
+        on lss.station_id = s.station_id
     left join line l
-        on l.line_id = ls.line_id
+        on l.line_id = lss.line_id
     left join company c
         on c.company_id = s.company_id
     where sgs1.station_id in ({})

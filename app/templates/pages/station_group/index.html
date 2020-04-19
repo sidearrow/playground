@@ -40,7 +40,8 @@
         <div class="mb-2">
           {% for station in station_group %}
           <form method="POST" action="/station-group/{{ station_group_id }}/station/{{ station.station_id }}/delete"
-            data-confirm-form data-confirm-title="削除確認" data-confirm-message="{{ station.station_name }} ({{ station.company_name }}) を削除しますか">
+            data-confirm-form data-confirm-title="削除確認"
+            data-confirm-message="{{ station.station_name }} ({{ station.company_name }}) を削除しますか">
             <div class="mb-1">
               <input type="hidden" name="redirect_url" value="{{ request.url }}">
               <button type="submit" class="btn btn-sm py-0 btn-outline-danger mr-1">削除</button>
@@ -58,9 +59,9 @@
             </div>
           </div>
         </form>
-        {% endfor %}
       </div>
     </div>
   </div>
+  {% endfor %}
 </div>
 {% endblock %}

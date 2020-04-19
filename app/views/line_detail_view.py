@@ -19,23 +19,26 @@ class LineDetailView(View):
         }
 
         cur.execute('''
-        select ls.sort_no, ls.op_kilo, ls.op_kilo_between, ls.real_kilo, ls.real_kilo_between,
+        select lss.section_id, lss.sort_no, lss.op_kilo,
+            lss.op_kilo_between, lss.real_kilo, lss.real_kilo_between,
             s.station_id, s.station_name, s.station_name_kana
-        from line_station ls
+        from line_section_station lss
         left join station s
-            on s.station_id = ls.station_id
-        where ls.line_id = %s
+            on s.station_id = lss.station_id
+        where lss.line_id = %s
         ''', (line_id))
         db_data = cur.fetchall()
 
-        view_stations = []
+        view_stations = {}
         view_station_id_name_tsv = 'line_id\tstation_id\tstation_name\n'
         max_sort_no = 0
         for row in db_data:
             max_sort_no = max(max_sort_no, row['sort_no'])
             view_station_id_name_tsv += '{}\t{}\t{}\n'.format(
                 line_id, row['station_id'], row['station_name'])
-            view_stations.append({
+            if row['section_id'] not in view_stations:
+                view_stations[row['section_id']] = []
+            view_stations[row['section_id']].append({
                 'station_detail_url': '/station/{}'.format(row['station_id']),
                 'sort_no': row['sort_no'],
                 'station_id': row['station_id'],
