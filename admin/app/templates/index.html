@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div>
+  <div><a href="/line">路線一覧</a></div>
+</div>
+<div class="card mt-3">
+  <div class="card-body">
+    <div>登録駅数： {{ station_cnt }}</div>
+    <div>登録路線数： {{ line_cnt }}</div>
+  </div>
+</div>
+{% endblock %}

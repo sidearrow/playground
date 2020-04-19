@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h5>駅一覧 {{ line.line_name }}</h5>
+<div class="my-3">
+  <button class="btn btn-sm btn-primary" id="copyStationIdNameTsvBtn" data-text="{{ station_id_name_tsv }}">TSV
+    コピー</button>
+  <button class="btn btn-sm btn-primary ml-1" data-toggle="modal" data-target="#bulkUpdateModal">一括更新</button>
+  <button class="btn btn-sm btn-primary ml-1" data-toggle="modal" data-target="#addStationModal">駅追加</button>
+</div>
+{% for line_section_id, line_section in stations.items() %}
+<div class="table-responsive">
+  <table class="table table-sm table-bordered">
+    <thead>
+      <tr class="alert-primary">
+        <th class="text-center align-middle"></th>
+        <th class="text-center align-middle">#</th>
+        <th class="text-center align-middle">駅 ID</th>
+        <th class="text-center align-middle">駅名</th>
+        <th class="text-center align-middle">駅名カナ</th>
+        <th class="text-center align-middle">営業キロ</th>
+        <th class="text-center align-middle">駅間<br />営業キロ</th>
+        <th class="text-center align-middle">実キロ</th>
+        <th class="text-center align-middle">駅間<br />実キロ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for station in line_section %}
+      <tr>
+        <td class="text-nowrap">
+          <a class="btn btn-sm py-0 btn-primary" href="{{ station.station_detail_url }}">編集</a>
+          <button class="btn btn-sm py-0 btn-danger ml-1" data-toggle="modal"
+            data-target="#deleteStationModal_{{ station.station_id }}">削除</button>
+          <div class="modal fade" id="deleteStationModal_{{ station.station_id }}">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <form method="POST" action="{{ station.station_delete_url }}">
+                  <div class="modal-header">
+                    <div class="modal-title">削除確認</div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">{{ station.station_name }}駅を削除しますか。</div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-sm btn-danger">削除</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td class="text-nowrap text-right">{{ station.sort_no }}</td>
+        <td class="text-nowrap text-right">{{ station.station_id }}</td>
+        <td class="text-nowrap">{{ station.station_name }}</td>
+        <td class="text-nowrap">{{ station.station_name_kana }}</td>
+        <td class="text-nowrap text-right">{{ station.length }}</td>
+        <td class="text-nowrap text-right">{{ station.length_between }}</td>
+        <td class="text-nowrap text-right">{{ station.real_kilo }}</td>
+        <td class="text-nowrap text-right">{{ station.real_kilo_between }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+
+<div class="modal fade" id="bulkUpdateModal" {{ 'data-modal-open' if is_bulk_update_error else '' }}>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form method="POST" action="/station/bulk-update">
+        <div class="modal-header">
+          <div class="modal-title">一括更新</div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control" rows="20" name="bulkUpdateData">{{ old.get('bulkUpdateData', '') }}</textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-sm btn-primary">一括更新</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addStationModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form method="POST" action="{{ station_add_url }}">
+        <div class="modal-header">
+          <div class="modal-title">駅追加</div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <div class="form-row">
+              <label>駅ID</label>
+              <input class="form-control form-control-sm" name="station_id" />
+            </div>
+            <div class="form-row">
+              <label>ソート番号</label>
+              <input class="form-control form-control-sm" name="sort_no" value="{{ next_sort_no }}" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-sm btn-primary">更新</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const elCopyStationIdNameTsvBtn = document.getElementById('copyStationIdNameTsvBtn');
+  elCopyStationIdNameTsvBtn.addEventListener('click', function () {
+    navigator.clipboard.writeText(elCopyStationIdNameTsvBtn.getAttribute('data-text'));
+    alert('コピー完了')
+  });
+  $('[data-modal-open]').each(function () {
+    $(this).modal('show')
+  });
+</script>
+{% endblock %}

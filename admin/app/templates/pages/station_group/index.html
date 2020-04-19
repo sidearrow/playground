@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>駅グループ一覧</h1>
+<div class="card">
+  <div class="card-body">
+    <form method="GET" action="/station-group">
+      <div class="row">
+        <div class="form-group col-4">
+          <label>駅名</label>
+          <input type="text" name="station_name" class="form-control form-control-sm" />
+        </div>
+      </div>
+      <div class="col-3">
+        <button type="submit" class="btn btn-sm btn-block btn-primary">検索</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="form-row mt-3">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <form method="POST" action="/station-group/create">
+          <div class="input-group input-group-sm">
+            <input type="hidden" name="redirect_url" value="{{ request.url }}">
+            <input type="text" class="form-control form-control-sm" name="station_id" />
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-sm btn-outline-info">新規作成</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% for station_group_id, station_group in station_groups.items() %}
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-2">
+          {% for station in station_group %}
+          <form method="POST" action="/station-group/{{ station_group_id }}/station/{{ station.station_id }}/delete"
+            data-confirm-form data-confirm-title="削除確認"
+            data-confirm-message="{{ station.station_name }} ({{ station.company_name }}) を削除しますか">
+            <div class="mb-1">
+              <input type="hidden" name="redirect_url" value="{{ request.url }}">
+              <button type="submit" class="btn btn-sm py-0 btn-outline-danger mr-1">削除</button>
+              <span class="align-middle">{{ station.station_name }} ({{ station.company_name }})</span>
+            </div>
+          </form>
+          {% endfor %}
+        </div>
+        <form method="POST" action="/station-group/{{ station_group_id }}/station/create">
+          <div class="input-group input-group-sm">
+            <input type="hidden" name="redirect_url" value="{{ request.url }}">
+            <input type="text" class="form-control form-control-sm" name="station_id" />
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-sm btn-outline-info">追加</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

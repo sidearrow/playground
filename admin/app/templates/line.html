@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>路線一覧</h1>
+<div>
+  {% for lines_group_by_company in lines.values() %}
+  <h5 class="mt-3">{{ lines_group_by_company.company_name }}</h5>
+  <div>
+    {% for line in lines_group_by_company.lines %}
+    <a href="{{ line.line_detail_url }}" class="mr-1 d-inline-block">{{ line.line_name }}</a>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
