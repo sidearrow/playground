@@ -1,7 +1,7 @@
 import * as express from 'express';
 import config, { configInit } from './config';
 import { getConnection } from './database';
-import { Company, Line, LineSection, LineSectionStation } from './entity';
+import { Company, Line } from './entity';
 import 'reflect-metadata';
 
 (async () => {
@@ -16,38 +16,22 @@ import 'reflect-metadata';
     return res.json(companies);
   });
 
-  app.get('/line', async (req, res) => {
-    const lineRepository = connection.getRepository(Line);
-    const data = await lineRepository.find();
-
-    return res.json(data);
-  });
-
   app.get('/line/:lineId', async (req, res) => {
-    const lineRepository = connection.getRepository(Line);
-    const data = await lineRepository.find({ lineId: Number(req.params.lineId) })
-
-    /*
-    const lineSections = await connection.getRepository(LineSection)
-      .createQueryBuilder('line_section')
-      .leftJoinAndSelect('line_section.lineSectionStations', 'line_section_station')
-      .leftJoinAndSelect('line_section_station.station', 'station')
-      .where('line_section_station.line_id = :line_id', { line_id: Number(req.params.lineId) })
-      .getMany();
-      */
-
-    const lineSectionStations = await connection.getRepository(LineSectionStation)
-      .createQueryBuilder('LineSectionStation')
-      .leftJoinAndSelect('LineSectionStation.station', 'Station')
-      .leftJoinAndSelect('Station.stationGroup', 'StationGroupStation')
-      //.leftJoinAndSelect('StationGroupStation.groupStations', 'StationGroupStation')
-      .where('LineSectionStation.lineId = :line_id', { line_id: Number(req.params.lineId) })
-      .getMany();
-
-    return res.json({
-      line: data,
-      sections: lineSectionStations,
+    const lineId = Number(req.params.lineId);
+    const line = await connection.getRepository(Line).find({
+      relations: [
+        'lineSections',
+        'lineSections.lineSectionStations',
+        'lineSections.lineSectionStations.station',
+        'lineSections.lineSectionStations.station.stationGroupStation',
+        'lineSections.lineSectionStations.station.stationGroupStation.stationGroup',
+        'lineSections.lineSectionStations.station.stationGroupStation.stationGroup.stationGroupStations',
+        'lineSections.lineSectionStations.station.stationGroupStation.stationGroup.stationGroupStations.station',
+      ],
+      where: { lineId: lineId },
     });
+
+    return res.json(line);
   });
 
   app.listen(3000);

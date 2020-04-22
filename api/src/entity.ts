@@ -39,7 +39,8 @@ export class Line {
   @Column({ name: 'line_name_kana' })
   lineNameKana: string;
 
-  @OneToMany(type => LineSection, lineSection => lineSection.lineId)
+  @OneToMany(() => LineSection, lineSection => lineSection.line)
+  @JoinColumn({ name: 'line_id' })
   lineSections: LineSection[];
 
   @ManyToOne(type => Company, company => company.lines)
@@ -58,7 +59,11 @@ export class LineSection {
   @Column({ name: 'line_section_name' })
   lineSectionName: string;
 
-  @OneToMany(() => LineSectionStation, lineSectionStation => lineSectionStation.lineId)
+  @ManyToOne(() => Line, line => line.lineSections)
+  @JoinColumn({ name: 'line_id' })
+  line: Line;
+
+  @OneToMany(() => LineSectionStation, lineSectionStation => lineSectionStation.lineSection)
   @JoinColumn([
     { name: 'line_id', referencedColumnName: 'lineId' },
     { name: 'section_id', referencedColumnName: 'sectionId' },
@@ -80,6 +85,13 @@ export class LineSectionStation {
   @Column({ name: 'station_id' })
   stationId: number;
 
+  @ManyToOne(() => LineSection, lineSection => lineSection.lineSectionStations)
+  @JoinColumn([
+    { name: 'line_id', referencedColumnName: 'lineId' },
+    { name: 'section_id', referencedColumnName: 'sectionId' },
+  ])
+  lineSection: LineSection;
+
   @OneToOne(() => Station, station => station.stationId)
   @JoinColumn({ name: 'station_id' })
   station: Station;
@@ -95,7 +107,7 @@ export class Station {
 
   @OneToOne(() => StationGroupStation, stationGroupStation => stationGroupStation.stationId)
   @JoinColumn({ name: 'station_id' })
-  stationGroup: StationGroupStation;
+  stationGroupStation: StationGroupStation;
 }
 
 @Entity()
@@ -110,7 +122,16 @@ export class StationGroupStation {
   @JoinColumn({ name: 'station_id' })
   station: Station;
 
-  @OneToMany(() => StationGroupStation, stationGroupStation => stationGroupStation.stationGroupId)
-  @JoinColumn({ name: 'station_group_id', referencedColumnName: 'station_group_id' })
-  groupStations: StationGroupStation[];
+  @ManyToOne(() => StationGroup, stationGroup => stationGroup.stationGroupId)
+  @JoinColumn({ name: 'station_group_id' })
+  stationGroup: StationGroup;
+}
+
+@Entity()
+export class StationGroup {
+  @PrimaryColumn({ name: 'station_group_id' })
+  stationGroupId: number;
+
+  @OneToMany(() => StationGroupStation, stationGroupStation => stationGroupStation.stationGroup)
+  stationGroupStations: StationGroupStation[];
 }
