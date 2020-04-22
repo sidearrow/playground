@@ -18,7 +18,7 @@ import 'reflect-metadata';
 
   app.get('/line/:lineId', async (req, res) => {
     const lineId = Number(req.params.lineId);
-    const line = await connection.getRepository(Line).find({
+    const line = await connection.getRepository(Line).findOne({
       relations: [
         'lineSections',
         'lineSections.lineSectionStations',

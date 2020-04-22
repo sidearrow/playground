@@ -1,4 +1,4 @@
-import { createConnection, Connection } from 'typeorm';
+import { createConnection } from 'typeorm';
 import config from './config';
 import { Company, Line, LineSection, LineSectionStation, Station, StationGroupStation, StationGroup } from './entity';
 
