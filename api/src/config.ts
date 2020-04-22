@@ -1,21 +1,23 @@
 import * as dotenv from 'dotenv';
 
 const config = {
-  dbHost: null,
-  dbPort: null,
-  dbName: null,
-  dbUser: null,
-  dbPass: null,
+  database: {
+    host: null,
+    port: null,
+    database: null,
+    username: null,
+    password: null,
+  }
 }
 
 export const configInit = () => {
   dotenv.config();
 
-  config.dbHost = process.env.DB_HOST;
-  config.dbPort = process.env.DB_PORT;
-  config.dbName = process.env.DB_NAME;
-  config.dbUser = process.env.DB_USER;
-  config.dbPass = process.env.DB_PASS;
+  config.database.host = process.env.DB_HOST;
+  config.database.port = process.env.DB_PORT;
+  config.database.database = process.env.DB_NAME;
+  config.database.username = process.env.DB_USER;
+  config.database.password = process.env.DB_PASS;
 }
 
 export default config;
