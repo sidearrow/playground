@@ -1,20 +1,21 @@
 import * as React from 'react';
 import Layout from '../components/Layout';
-import { ApiResponceType } from '../ApiResponceType';
+import { ApiResponceType } from '../ApiResponseType';
 import Table from '../components/DataTable/DataTable';
 
 const Component: React.FC<{
   pageContext: {
     companies: ApiResponceType.Company[];
-  }
+  };
 }> = ({ pageContext: { companies } }) => {
   const tableData = companies.map(company => [
-    company.companyName, company.length.toFixed(1)
+    company.companyName,
+    company.length.toFixed(1),
   ]);
 
   const cells = [
-    (v: string | number | null) => (<td>{v}</td>),
-    (v: string | number | null) => (<td className='text-right'>{v}</td>),
+    (v: string | number | null) => <td>{v}</td>,
+    (v: string | number | null) => <td className="text-right">{v}</td>,
   ];
 
   return (
@@ -23,10 +24,7 @@ const Component: React.FC<{
       <Table
         data={tableData}
         cells={cells}
-        headers={[
-          { text: '事業者名' },
-          { text: '営業キロ', isSort: true },
-        ]}
+        headers={[{ text: '事業者名' }, { text: '営業キロ', isSort: true }]}
         defaultSort={{
           index: 1,
           isAsc: false,

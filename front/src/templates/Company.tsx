@@ -11,7 +11,7 @@ type Company = {
 const Component: React.FC<{
   pageContext: {
     companies: Company[];
-  }
+  };
 }> = ({ pageContext: { companies } }) => {
   const companiesGroupByType: { [key: string]: Company[] } = {};
   companies.forEach(company => {
@@ -22,14 +22,24 @@ const Component: React.FC<{
   });
 
   return (
-    <Layout title='事業者一覧'>{Object.keys(companiesGroupByType).map(type => (
-      <div>
-        <h1>{type}</h1>
-        <div>{companiesGroupByType[type].map(company => (
-          <Link to={'company/' + company.companyCode} className="d-inline-block" style={{ marginRight: '1rem' }}>{company.companyName}</Link>
-        ))}</div>
-      </div>
-    ))}</Layout>
+    <Layout title="事業者一覧">
+      {Object.keys(companiesGroupByType).map(type => (
+        <div>
+          <h1>{type}</h1>
+          <div>
+            {companiesGroupByType[type].map(company => (
+              <Link
+                to={'company/' + company.companyCode}
+                className="d-inline-block"
+                style={{ marginRight: '1rem' }}
+              >
+                {company.companyName}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
+    </Layout>
   );
 };
 

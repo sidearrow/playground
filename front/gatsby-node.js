@@ -5,4 +5,4 @@ require('ts-node').register({
   },
 })
 
-exports.createPages = require('./src/gatsbyNode/index').createPages
+exports.createPages = require('./src/gatsby-node/index').createPages
