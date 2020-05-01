@@ -4,7 +4,8 @@
     "target": "ESNext",
     "strict": true,
     "noImplicitAny": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "jsx": "react"
   },
   "include": [
     "./src/**/*"
