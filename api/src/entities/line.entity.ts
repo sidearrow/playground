@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Company } from './company.entity';
+import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn, ManyToOne } from "typeorm";
+import { LineSection } from "./line-section.entity";
+import { Company } from "./company.entity";
 
 @Entity()
 export class Line {
@@ -21,11 +22,9 @@ export class Line {
   @Column({ name: 'line_name_kana' })
   lineNameKana: string;
 
-  /*
   @OneToMany(() => LineSection, lineSection => lineSection.line)
   @JoinColumn({ name: 'line_id' })
   lineSections: LineSection[];
-  */
 
   @ManyToOne(type => Company, company => company.lines)
   @JoinColumn({ name: 'company_id' })

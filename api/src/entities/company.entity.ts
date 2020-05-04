@@ -1,5 +1,5 @@
-import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn } from 'typeorm'
-import { Line } from './line.entity';
+import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn } from "typeorm";
+import { Line } from "./line.entity";
 
 @Entity()
 export class Company {
