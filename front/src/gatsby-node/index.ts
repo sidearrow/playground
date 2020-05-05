@@ -4,7 +4,7 @@ import { GatsbyNode } from 'gatsby';
 import { getDatabaseConnection } from '../database/database-connection';
 import { lineCreatePage } from './create-page/line.create-page';
 import {
-  getAllLineCode,
+  getAllLineId,
   lineDetailCreatePage,
 } from './create-page/line-detail.create-page';
 
@@ -16,9 +16,9 @@ export const createPages: GatsbyNode['createPages'] = async ({
 
   await lineCreatePage(databaseConnection, actions);
 
-  const lineCodes = await getAllLineCode(databaseConnection);
-  for (const lineCode of lineCodes) {
-    await lineDetailCreatePage(databaseConnection, actions, lineCode);
+  const lineIdList = await getAllLineId(databaseConnection);
+  for (const lineId of lineIdList) {
+    await lineDetailCreatePage(databaseConnection, actions, lineId);
   }
 
   (async () => {

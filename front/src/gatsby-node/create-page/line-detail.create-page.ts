@@ -18,7 +18,7 @@ export type LineDetailPageData = {
 export const lineDetailCreatePage = async (
   connection: Connection,
   { createPage }: Actions,
-  lineCode: string
+  lineId: string
 ) => {
   const records = await connection.getRepository(Line).findOne({
     relations: [
@@ -26,7 +26,7 @@ export const lineDetailCreatePage = async (
       'lineSections.lineSectionStations',
       'lineSections.lineSectionStations.station',
     ],
-    where: { lineCode: lineCode },
+    where: { lineId: lineId },
   });
 
   if (records === undefined) {
@@ -49,20 +49,20 @@ export const lineDetailCreatePage = async (
   };
 
   createPage({
-    path: `line/${lineCode}`,
+    path: `line/${records.lineCode}`,
     component: path.resolve('src/templates/line-detail.template.tsx'),
     context: {
-      pageData: 'aaa',
+      pageData: pageData,
     },
   });
 };
 
-export const getAllLineCode = async (
+export const getAllLineId = async (
   connection: Connection
 ): Promise<string[]> => {
-  const dbData: { line_code: string }[] = await connection.query(
-    'select line_code from line'
+  const dbData: { line_id: string }[] = await connection.query(
+    'select line_id from line'
   );
 
-  return dbData.map((row) => row.line_code);
+  return dbData.map((row) => row.line_id);
 };
