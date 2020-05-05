@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import path from 'path';
 import { GatsbyNode } from 'gatsby';
 import { getDatabaseConnection } from '../database/database-connection';
-import CompanyCreatePage from './create-page/company.create-page';
+import { lineCreatePage } from './create-page/line.create-page';
 
 export const createPages: GatsbyNode['createPages'] = async ({
   actions,
@@ -10,7 +10,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
 }) => {
   const databaseConnection = await getDatabaseConnection();
 
-  await CompanyCreatePage(databaseConnection, actions);
+  await lineCreatePage(databaseConnection, actions);
 
   (async () => {
     type AllMarkdown = {

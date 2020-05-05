@@ -12,6 +12,9 @@ import {
   Zoom,
   Fab,
   useScrollTrigger,
+  CssBaseline,
+  ThemeProvider,
+  createMuiTheme,
 } from '@material-ui/core';
 import { Menu, KeyboardArrowUp } from '@material-ui/icons';
 
@@ -40,13 +43,16 @@ const CmpScrollTop: React.FC = ({ children }) => {
   );
 };
 
+const theme = createMuiTheme({});
+
 const CmpLayout: React.FC<{
   title?: string;
   description?: string;
   keywords?: string[];
 }> = (props) => {
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Helmet>
         <meta charSet="utf-8" />
         <title>{props.title ? `${props.title} | 鉄道事典` : '鉄道事典'}</title>
@@ -58,7 +64,7 @@ const CmpLayout: React.FC<{
         />
         <meta name="theme-color" content="#ffffff" />
       </Helmet>
-      <AppBar>
+      <AppBar color="white">
         <Toolbar>
           <IconButton edge="start" color="inherit">
             <Menu />
@@ -78,7 +84,7 @@ const CmpLayout: React.FC<{
         </CmpScrollTop>
       </main>
       <footer></footer>
-    </>
+    </ThemeProvider>
   );
 };
 

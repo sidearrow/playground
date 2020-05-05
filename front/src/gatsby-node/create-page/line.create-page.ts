@@ -3,7 +3,7 @@ import { Company } from '../../database/entities/company.entity';
 import { Connection } from 'typeorm';
 import { Actions } from 'gatsby';
 
-export type CompanyPageData = {
+export type LinePageData = {
   companyName: string;
   companyCode: string;
   lines: {
@@ -12,7 +12,7 @@ export type CompanyPageData = {
   }[];
 }[];
 
-const CompanyCreatePage = async (
+export const lineCreatePage = async (
   connection: Connection,
   { createPage }: Actions
 ): Promise<void> => {
@@ -20,7 +20,7 @@ const CompanyCreatePage = async (
     .getRepository(Company)
     .find({ relations: ['lines'] });
 
-  const companyPageData: CompanyPageData = records.map((row) => {
+  const linePageData: LinePageData = records.map((row) => {
     return {
       companyName: row.companyNameAlias,
       companyCode: row.companyCode,
@@ -34,12 +34,10 @@ const CompanyCreatePage = async (
   });
 
   createPage({
-    path: 'company',
-    component: path.resolve('src/templates/company.template.tsx'),
+    path: 'line',
+    component: path.resolve('src/templates/line.template.tsx'),
     context: {
-      pageData: companyPageData,
+      pageData: linePageData,
     },
   });
 };
-
-export default CompanyCreatePage;
