@@ -2,6 +2,7 @@
   "name": "railway-dictionary-front",
   "dependencies": {
     "@material-ui/core": "^4.9.12",
+    "@types/node": "^13.13.4",
     "@types/react-helmet": "^5.0.15",
     "axios": "^0.19.2",
     "gatsby": "^2.19.7",
@@ -15,13 +16,16 @@
     "gatsby-source-filesystem": "^2.1.46",
     "gatsby-transformer-remark": "^2.6.58",
     "gatsby-transformer-sharp": "^2.3.13",
-    "node-sass": "^4.13.1",
+    "mysql": "^2.18.1",
+    "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
+    "reflect-metadata": "^0.1.13",
     "ts-node": "^8.6.2",
+    "typeorm": "^0.2.24",
     "typescript": "^3.8.3"
   },
   "devDependencies": {

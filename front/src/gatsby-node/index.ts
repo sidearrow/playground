@@ -1,9 +1,8 @@
-import axios from 'axios';
-import { GatsbyNode } from 'gatsby';
+import 'reflect-metadata';
 import path from 'path';
-import { ApiResponceType } from '../ApiResponseType';
-
-axios.defaults.baseURL = 'http://localhost:5000';
+import { GatsbyNode } from 'gatsby';
+import { getConnection } from './database-connection';
+import { Company } from './database-entities/company.entity';
 
 export const createPages: GatsbyNode['createPages'] = async ({
   actions: { createPage },
@@ -49,10 +48,14 @@ export const createPages: GatsbyNode['createPages'] = async ({
     });
   })();
 
-  const companiesData: { data: ApiResponceType.Company[] } = await axios.get(
-    'company'
-  );
+  const connection = await getConnection();
+  const companyData = await connection
+    .getRepository(Company)
+    .find({ relations: ['lines'] });
 
+  console.log(companyData);
+
+  /*
   createPage({
     path: 'company',
     component: path.resolve('src/templates/Company.tsx'),
@@ -60,6 +63,9 @@ export const createPages: GatsbyNode['createPages'] = async ({
       companies: companiesData.data,
     },
   });
+  */
+
+  /*
   createPage({
     path: 'eigyo-kilo',
     component: path.resolve('src/templates/EigyoKilo.tsx'),
@@ -93,4 +99,5 @@ export const createPages: GatsbyNode['createPages'] = async ({
       }
     } catch { }
   }
+  */
 };
