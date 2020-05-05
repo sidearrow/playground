@@ -3,8 +3,6 @@ module.exports = {
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-typescript',
     'gatsby-plugin-sass',
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
     {
       resolve: 'gatsby-plugin-manifest',
       options: {

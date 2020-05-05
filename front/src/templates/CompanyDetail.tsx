@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import Layout from '../components/Layout';
+import Layout from '../components/layout.component';
 import { ApiResponceType } from '../ApiResponseType';
 
 const Component: React.FC<{
@@ -14,7 +14,7 @@ const Component: React.FC<{
         <Link to="company">事業者一覧</Link>
       </span>
       <h1>{company.companyName}</h1>
-      {company.lines.map(line => (
+      {company.lines.map((line) => (
         <Link
           className="d-inline-block"
           style={{ marginRight: '0.5rem' }}

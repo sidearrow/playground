@@ -1,13 +1,17 @@
 import 'reflect-metadata';
 import path from 'path';
 import { GatsbyNode } from 'gatsby';
-import { getConnection } from './database-connection';
-import { Company } from './database-entities/company.entity';
+import { getDatabaseConnection } from '../database/database-connection';
+import CompanyCreatePage from './create-page/company.create-page';
 
 export const createPages: GatsbyNode['createPages'] = async ({
-  actions: { createPage },
+  actions,
   graphql,
 }) => {
+  const databaseConnection = await getDatabaseConnection();
+
+  await CompanyCreatePage(databaseConnection, actions);
+
   (async () => {
     type AllMarkdown = {
       allMarkdownRemark: {
@@ -40,30 +44,13 @@ export const createPages: GatsbyNode['createPages'] = async ({
     }
 
     allMarkdown.data.allMarkdownRemark.edges.forEach(({ node }) => {
-      createPage({
+      actions.createPage({
         path: node.frontmatter.path,
         component: path.resolve('src/templates/Markdown.tsx'),
         context: {},
       });
     });
   })();
-
-  const connection = await getConnection();
-  const companyData = await connection
-    .getRepository(Company)
-    .find({ relations: ['lines'] });
-
-  console.log(companyData);
-
-  /*
-  createPage({
-    path: 'company',
-    component: path.resolve('src/templates/Company.tsx'),
-    context: {
-      companies: companiesData.data,
-    },
-  });
-  */
 
   /*
   createPage({

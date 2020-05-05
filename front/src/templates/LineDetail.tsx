@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import Layout from '../components/Layout';
+import Layout from '../components/layout.component';
 import { ApiResponceType } from '../ApiResponseType';
 
 const Component: React.FC<{
@@ -9,11 +9,11 @@ const Component: React.FC<{
   };
 }> = ({ pageContext: { lineDetail } }) => {
   const hasBranch =
-    lineDetail.stations.findIndex(v => v.branchLineName !== null) !== -1;
+    lineDetail.stations.findIndex((v) => v.branchLineName !== null) !== -1;
 
   const [isShowAbolish, setIsShowAbolish] = React.useState(false);
   const stations = React.useMemo(() => {
-    return lineDetail.stations.filter(station => {
+    return lineDetail.stations.filter((station) => {
       if (isShowAbolish) {
         return true;
       }
@@ -115,7 +115,7 @@ const Component: React.FC<{
                     {station.status === 0 ? '' : '○'}
                   </td>
                   <td>
-                    {station.connectLines.map(line => (
+                    {station.connectLines.map((line) => (
                       <div>
                         <Link to={'line/' + line.lineCode}>
                           {line.lineName}

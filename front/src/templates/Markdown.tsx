@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Layout from '../components/Layout';
+import Layout from '../components/layout.component';
 import { graphql } from 'gatsby';
 
 type Data = {
@@ -33,4 +33,4 @@ export const pageQuery = graphql`
       }
     }
   }
-`
+`;

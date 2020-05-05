@@ -1,7 +1,7 @@
 import path from 'path';
 import { createConnection } from 'typeorm';
 
-export const getConnection = async () => {
+export const getDatabaseConnection = async () => {
   return await createConnection({
     type: 'mysql',
     host: process.env.GATSBY_DB_HOST || 'localhost',
@@ -9,7 +9,7 @@ export const getConnection = async () => {
     username: process.env.GATSBY_DB_USER || 'railway',
     password: process.env.GATSBY_DB_PASS || 'railway',
     database: process.env.GATSBY_DB_NAME || 'railpedia_test',
-    entities: [path.join(__dirname, 'database-entities/*.entity.ts')],
+    entities: [path.join(__dirname, 'entities/*.entity.ts')],
     synchronize: false,
   });
 };

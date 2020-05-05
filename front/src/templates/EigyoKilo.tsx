@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Layout from '../components/Layout';
+import Layout from '../components/layout.component';
 import { ApiResponceType } from '../ApiResponseType';
 import Table from '../components/DataTable/DataTable';
 
@@ -8,7 +8,7 @@ const Component: React.FC<{
     companies: ApiResponceType.Company[];
   };
 }> = ({ pageContext: { companies } }) => {
-  const tableData = companies.map(company => [
+  const tableData = companies.map((company) => [
     company.companyName,
     company.length.toFixed(1),
   ]);

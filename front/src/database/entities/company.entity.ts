@@ -15,10 +15,7 @@ export class Company {
   @Column({ name: 'company_name_alias' })
   companyNameAlias: string;
 
-  @OneToMany(
-    type => Line,
-    line => line.company
-  )
+  @OneToMany((type) => Line, (line) => line.company)
   @JoinColumn({ name: 'company_id' })
   lines: Line[];
 }
