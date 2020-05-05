@@ -3,6 +3,10 @@ import path from 'path';
 import { GatsbyNode } from 'gatsby';
 import { getDatabaseConnection } from '../database/database-connection';
 import { lineCreatePage } from './create-page/line.create-page';
+import {
+  getAllLineCode,
+  lineDetailCreatePage,
+} from './create-page/line-detail.create-page';
 
 export const createPages: GatsbyNode['createPages'] = async ({
   actions,
@@ -11,6 +15,11 @@ export const createPages: GatsbyNode['createPages'] = async ({
   const databaseConnection = await getDatabaseConnection();
 
   await lineCreatePage(databaseConnection, actions);
+
+  const lineCodes = await getAllLineCode(databaseConnection);
+  for (const lineCode of lineCodes) {
+    await lineDetailCreatePage(databaseConnection, actions, lineCode);
+  }
 
   (async () => {
     type AllMarkdown = {

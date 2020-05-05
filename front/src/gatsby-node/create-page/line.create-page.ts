@@ -1,7 +1,6 @@
 import path from 'path';
 import { Company } from '../../database/entities/company.entity';
-import { Connection } from 'typeorm';
-import { Actions } from 'gatsby';
+import { InterfaceCreatePageFunc } from './interface.create-page';
 
 export type LinePageData = {
   companyName: string;
@@ -12,10 +11,10 @@ export type LinePageData = {
   }[];
 }[];
 
-export const lineCreatePage = async (
-  connection: Connection,
-  { createPage }: Actions
-): Promise<void> => {
+export const lineCreatePage: InterfaceCreatePageFunc = async (
+  connection,
+  { createPage }
+) => {
   const records = await connection
     .getRepository(Company)
     .find({ relations: ['lines'] });

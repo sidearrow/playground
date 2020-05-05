@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'gatsby';
 import Layout from '../components/layout.component';
 import { LinePageData } from '../gatsby-node/create-page/line.create-page';
-import { Box } from '@material-ui/core';
 
 const Component: React.FC<{ pageContext: { pageData: LinePageData } }> = ({
   pageContext: { pageData },
@@ -14,9 +13,13 @@ const Component: React.FC<{ pageContext: { pageData: LinePageData } }> = ({
         <div key={i}>
           <h2>{company.companyName}</h2>
           {company.lines.map((line, i) => (
-            <Box display="inline-block" key={i} marginRight={1}>
-              <Link to={'/line/' + line.lineCode}>{line.lineName}</Link>
-            </Box>
+            <Link
+              to={'/line/' + line.lineCode}
+              key={i}
+              className="mr-1 d-inline-block"
+            >
+              {line.lineName}
+            </Link>
           ))}
         </div>
       ))}

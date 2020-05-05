@@ -3,47 +3,6 @@ import { Link } from 'gatsby';
 import { Helmet } from 'react-helmet';
 
 import '../assets/scss/style.scss';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Container,
-  Zoom,
-  Fab,
-  useScrollTrigger,
-  CssBaseline,
-  ThemeProvider,
-  createMuiTheme,
-} from '@material-ui/core';
-import { Menu, KeyboardArrowUp } from '@material-ui/icons';
-
-const CmpScrollTop: React.FC = ({ children }) => {
-  const trigger = useScrollTrigger({
-    target: window,
-    disableHysteresis: true,
-    threshold: 100,
-  });
-
-  const handleClick = () => {
-    document
-      .getElementById('back-to-top-anchor')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  return (
-    <Zoom in={trigger}>
-      <div
-        onClick={handleClick}
-        style={{ position: 'fixed', bottom: '10px', right: '10px' }}
-      >
-        {children}
-      </div>
-    </Zoom>
-  );
-};
-
-const theme = createMuiTheme({});
 
 const CmpLayout: React.FC<{
   title?: string;
@@ -51,8 +10,7 @@ const CmpLayout: React.FC<{
   keywords?: string[];
 }> = (props) => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <>
       <Helmet>
         <meta charSet="utf-8" />
         <title>{props.title ? `${props.title} | 鉄道事典` : '鉄道事典'}</title>
@@ -64,27 +22,20 @@ const CmpLayout: React.FC<{
         />
         <meta name="theme-color" content="#ffffff" />
       </Helmet>
-      <AppBar color="white">
-        <Toolbar>
-          <IconButton edge="start" color="inherit">
-            <Menu />
-          </IconButton>
-          <Typography variant="h6">鉄道統計情報</Typography>
-        </Toolbar>
-      </AppBar>
-      <main>
-        <Toolbar id="back-to-top-anchor" />
-        <Container maxWidth="md">
-          <div>{props.children}</div>
-        </Container>
-        <CmpScrollTop>
-          <Fab color="secondary" size="small">
-            <KeyboardArrowUp />
-          </Fab>
-        </CmpScrollTop>
+      <header>
+        <nav className="navbar shadow">
+          <div className="container">
+            <Link to="/" className="navbar-brand">
+              鉄道統計情報
+            </Link>
+          </div>
+        </nav>
+      </header>
+      <main className="my-5">
+        <div className="container">{props.children}</div>
       </main>
       <footer></footer>
-    </ThemeProvider>
+    </>
   );
 };
 
