@@ -1,32 +1,20 @@
 {
-  "name": "railway-dictionary-front",
-  "version": "1.0.0",
+  "name": "railway-statistics-front",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "gatsby build",
-    "dev": "gatsby develop",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/**"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
-    "bootstrap": "^4.4.1",
-    "gatsby": "^2.21.11",
-    "gatsby-plugin-manifest": "^2.4.1",
-    "gatsby-plugin-offline": "^3.2.0",
-    "gatsby-plugin-react-helmet": "^3.3.0",
-    "gatsby-plugin-sass": "^2.3.0",
-    "gatsby-plugin-typescript": "^2.4.0",
-    "gatsby-source-filesystem": "^2.3.0",
-    "gatsby-transformer-remark": "^2.8.5",
-    "node-sass": "^4.14.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-helmet": "^6.0.0"
+    "next": "9.3.6",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
   },
   "devDependencies": {
-    "@types/node": "^13.13.1",
-    "@types/react-helmet": "^5.0.15",
+    "@types/node": "^13.13.5",
+    "@types/react": "^16.9.34",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
     "eslint-config-prettier": "^6.11.0",
@@ -34,7 +22,6 @@
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-react": "^7.19.0",
     "prettier": "^2.0.5",
-    "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
   }
 }
