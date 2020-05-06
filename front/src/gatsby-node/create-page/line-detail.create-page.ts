@@ -11,6 +11,12 @@ export type LineDetailPageData = {
     lineSectionName: string;
     stations: {
       stationName: string;
+      /*
+      groupStations: {
+        stationName: string;
+        companyName: string;
+      }[];
+      */
     }[];
   }[];
 };
@@ -20,23 +26,28 @@ export const lineDetailCreatePage = async (
   { createPage }: Actions,
   lineId: string
 ) => {
-  const records = await connection.getRepository(Line).findOne({
+  const line = await connection.getRepository(Line).findOne({
     relations: [
+      'company',
       'lineSections',
       'lineSections.lineSectionStations',
       'lineSections.lineSectionStations.station',
+      'lineSections.lineSectionStations.station.stationGroupStation',
+      'lineSections.lineSectionStations.station.stationGroupStation.stationGroup',
+      'lineSections.lineSectionStations.station.stationGroupStation.stationGroup.stationGroupStations',
+      'lineSections.lineSectionStations.station.stationGroupStation.stationGroup.stationGroupStations.station',
     ],
     where: { lineId: lineId },
   });
 
-  if (records === undefined) {
+  if (line === undefined) {
     return;
   }
 
   const pageData: LineDetailPageData = {
-    lineName: records.lineName,
-    companyName: '',
-    lineSections: records.lineSections.map((lineSection) => {
+    lineName: line.lineName,
+    companyName: line.company.companyName,
+    lineSections: line.lineSections.map((lineSection) => {
       return {
         lineSectionName: lineSection.lineSectionName,
         stations: lineSection.lineSectionStations.map((v) => {

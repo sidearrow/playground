@@ -13,7 +13,11 @@ const Component: React.FC<{
       ))}
       {pageData.lineSections.map((line, i) => (
         <table key={i} className="table table-sm table-bordered">
-          <thead></thead>
+          <thead>
+            <tr className="alert-info">
+              <th>駅名</th>
+            </tr>
+          </thead>
           <tbody>
             {line.stations.map((station, i) => (
               <tr key={i}>

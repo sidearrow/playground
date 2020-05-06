@@ -1,5 +1,6 @@
 {
   "name": "railway-dictionary-front",
+  "version": "1.0.0",
   "scripts": {
     "build": "gatsby build",
     "dev": "gatsby develop",
@@ -18,18 +19,13 @@
     "gatsby-plugin-typescript": "^2.4.0",
     "gatsby-source-filesystem": "^2.3.0",
     "gatsby-transformer-remark": "^2.8.5",
-    "mysql": "^2.18.1",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-helmet": "^6.0.0",
-    "reflect-metadata": "^0.1.13",
-    "ts-node": "^8.10.1",
-    "typeorm": "^0.2.24",
-    "typescript": "^3.8.3"
+    "react-helmet": "^6.0.0"
   },
   "devDependencies": {
-    "@types/mysql": "^2.15.10",
+    "@types/node": "^13.13.1",
     "@types/react-helmet": "^5.0.15",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
@@ -37,6 +33,8 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-react": "^7.19.0",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3"
   }
 }
