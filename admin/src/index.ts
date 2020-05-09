@@ -1,25 +1,25 @@
-import express from 'express';
-import config, { configInit } from './config';
-import { getConnection } from './database';
 import 'reflect-metadata';
-import { Company } from './entities/company.entity';
-import { Line } from './entities/line.entity';
+import express from 'express';
+import path from 'path';
+import { useExpressServer } from 'routing-controllers';
+import { ApiCompanyController } from './controllers/api/company.controller';
 
-(async () => {
-  configInit();
+const app = express();
 
-  const connection = await getConnection();
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'tsx');
+app.engine('tsx', require('express-react-views').createEngine());
 
-  const app = express();
+useExpressServer(app, {
+  controllers: [ApiCompanyController],
+  //controllers: [path.join(__dirname, 'controllers/**/*.ts')],
+});
 
-  app.get('/company', async (_, res) => {
-    const companies = await connection.getRepository(Company).find();
-
-    return res.json(companies);
-  });
-
+/*
   app.get('/line', async (_, res) => {
-    const lines = await connection.getRepository(Line).find({ relations: ['company'] });
+    const lines = await connection
+      .getRepository(Line)
+      .find({ relations: ['company'] });
 
     return res.json(lines);
   });
@@ -47,6 +47,6 @@ import { Line } from './entities/line.entity';
 
     return res.json(line);
   });
+  */
 
-  app.listen(5000);
-})();
+app.listen(5000);
