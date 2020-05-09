@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "export": "next export",
+    "deploy": "netlify deploy --prod --dir=out"
   },
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
