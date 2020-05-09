@@ -54,16 +54,25 @@ const Component: React.FC<Props> = ({ companies, lines }) => {
           </div>
         </div>
       </section>
-      {viewLines.map((line, i) => (
-        <div>
-          <Link href={`/line/${line.lineCode}`}>
-            <a>{line.lineNameAlias}</a>
-          </Link>
-          <span className="ml-2">
-            <CmpBadge color={line.company.corporateColor}>{line.company.companyNameAlias}</CmpBadge>
-          </span>
-        </div>
-      ))}
+      <div className="form-row">
+        {viewLines.map((line, i) => (
+          <div className="col-md-4 col-6 mb-2">
+            <span className="mr-3">
+              <Link href={`/line/${line.lineCode}`}>
+                <a>{line.lineNameAlias}</a>
+              </Link>
+            </span>
+            <span className="mr-1">
+              <CmpBadge color={line.company.corporateColor}>{line.company.companyNameAlias}</CmpBadge>
+            </span>
+            {line.statusId === 2 && (
+              <span>
+                <span className="badge badge-secondary font-weight-normal">廃線</span>
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
     </CmpLayout>
   );
 };

@@ -8,6 +8,7 @@ export type LineEntiry = {
   lineName: string;
   lineNameAlias: string;
   lineNameKana: string;
+  statusId: number;
 
   company: CompanyEntity;
   lineSections: LineSectionEntity[];
