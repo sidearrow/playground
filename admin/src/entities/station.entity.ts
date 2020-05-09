@@ -19,6 +19,9 @@ export class Station {
   @Column({ name: 'station_name' })
   stationName: string;
 
+  @Column({ name: 'station_name_kana' })
+  stationNameKana: string;
+
   @OneToOne(
     () => StationGroupStation,
     (stationGroupStation) => stationGroupStation.stationId

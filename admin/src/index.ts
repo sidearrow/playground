@@ -24,27 +24,26 @@ import { Line } from './entities/line.entity';
     return res.json(lines);
   });
 
-  app.get('/line/:lineId', async (req, res) => {
-    const lineId = Number(req.params.lineId);
+  app.get('/line/:lineCode', async (req, res) => {
+    const lineCode = req.params.lineCode;
     const line = await connection.getRepository(Line).findOne({
       relations: [
         'company',
         'lineSections',
         'lineSections.lineSectionLineStations',
-        'lineSections.lineSectionLineStations.lineStation',
-        'lineSections.lineSectionLineStations.lineStation.station',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations.line',
-        'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station.company',
+        'lineSections.lineSectionLineStations.station',
+        'lineSections.lineSectionLineStations.station.lineStations',
+        'lineSections.lineSectionLineStations.station.lineStations.line',
+        'lineSections.lineSectionLineStations.station.stationGroupStation',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations.line',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station.company',
       ],
-      where: { lineId: lineId },
+      where: { lineCode: lineCode },
     });
-
-    console.log(line)
 
     return res.json(line);
   });

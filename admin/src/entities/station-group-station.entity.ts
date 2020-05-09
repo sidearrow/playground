@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, OneToOne, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryColumn, OneToOne, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { StationGroup } from "./station-group.entity";
 import { Station } from "./station.entity";
 
