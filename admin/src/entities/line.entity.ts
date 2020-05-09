@@ -30,6 +30,9 @@ export class Line {
   @Column({ name: 'line_name_kana' })
   lineNameKana: string;
 
+  @Column({ name: 'status_id' })
+  statusId: number;
+
   @OneToMany(() => LineStation, (t) => t.line)
   @JoinColumn({ name: 'line_id' })
   lineStations: LineStation[];
