@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import CmpLayout from '../../components/layout.cmp';
+import { CompanyRepository } from '../../repositories/company.repository';
+import { LineRepository } from '../../repositories/line.repository';
+import CmpBadge from '../../components/badge.cmp';
 
-const Component: React.FC<{ pageData: PageData }> = ({ pageData }) => {
-  const companies = pageData.companies.filter(v => [1, 2].indexOf(v.companyTypeId) !== -1);
-  companies.push({ companyCode: '', companyId: 999, companyNameAlias: 'その他', companyTypeId: 0 });
+type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props'];
+
+const Component: React.FC<Props> = ({ companies, lines }) => {
+  companies = companies.filter(v => [1, 2].indexOf(v.companyTypeId) !== -1);
+  companies.push({ companyCode: '', companyId: 999, companyName: 'その他', companyNameAlias: 'その他', companyTypeId: 0, corporateColor: null });
 
   const targetCompanyIds = companies.map(v => v.companyId);
-  pageData.lines = pageData.lines.map(line => {
+  lines = lines.map(line => {
     if (targetCompanyIds.indexOf(line.companyId) === -1) {
       line.companyId = 999;
     }
     return line;
   });
 
-  const [lines, setLines] = useState(pageData.lines);
+  const [viewLines, setViewLines] = useState(lines);
 
   const handleChangeCompanyIdList = () => {
     const companyIds = [];
@@ -24,14 +28,11 @@ const Component: React.FC<{ pageData: PageData }> = ({ pageData }) => {
     });
 
     if (companyIds.length === 0) {
-      setLines(pageData.lines);
+      setViewLines(lines);
       return;
     }
 
-    const isSelectOther = companyIds.indexOf(999) !== -1;
-    const _lines = pageData.lines.filter(line => companyIds.indexOf(line.companyId) !== -1);
-
-    setLines(_lines);
+    setViewLines(lines.filter(line => companyIds.indexOf(line.companyId) !== -1));
   };
 
   return (
@@ -53,11 +54,14 @@ const Component: React.FC<{ pageData: PageData }> = ({ pageData }) => {
           </div>
         </div>
       </section>
-      {lines.map((line, i) => (
+      {viewLines.map((line, i) => (
         <div>
           <Link href={`/line/${line.lineCode}`}>
             <a>{line.lineNameAlias}</a>
           </Link>
+          <span className="ml-2">
+            <CmpBadge color={line.company.corporateColor}>{line.company.companyNameAlias}</CmpBadge>
+          </span>
         </div>
       ))}
     </CmpLayout>
@@ -66,24 +70,9 @@ const Component: React.FC<{ pageData: PageData }> = ({ pageData }) => {
 
 export default Component;
 
-type PageData = {
-  companies: {
-    companyId: number;
-    companyCode: string;
-    companyNameAlias: string;
-    companyTypeId: number;
-  }[];
-  lines: {
-    lineCode: string;
-    lineNameAlias: string;
-    companyId: number;
-  }[];
-};
-
 export async function getStaticProps() {
-  const companies = (await axios.get('http://localhost:5000/company')).data;
+  const companies = await CompanyRepository.getAll();
+  const lines = await LineRepository.getAll();
 
-  const lines = (await axios.get('http://localhost:5000/line')).data;
-
-  return { props: { pageData: { companies: companies, lines: lines } } };
+  return { props: { companies: companies, lines: lines } };
 }
