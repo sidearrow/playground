@@ -13,9 +13,15 @@ import { Line } from './entities/line.entity';
   const app = express();
 
   app.get('/company', async (_, res) => {
-    const companies = await connection.getRepository(Company).find({ relations: ['lines'] });
+    const companies = await connection.getRepository(Company).find();
 
     return res.json(companies);
+  });
+
+  app.get('/line', async (_, res) => {
+    const lines = await connection.getRepository(Line).find({ relations: ['company'] });
+
+    return res.json(lines);
   });
 
   app.get('/line/:lineId', async (req, res) => {
@@ -34,10 +40,11 @@ import { Line } from './entities/line.entity';
         'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations',
         'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations.line',
         'lineSections.lineSectionLineStations.lineStation.station.stationGroupStation.stationGroup.stationGroupStations.station.company',
-        //'lineSections.lineSectionLineStations.lineStation.station.stationGroup.stationGroupStations',
       ],
       where: { lineId: lineId },
     });
+
+    console.log(line)
 
     return res.json(line);
   });
