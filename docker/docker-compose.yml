@@ -1,0 +1,11 @@
+version: "3.3"
+services:
+  railway-db:
+    image: mysql:5.7
+    volumes:
+      - ./railway-db/data:/var/lib/mysql
+      - ./railway-db/init:/docker-entrypoint-initdb.d
+    ports:
+      - 33060:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
