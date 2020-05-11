@@ -1,15 +1,7 @@
-import { Controller, Get, Render } from 'routing-controllers';
-import { StationGroupRepository } from '../../repositories/station-group.repository';
+import { Controller, Post, BodyParam } from 'routing-controllers';
 
-@Controller('/page/station-group')
+@Controller('/station-group')
 export class StationGroupController {
-  @Get('/')
-  @Render('pages/station-group/index')
-  async index() {
-    const stationGroups = await StationGroupRepository.getAll();
-
-    return {
-      stationGroups: stationGroups,
-    };
-  }
+  @Post('/')
+  async create(@BodyParam('stationId')) { }
 }

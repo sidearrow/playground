@@ -33,7 +33,7 @@ export class Station {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @OneToMany(() => LineStation, t => t.station)
+  @OneToMany(() => LineStation, (t) => t.station)
   @JoinColumn({ name: 'station_id' })
   lineStations: LineStation[];
 }

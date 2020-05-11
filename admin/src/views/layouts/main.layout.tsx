@@ -8,7 +8,7 @@ const MainLayout: React.FC = ({ children }) => (
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       />
     </head>
-    <body>
+    <body style={{ fontSize: '13px' }}>
       <header>
         <nav className="navbar navbar-light shadow">
           <a href="/" className="navbar-brand">
