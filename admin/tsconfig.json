@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ESNext",
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "jsx": "react"
   }
 }

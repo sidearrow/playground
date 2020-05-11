@@ -11,8 +11,7 @@ app.set('view engine', 'tsx');
 app.engine('tsx', require('express-react-views').createEngine());
 
 useExpressServer(app, {
-  controllers: [ApiCompanyController],
-  //controllers: [path.join(__dirname, 'controllers/**/*.ts')],
+  controllers: [path.join(__dirname, 'controllers/**/*.ts')],
 });
 
 /*
