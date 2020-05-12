@@ -35,4 +35,19 @@ export class StationGroupRepository {
       await qr.release();
     }
   }
+
+  public static async find(): Promise<StationGroup[]> {
+    const con = await DB.getConnection();
+
+    const stationGroups = await con.getRepository(StationGroup).find({
+      relations: [
+        'stationGroupStations',
+        'stationGroupStations.station',
+        'stationGroupStations.station.company',
+      ],
+      take: 20,
+    });
+
+    return stationGroups;
+  }
 }

@@ -79,14 +79,14 @@ const Component: React.FC<Props> = ({ stations, search }) => {
                         {station.stationGroupStation === null && (
                           <input
                             type="hidden"
-                            name="stationId"
+                            name="stationId[]"
                             value={station.stationId}
                           />
                         )}
                         <input
                           type="text"
                           className="form-control form-control-sm"
-                          name="stationIdaa[]"
+                          name="stationId[]"
                         />
                         <div className="input-group-append">
                           <button className="btn btn-sm btn-info">追加</button>
