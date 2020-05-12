@@ -42,7 +42,7 @@ export class StationGroupController {
   }
 
   @Post('/add')
-  async _add(
+  async add(
     @Req() req: Request,
     @Res() res: Response,
     @BodyParam('stationGroupId') stationGroupId: string,
@@ -55,13 +55,18 @@ export class StationGroupController {
     return res;
   }
 
-  @Post('/:stationGroupId')
-  async add(
+  @Post('/delete')
+  async delete(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('stationGroupId') stationGroupId: string,
+    @BodyParam('stationGroupId') stationGroupId: string,
     @BodyParam('stationId') stationId: string
   ): Promise<Response> {
+    await StationGroupRepository.delete(
+      Number(stationGroupId),
+      Number(stationId)
+    );
+
     res.redirect(req.headers.referer);
 
     return res;

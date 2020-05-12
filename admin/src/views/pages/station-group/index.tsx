@@ -59,27 +59,63 @@ const CmpEdit: React.FC<{ stationGroup: StationGroup }> = ({
     <div className="card h-100">
       <div className="card-body">
         {stationGroup.stationGroupStations.map((sgs) => (
-          <form method="POST" action="/page/station-group/delete">
-            <div className="mb-1">
-              <input
-                type="hidden"
-                name="stationId"
-                defaultValue={sgs.stationId}
-              />
-              <input
-                type="hidden"
-                name="stationGroupId"
-                defaultValue={sgs.stationGroupId}
-              />
-              <button className="btn btn-sm btn-danger py-0" type="submit">
-                削除
-              </button>
-              <span className="ml-1">{sgs.station.stationName}</span>
-              <span className="ml-1 text-secondary">
-                （{sgs.station.company.companyNameAlias}）
-              </span>
+          <div className="mb-1">
+            <button
+              type="button"
+              className="btn btn-sm btn-danger py-0"
+              data-toggle="modal"
+              data-target={`#stationDeleteModal${sgs.station.stationId}`}
+            >
+              削除
+            </button>
+            <span className="ml-1">{sgs.station.stationName}</span>
+            <span className="ml-1 text-secondary">
+              （{sgs.station.company.companyNameAlias}）
+            </span>
+            <div
+              className="modal fade"
+              id={`stationDeleteModal${sgs.station.stationId}`}
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-body">
+                    <form method="POST" action="/page/station-group/delete">
+                      <input
+                        type="hidden"
+                        name="stationId"
+                        defaultValue={sgs.stationId}
+                      />
+                      <input
+                        type="hidden"
+                        name="stationGroupId"
+                        defaultValue={sgs.stationGroupId}
+                      />
+                      <p>削除確認 {sgs.station.stationName}</p>
+                      <div className="form-row">
+                        <div className="col">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-block btn-outline-secondary"
+                            data-dismiss="modal"
+                          >
+                            キャンセル
+                          </button>
+                        </div>
+                        <div className="col">
+                          <button
+                            type="submit"
+                            className="btn btn-sm btn-block btn-danger"
+                          >
+                            削除
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
-          </form>
+          </div>
         ))}
         <div className="mt-3">
           <form method="POST" action="/page/station-group/add">

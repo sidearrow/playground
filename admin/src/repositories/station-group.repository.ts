@@ -53,6 +53,28 @@ export class StationGroupRepository {
     }
   }
 
+  public static async delete(
+    stationGroupId: number,
+    stationId: number
+  ): Promise<void> {
+    const con = await DB.getConnection();
+    const qr = con.createQueryRunner();
+
+    await qr.startTransaction();
+
+    try {
+      await con.getRepository(StationGroupStation).delete({
+        stationGroupId: stationGroupId,
+        stationId: stationId,
+      });
+      await qr.commitTransaction();
+    } catch (e) {
+      await qr.rollbackTransaction();
+    } finally {
+      await qr.release();
+    }
+  }
+
   public static async find(stationName: string): Promise<StationGroup[]> {
     const con = await DB.getConnection();
 
@@ -70,6 +92,10 @@ export class StationGroupRepository {
           .map((v) => v.stationGroupStation.stationGroupId)
       ),
     ];
+
+    if (stationGroupIds.length === 0) {
+      return [];
+    }
 
     const stationGroups = await con.getRepository(StationGroup).find({
       relations: [
