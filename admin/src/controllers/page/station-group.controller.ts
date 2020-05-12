@@ -5,6 +5,7 @@ import {
   Res,
   Req,
   Param,
+  Body,
 } from 'routing-controllers';
 import { Response, Request } from 'express';
 
@@ -12,10 +13,11 @@ import { Response, Request } from 'express';
 export class StationGroupController {
   @Post('/')
   async create(
+    @BodyParam('stationId') stationId,
     @Req() req: Request,
-    @Res() res: Response,
-    @BodyParam('stationId') stationId: string
+    @Res() res: Response
   ): Promise<Response> {
+    console.log(stationId);
     res.redirect(req.headers.referer);
 
     return res;
@@ -25,7 +27,8 @@ export class StationGroupController {
   async add(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('stationGroupId') stationGroupId: string
+    @Param('stationGroupId') stationGroupId: string,
+    @BodyParam('stationId') stationId: string
   ): Promise<Response> {
     res.redirect(req.headers.referer);
 

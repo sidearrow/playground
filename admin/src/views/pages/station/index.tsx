@@ -36,7 +36,7 @@ const Component: React.FC<Props> = ({ stations, search }) => {
           </div>
         </div>
       </section>
-      <section className="row">
+      <section className="form-row">
         {stations.map((station, i) => {
           const groupStations =
             station.stationGroupStation === null
@@ -76,10 +76,17 @@ const Component: React.FC<Props> = ({ stations, search }) => {
                     <form method="POST" action={stationGroupActionUrl}>
                       <label>グループ駅追加</label>
                       <div className="input-group">
+                        {station.stationGroupStation === null && (
+                          <input
+                            type="hidden"
+                            name="stationId"
+                            value={station.stationId}
+                          />
+                        )}
                         <input
                           type="text"
                           className="form-control form-control-sm"
-                          name="stationId"
+                          name="stationIdaa[]"
                         />
                         <div className="input-group-append">
                           <button className="btn btn-sm btn-info">追加</button>

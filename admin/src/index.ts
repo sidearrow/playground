@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import express from 'express';
 import path from 'path';
 import { useExpressServer } from 'routing-controllers';
-import { ApiCompanyController } from './controllers/api/company.controller';
 
 const app = express();
 
