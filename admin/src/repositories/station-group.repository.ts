@@ -1,10 +1,11 @@
 import { DB } from '../database';
 import { StationGroup } from '../entities/station-group.entity';
 import { StationGroupStation } from '../entities/station-group-station.entity';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { Station } from '../entities/station.entity';
+import { Like, In } from 'typeorm';
 
 export class StationGroupRepository {
-  public static async create(stationIds: number[]): Promise<void> {
+  public static async create(stationId: number): Promise<void> {
     const con = await DB.getConnection();
     const qr = con.createQueryRunner();
 
@@ -15,18 +16,12 @@ export class StationGroupRepository {
         .getRepository(StationGroup)
         .insert({});
 
-      const stationGroupId = stationGroupInsertRes.identifiers[0].id;
+      const stationGroupId = stationGroupInsertRes.raw.insertId;
 
-      const stationGroupStations: QueryDeepPartialEntity<
-        StationGroupStation
-      >[] = stationIds.map((stationId) => {
-        return {
-          stationGroupId: stationGroupId,
-          stationId: stationId,
-        };
+      await con.getRepository(StationGroupStation).insert({
+        stationGroupId: stationGroupId,
+        stationId: stationId,
       });
-
-      await con.getRepository(StationGroupStation).insert(stationGroupStations);
 
       await qr.commitTransaction();
     } catch (e) {
@@ -36,8 +31,45 @@ export class StationGroupRepository {
     }
   }
 
-  public static async find(): Promise<StationGroup[]> {
+  public static async add(
+    stationGroupId: number,
+    stationId: number
+  ): Promise<void> {
     const con = await DB.getConnection();
+    const qr = con.createQueryRunner();
+
+    await qr.startTransaction();
+
+    try {
+      await con.getRepository(StationGroupStation).insert({
+        stationGroupId: stationGroupId,
+        stationId: stationId,
+      });
+      await qr.commitTransaction();
+    } catch (e) {
+      await qr.rollbackTransaction();
+    } finally {
+      await qr.release();
+    }
+  }
+
+  public static async find(stationName: string): Promise<StationGroup[]> {
+    const con = await DB.getConnection();
+
+    const stations = await con.getRepository(Station).find({
+      relations: ['stationGroupStation'],
+      where: {
+        stationName: Like(`%${stationName}%`),
+      },
+    });
+
+    const stationGroupIds = [
+      ...new Set(
+        stations
+          .filter((v) => v.stationGroupStation !== null)
+          .map((v) => v.stationGroupStation.stationGroupId)
+      ),
+    ];
 
     const stationGroups = await con.getRepository(StationGroup).find({
       relations: [
@@ -45,7 +77,9 @@ export class StationGroupRepository {
         'stationGroupStations.station',
         'stationGroupStations.station.company',
       ],
-      take: 20,
+      where: {
+        stationGroupId: In(stationGroupIds),
+      },
     });
 
     return stationGroups;

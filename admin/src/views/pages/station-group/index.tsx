@@ -7,21 +7,24 @@ const CmpSearch: React.FC = () => {
   return (
     <div className="card">
       <div className="card-body">
-        <div className="form-row">
-          <div className="col-md-4">
-            <label>駅名</label>
-            <input
-              type="text"
-              className="form-control form-control-sm"
-              defaultValue=""
-            />
+        <form method="GET" action="/page/station-group">
+          <div className="form-row">
+            <div className="col-md-4">
+              <label>駅名</label>
+              <input
+                type="text"
+                name="stationName"
+                className="form-control form-control-sm"
+                defaultValue=""
+              />
+            </div>
           </div>
-        </div>
-        <div className="form-row justify-content-center mt-3">
-          <div className="col-md-4">
-            <button className="btn btn-sm btn-block btn-info">検索</button>
+          <div className="form-row justify-content-center mt-3">
+            <div className="col-md-4">
+              <button className="btn btn-sm btn-block btn-info">検索</button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
@@ -32,9 +35,13 @@ const CmpCreate: React.FC = () => {
     <div className="card h-100">
       <div className="card-body">
         <h6 className="mb-3">新規グループ作成</h6>
-        <form method="POST" action="">
+        <form method="POST" action="/page/station-group/create">
           <div className="input-group">
-            <input type="text" className="form-control form-control-sm" />
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              name="stationId"
+            />
             <div className="input-group-append">
               <button className="btn btn-sm btn-info">追加</button>
             </div>
@@ -52,17 +59,41 @@ const CmpEdit: React.FC<{ stationGroup: StationGroup }> = ({
     <div className="card h-100">
       <div className="card-body">
         {stationGroup.stationGroupStations.map((sgs) => (
-          <div>
-            <span>{sgs.station.stationName}</span>
-            <span className="ml-1 text-secondary">
-              （{sgs.station.company.companyNameAlias}）
-            </span>
-          </div>
+          <form method="POST" action="/page/station-group/delete">
+            <div className="mb-1">
+              <input
+                type="hidden"
+                name="stationId"
+                defaultValue={sgs.stationId}
+              />
+              <input
+                type="hidden"
+                name="stationGroupId"
+                defaultValue={sgs.stationGroupId}
+              />
+              <button className="btn btn-sm btn-danger py-0" type="submit">
+                削除
+              </button>
+              <span className="ml-1">{sgs.station.stationName}</span>
+              <span className="ml-1 text-secondary">
+                （{sgs.station.company.companyNameAlias}）
+              </span>
+            </div>
+          </form>
         ))}
         <div className="mt-3">
-          <form method="POST" action="">
+          <form method="POST" action="/page/station-group/add">
             <div className="input-group">
-              <input type="text" className="form-control form-control-sm" />
+              <input
+                type="hidden"
+                name="stationGroupId"
+                value={stationGroup.stationGroupId}
+              />
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                name="stationId"
+              />
               <div className="input-group-append">
                 <button className="btn btn-sm btn-info">追加</button>
               </div>
