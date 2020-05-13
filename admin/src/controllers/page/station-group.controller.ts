@@ -4,14 +4,12 @@ import {
   BodyParam,
   Res,
   Req,
-  Param,
   Get,
   Render,
   QueryParam,
 } from 'routing-controllers';
 import { Response, Request } from 'express';
 import { StationGroupRepository } from '../../repositories/station-group.repository';
-import { StationRepository } from '../../repositories/station.repository';
 
 @Controller('/page/station-group')
 export class StationGroupController {
