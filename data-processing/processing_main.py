@@ -1,36 +1,54 @@
 import argparse
+import csv
 import yaml
 import os
 import openpyxl
 
 from processing_config import ProcessingConfig
 
+XLSX_ERROR_VALUE = [
+    '#DIV/0!'
+]
 
-def main(config: ProcessingConfig):
-    input_file_path = os.path.join('./', config.input_file_path)
 
-    wb = openpyxl.load_workbook(input_file_path)
-    sheet = wb.get_sheet_by_name(wb.sheetnames[0])
+def xlsx_error_value_to_none(val):
+    return None if val in XLSX_ERROR_VALUE else val
 
-    output = []
-    for i in range(config.start_row_index + 1, config.end_row_index + 1):
+
+def get_data_from_xlsx(config: ProcessingConfig):
+    wb = openpyxl.load_workbook(config.input_file_path)
+    sheet = wb[wb.sheetnames[0]]
+
+    res = []
+    for row_num in range(config.start_row_index + 1, config.end_row_index + 1):
+        row_dict = {}
 
         is_skip = False
-        for skip_empty_col_index in config.skip_empty_col_indexes:
-            if sheet.cell(row=i, column=skip_empty_col_index + 1).value == None:
+        for i in config.skip_empty_col_indexes:
+            if sheet.cell(row=row_num, column=i+1).value == None:
                 is_skip = True
                 break
 
         if is_skip:
             continue
 
-        output_row = []
-        for col_i, col_name in config.col_mappings.items():
-            output_row.append(sheet.cell(row=i, column=col_i + 1).value)
+        for i, col_name in config.col_mappings.items():
+            raw_val = sheet.cell(row=row_num, column=i+1).value
+            row_dict[col_name] = xlsx_error_value_to_none(raw_val)
 
-        output.append(output_row)
+        res.append(row_dict)
 
-    print(output)
+    return res
+
+
+def main(config: ProcessingConfig):
+    data = get_data_from_xlsx(config)
+
+    fieldnames = list(config.col_mappings.values())
+    with open(config.output_file_path, 'w', encoding='utf-8', newline='') as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
+        w.writerows(data)
 
 
 argparser = argparse.ArgumentParser()
