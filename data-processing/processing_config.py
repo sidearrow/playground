@@ -7,13 +7,9 @@ class ProcessingConfig:
 
         self.start_row_index = int(config['start_row_index'])
 
-        self.end_col_index = int(config['end_col_index'])
+        self.end_row_index = int(config['end_row_index'])
 
-        self.skip_empty_col_indexes = list(map(int, config['skip_empty_col_indexes']))
+        self.skip_empty_col_indexes = list(
+            map(int, config['skip_empty_col_indexes']))
 
         self.col_mappings = dict(config['col_mappings'])
-
-        self.use_col_indexes = self.getUseColIndexes()
-
-    def getUseColIndexes(self):
-        return list(set(self.skip_empty_col_indexes + list(self.col_mappings.keys())))

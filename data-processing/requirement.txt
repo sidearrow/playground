@@ -3,5 +3,4 @@ PyYAML
 autopep8
 beautifulsoup4
 requests
-memory_profiler
-pandas
+openpyxl

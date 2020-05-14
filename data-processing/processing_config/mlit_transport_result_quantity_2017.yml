@@ -1,11 +1,12 @@
 input_file_path: input_files/mlit_transport_result_quantity_2017.xlsx
 input_file_type: xlsx
 start_row_index: 6
-end_col_index: 13
+end_row_index: 422
 skip_empty_col_indexes:
   - 0
 col_mappings:
   0: company_name
+  2: num
 
 remarks:
   url: http://www.mlit.go.jp/tetudo/tetudo_tk2_000050.html

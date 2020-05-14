@@ -1,29 +1,36 @@
 import argparse
 import yaml
 import os
-import pandas
+import openpyxl
 
 from processing_config import ProcessingConfig
 
 
-def main(processing_config: ProcessingConfig):
-    input_file_path = os.path.join('./', processing_config.input_file_path)
-    f = pandas.ExcelFile(input_file_path)
+def main(config: ProcessingConfig):
+    input_file_path = os.path.join('./', config.input_file_path)
 
-    df = f.parse(skiprows=processing_config.start_row_index, usecols=processing_config.use_col_indexes, header=None)
+    wb = openpyxl.load_workbook(input_file_path)
+    sheet = wb.get_sheet_by_name(wb.sheetnames[0])
 
-    output_data = []
-    output_data.append(list(processing_config.col_mappings.values()))
+    output = []
+    for i in range(config.start_row_index + 1, config.end_row_index + 1):
 
-    for i, row in df.iterrows():
+        is_skip = False
+        for skip_empty_col_index in config.skip_empty_col_indexes:
+            if sheet.cell(row=i, column=skip_empty_col_index + 1).value == None:
+                is_skip = True
+                break
+
+        if is_skip:
+            continue
+
         output_row = []
-        for index in processing_config.col_mappings.keys():
-            output_row.append(row[index])
-        output_data.append(output_row)
+        for col_i, col_name in config.col_mappings.items():
+            output_row.append(sheet.cell(row=i, column=col_i + 1).value)
 
-    print(output_data)
+        output.append(output_row)
 
-    pass
+    print(output)
 
 
 argparser = argparse.ArgumentParser()
