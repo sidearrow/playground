@@ -1,9 +1,11 @@
 import argparse
 import csv
 import os
+import pandas
 import traceback
 from csv_reader import CsvReader
 from database import get_connection
+from typing import List
 
 
 con = get_connection()
@@ -25,21 +27,30 @@ def get_company_id(company_name):
     return None if row == None else row['company_id']
 
 
-def get_query(company_id, data: dict):
-    columns = ['company_id', 'year']
-    values = [company_id, year]
-    escapes = ['%s', '%s']
+def get_query(data: dict):
+    insert_columns = ['year']
+    insert_values = [year]
+    insert_escapes = ['%s']
+    update_columns = []
+    update_values = []
+
     for k, v in data.items():
-        columns.append(k)
-        values.append(None if v == '' else v)
-        escapes.append('%s')
+        insert_columns.append(k)
+        insert_values.append(None if v == '' else v)
+        insert_escapes.append('%s')
+        if k == 'company_id':
+            continue
+        update_columns.append(k)
+        update_values.append(None if v == '' else v)
 
-    columns = ','.join(columns)
-    escapes = ','.join(escapes)
-    sql = 'insert into company_statistics ({}) values ({})'.format(
-        columns, escapes)
+    columns = ','.join(insert_columns)
+    escapes = ','.join(insert_escapes)
+    update = ','.join(['{} = %s'.format(col) for col in update_columns])
 
-    return (sql, tuple(values))
+    sql = 'insert into company_statistics ({}) values ({}) on duplicate key update {}'.format(
+        columns, escapes, update)
+
+    return (sql, tuple(insert_values + update_values))
 
 
 def update(queries: list):
@@ -54,23 +65,36 @@ def update(queries: list):
 
 
 def main(config: Config):
-    data = CsvReader.get(os.path.join('./', config.input_file_path))
+    df = pandas.read_csv(os.path.join('./', config.input_file_path))
 
-    queries = []
-    error_rows = []
-    for row in data:
+    skip_records = []
+
+    df['company_id'] = None
+    for i, row in df.iterrows():
         company_id = get_company_id(row['company_name'])
         if company_id == None:
-            error_rows.append(row)
+            skip_records.append(row[['company_name']].to_dict())
+            df.drop(i, inplace=True)
             continue
-        del row['company_name']
-        queries.append(get_query(company_id, row))
+        df.at[i, 'company_id'] = company_id
 
-    if len(error_rows) > 0:
-        with open('./error.csv', mode='w', newline='', encoding='utf-8') as f:
-            w = csv.DictWriter(f, fieldnames=error_rows[0].keys())
+    df_dup = df[df.duplicated('company_id', keep=False)]
+    if len(df_dup.index) > 0:
+        print('company_id が重複する行があります')
+        print(df_dup[['company_id', 'company_name']])
+        raise Exception
+
+    df.drop('company_name', axis=1, inplace=True)
+
+    queries = []
+    for i, row in df.iterrows():
+        queries.append(get_query(row.to_dict()))
+
+    if len(skip_records) > 0:
+        with open('./skip_records.csv', mode='w', newline='', encoding='utf-8') as f:
+            w = csv.DictWriter(f, fieldnames=skip_records[0].keys())
             w.writeheader()
-            w.writerows(error_rows)
+            w.writerows(skip_records)
 
     update(queries)
 

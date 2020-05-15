@@ -1,8 +1,8 @@
-input_file_name: mlit_transport_result_quantity_2017.xlsx
+input_file_name: mlit_transport_result_quantity_2016.xlsx
 input_file_type: xlsx
-output_file_name: mlit_transport_result_quantity_2017.csv
+output_file_name: mlit_transport_result_quantity_2016.csv
 start_row_index: 6
-end_row_index: 422
+end_row_index: 420
 skip_empty_col_indexes:
   - 0
 col_mappings:
