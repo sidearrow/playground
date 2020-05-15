@@ -1,4 +1,4 @@
-company_name,transport_passengers_teiki_tsukin,transport_passengers_teiki_tsugaku,transport_passengers_teiki_total,transport_passengers_teiki_percent,transport_passengers_teikigai,transport_passengers_teikigai_percet
+company_name,transport_passengers_teiki_tsukin,transport_passengers_teiki_tsugaku,transport_passengers_teiki_total,transport_passengers_teiki_percent,transport_passengers_teikigai,transport_passengers_teikigai_percent
 太平洋石炭販売輸送,0,0,0,,0,
 道南いさりび鉄道,155,297,452,66,231,34
 中小計,155,297,452,66,231,34
@@ -84,7 +84,6 @@ company_name,transport_passengers_teiki_tsukin,transport_passengers_teiki_tsugak
 真岡鐵道,54,657,711,73,268,27
 わたらせ渓谷鐵道,37,135,172,44,220,56
 湘南モノレール,3753,1077,4830,46,5648,54
-伊豆箱根鉄道,3551,1027,4578,59,3206,41
 箱根登山鉄道,1270,464,1733,17,8197,83
 富士急行,400,969,1369,38,2207,62
 芝山鉄道,333,33,366,66,186,34
@@ -103,7 +102,6 @@ company_name,transport_passengers_teiki_tsukin,transport_passengers_teiki_tsugak
 関東運輸局計,4863999,1106425,5970421,59,4064102,41
 名古屋鉄道,160274,100811,261085,67,125789,33
 大手計,160274,100811,261085,67,125789,33
-伊豆箱根鉄道,3233,2481,5714,57,4294,43
 伊豆急行,718,560,1278,26,3612,74
 岳南電車,278,107,385,45,477,55
 静岡鉄道,4394,1266,5660,47,6415,53
@@ -156,7 +154,6 @@ company_name,transport_passengers_teiki_tsukin,transport_passengers_teiki_tsugak
 水間鉄道,770,309,1079,59,759,41
 北条鉄道,46,138,184,56,144,44
 紀州鉄道,33,28,61,59,42,41
-北近畿タンゴ鉄道,0,0,0,,0,
 信楽高原鐵道,53,249,302,70,128,30
 嵯峨野観光鉄道,0,0,0,0,1284,100
 比叡山鉄道,14,0,14,5,248,95

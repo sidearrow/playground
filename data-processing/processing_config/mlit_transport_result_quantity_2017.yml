@@ -12,7 +12,7 @@ col_mappings:
   4: transport_passengers_teiki_total
   5: transport_passengers_teiki_percent
   6: transport_passengers_teikigai
-  7: transport_passengers_teikigai_percet
+  7: transport_passengers_teikigai_percent
 
 remarks:
   url: http://www.mlit.go.jp/tetudo/tetudo_tk2_000050.html
