@@ -1,10 +1,10 @@
-import { StationEntity } from "./station.entity";
+import { StationEntity } from './station.entity';
 
-export class LineSectionLineStationEntity {
+export type LineSectionLineStationEntity = {
   lineId: number;
   sectionId: number;
   sortNo: number;
   stationId: number;
 
   station: StationEntity;
-}
+};

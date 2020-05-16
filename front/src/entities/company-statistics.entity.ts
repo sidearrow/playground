@@ -1,4 +1,4 @@
-import { CompanyEntity } from "./company.entity";
+import { CompanyEntity } from './company.entity';
 
 export type CompanyStatisticsEntity = {
   companyId: number;
@@ -11,4 +11,4 @@ export type CompanyStatisticsEntity = {
   transportPassengersTeikigai: number;
   transportPassengersTeikigaiPercent: number;
   transportPassengersSum: number;
-}
+};

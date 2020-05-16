@@ -1,5 +1,5 @@
-import { CompanyEntity } from "./company.entity";
-import { LineSectionEntity } from "./line-section.entity";
+import { CompanyEntity } from './company.entity';
+import { LineSectionEntity } from './line-section.entity';
 
 export type LineEntiry = {
   lineId: number;

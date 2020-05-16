@@ -1,7 +1,7 @@
-import { StationGroupStationEntity } from "./station-group-station.entity";
+import { StationGroupStationEntity } from './station-group-station.entity';
 
-export class StationGroupEntity {
+export type StationGroupEntity = {
   stationId: number;
 
   stationGroupStations: StationGroupStationEntity[];
-}
+};

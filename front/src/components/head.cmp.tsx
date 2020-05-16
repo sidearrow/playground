@@ -8,7 +8,7 @@ const CmpHead: React.FC<{
     <Head>
       <title>{title}</title>
     </Head>
-  )
+  );
 };
 
 export default CmpHead;

@@ -5,22 +5,53 @@ import CmpLayout from '../../components/layout.cmp';
 import CmpBadge from '../../components/badge.cmp';
 import Link from 'next/link';
 import CmpBreadcrumb from '../../components/breadcrumb.cmp';
+import { LineEntiry } from '../../entities/line.entity';
 
-type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props']
+export const getStaticPaths: GetStaticPaths = async () => {
+  const lines = await LineRepository.getAll();
+
+  const paths = lines.map((line) => {
+    return { params: { lineCode: line.lineCode } };
+  });
+
+  return { paths: paths, fallback: false };
+};
+
+export const getStaticProps: GetStaticProps<{ line: LineEntiry }> = async ({
+  params,
+}) => {
+  const line = await LineRepository.findByLineCode(params?.lineCode as string);
+
+  return { props: { line: line } };
+};
+
+type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T>
+  ? T
+  : never)['props'];
 
 const Component: React.FC<Props> = ({ line }) => {
   const lineSections = line.lineSections;
 
   return (
     <CmpLayout title={line.lineNameAlias}>
-      <CmpBreadcrumb items={[{ name: 'TOP', path: '/' }, { name: '路線一覧', path: '/line' }, { name: line.lineNameAlias, path: null }]} />
-      <Link href="/line">
-        <a>路線一覧</a>
-      </Link>
+      <CmpBreadcrumb
+        items={[
+          { name: 'TOP', path: '/' },
+          { name: '事業者一覧', path: '/company' },
+          {
+            name: line.company.companyNameAlias,
+            path: `/company/${line.company.companyCode}`,
+          },
+          { name: line.lineNameAlias, path: null },
+        ]}
+      />
       <h1>{line.lineNameAlias}</h1>
-      {lineSections.map(lineSection => (
-        <div className="table-responsive">
-          <table className="table table-sm table-bordered">
+      {lineSections.map((lineSection, i) => (
+        <div className="table-responsive" key={i}>
+          <table
+            className="table table-sm table-bordered"
+            style={{ fontSize: '0.9em' }}
+          >
             <thead className="alert-info text-center">
               <tr>
                 <th className="text-nowrap">駅名</th>
@@ -29,60 +60,69 @@ const Component: React.FC<Props> = ({ line }) => {
                 <th className="text-nowrap">接続駅</th>
               </tr>
             </thead>
-            {lineSection.lineSectionLineStations.map(lineSectionLineStation => {
-              const station = lineSectionLineStation.station;
-              const groupStations = station.stationGroupStation === null ? [] : station.stationGroupStation.stationGroup.stationGroupStations.map(v => v.station).filter(v => v.stationId !== station.stationId);
-              const connectLines = station.lineStations.map(v => v.line).filter(v => v.lineId !== line.lineId);
-              return (<tr>
-                <td>{station.stationName}</td>
-                <td className="d-md-table-cell d-none">{station.stationNameKana}</td>
-                <td>{connectLines.map(line => (
-                  <div className="text-nowrap">
-                    <Link href={`/line/${line.lineCode}`}>
-                      <a>{line.lineNameAlias}</a>
-                    </Link>
-                  </div>
-                ))}</td>
-                <td>{groupStations.map(station => (
-                  <>
-                    <div>
-                      <span className="mr-2">{station.stationName}</span>
-                      <span>
-                        <CmpBadge color={station.company.corporateColor}>{station.company.companyNameAlias}</CmpBadge>
-                      </span>
-                    </div>
-                    <div>
-                      <span className="mr-2">
-                        {station.lineStations.map(line => (
-                          <Link href={`/line/${line.line.lineCode}`}>
-                            <a className="d-inline-block mr-1">{line.line.lineName}</a>
+            {lineSection.lineSectionLineStations.map(
+              (lineSectionLineStation, i) => {
+                const station = lineSectionLineStation.station;
+                const groupStations =
+                  station.stationGroupStation === null
+                    ? []
+                    : station.stationGroupStation.stationGroup.stationGroupStations
+                      .map((v) => v.station)
+                      .filter((v) => v.stationId !== station.stationId);
+                const connectLines = station.lineStations
+                  .map((v) => v.line)
+                  .filter((v) => v.lineId !== line.lineId);
+
+                return (
+                  <tr key={i}>
+                    <td>{station.stationName}</td>
+                    <td className="d-md-table-cell d-none">
+                      {station.stationNameKana}
+                    </td>
+                    <td>
+                      {connectLines.map((line, i) => (
+                        <div className="text-nowrap" key={i}>
+                          <Link href={`/line/${line.lineCode}`}>
+                            <a>{line.lineNameAlias}</a>
                           </Link>
-                        ))}
-                      </span>
-                    </div>
-                  </>
-                ))}</td>
-              </tr>)
-            })}
+                        </div>
+                      ))}
+                    </td>
+                    <td>
+                      {groupStations.map((station) => (
+                        <>
+                          <div>
+                            <span className="mr-2">{station.stationName}</span>
+                            <span className="badge badge-secondary">
+                              {station.company.companyNameAlias}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="mr-2">
+                              {station.lineStations.map((line, i) => (
+                                <Link
+                                  href={`/line/${line.line.lineCode}`}
+                                  key={i}
+                                >
+                                  <a className="d-inline-block mr-1">
+                                    {line.line.lineName}
+                                  </a>
+                                </Link>
+                              ))}
+                            </span>
+                          </div>
+                        </>
+                      ))}
+                    </td>
+                  </tr>
+                );
+              }
+            )}
           </table>
         </div>
       ))}
     </CmpLayout>
-  )
+  );
 };
 
 export default Component;
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const lines = await LineRepository.getAll();
-
-  const paths = lines.map(line => { return { params: { lineCode: line.lineCode } } });
-
-  return { paths: paths, fallback: false }
-}
-
-export const getStaticProps = async ({ params }) => {
-  const line = await LineRepository.findByLineCode(params.lineCode as string);
-
-  return { props: { line: line } }
-}
