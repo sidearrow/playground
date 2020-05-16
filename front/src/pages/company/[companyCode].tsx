@@ -114,6 +114,90 @@ const TransportPassengersTable: React.FC<{
   );
 };
 
+const TransportRevenuePassengerTable: React.FC<{
+  data: Props['company']['companyStatistics'];
+}> = ({ data }) => {
+  if (data === undefined || data.length === 0) {
+    return <div className="alert alert-warning">データなし</div>;
+  }
+
+  data = data.slice(-5).reverse();
+
+  return (
+    <div className="table-responsive">
+      <table
+        className="table table-sm table-bordered"
+        style={{ fontSize: '0.85em', whiteSpace: 'nowrap' }}
+      >
+        <thead>
+          <tr className="alert-dark">
+            <th colSpan={2} style={{ textAlign: 'center' }}>
+              (千円) / 年度
+            </th>
+            {data.map((v, i) => (
+              <th key={i} style={{ textAlign: 'center' }}>
+                {v.year}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th rowSpan={3} className="alert-dark">
+              定期
+            </th>
+            <th className="alert-dark">通勤</th>
+            {data.map((v, i) => (
+              <td key={i} style={{ textAlign: 'right' }}>
+                {v.transportRevenuePassengerTeikiTsukin.toLocaleString()}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th className="alert-dark">通学</th>
+            {data.map((v, i) => (
+              <td key={i} style={{ textAlign: 'right' }}>
+                {v.transportRevenuePassengerTeikiTsugaku.toLocaleString()}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th className="alert-dark">計</th>
+            {data.map((v, i) => (
+              <td key={i} style={{ textAlign: 'right' }}>
+                {v.transportRevenuePassengerTotal.toLocaleString()}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th colSpan={2} className="alert-dark">
+              定期外
+            </th>
+            {data.map((v, i) => (
+              <td key={i} style={{ textAlign: 'right' }}>
+                {v.transportRevenuePassengerTeikigai.toLocaleString()}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th colSpan={2} className="alert-dark">
+              計
+            </th>
+            {data.map((v, i) => (
+              <td key={i} style={{ textAlign: 'right' }}>
+                {v.transportRevenuePassengerTotal.toLocaleString()}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <div className="text-secondary">
+        <small>国土交通省 鉄道統計年報 より作成</small>
+      </div>
+    </div>
+  );
+};
+
 const Component: React.FC<Props> = ({ company }) => {
   return (
     <CmpLayout title={`${company.companyNameAlias}`}>
@@ -127,6 +211,16 @@ const Component: React.FC<Props> = ({ company }) => {
         />
       </section>
       <h1>{company.companyNameAlias}</h1>
+      <section>
+        <div className="form-row">
+          <div className="col-md-4">
+            <div className="alert-secondary font-weight-bold p-1">事業者名</div>
+          </div>
+          <div className="col-md-8">
+            <div className="p-1">{company.companyName}</div>
+          </div>
+        </div>
+      </section>
       <h2>路線一覧</h2>
       <section>
         <div className="form-row">
@@ -137,10 +231,16 @@ const Component: React.FC<Props> = ({ company }) => {
           ))}
         </div>
       </section>
-      <h2>輸送人員</h2>
-      <h3>直近 5 年の推移</h3>
+      <h2>統計情報</h2>
+      <h3>輸送人員</h3>
       <section>
         <TransportPassengersTable data={company.companyStatistics?.slice(-5)} />
+      </section>
+      <h3>旅客輸送収入</h3>
+      <section>
+        <TransportRevenuePassengerTable
+          data={company.companyStatistics?.slice(-5)}
+        />
       </section>
       <section>
         {/**

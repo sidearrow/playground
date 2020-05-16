@@ -11,4 +11,9 @@ export type CompanyStatisticsEntity = {
   transportPassengersTeikigai: number;
   transportPassengersTeikigaiPercent: number;
   transportPassengersSum: number;
+  transportRevenuePassengerTeikiTsukin: number;
+  transportRevenuePassengerTeikiTsugaku: number;
+  transportRevenuePassengerTeikiTotal: number;
+  transportRevenuePassengerTeikigai: number;
+  transportRevenuePassengerTotal: number;
 };
