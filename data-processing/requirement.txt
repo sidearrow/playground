@@ -1,7 +1,5 @@
 PyMySQL
 PyYAML
 autopep8
-beautifulsoup4
-requests
 openpyxl
 pandas
