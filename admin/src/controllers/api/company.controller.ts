@@ -1,4 +1,4 @@
-import { Controller, Get } from 'routing-controllers';
+import { Controller, Get, Param } from 'routing-controllers';
 import { DB } from '../../database';
 import { Company } from '../../entities/company.entity';
 
@@ -10,5 +10,18 @@ export class ApiCompanyController {
     const companies = await connection.getRepository(Company).find();
 
     return companies;
+  }
+
+  @Get('/:companyCode')
+  async detail(@Param('companyCode') companyCode: string): Promise<Company> {
+    const connection = await DB.getConnection();
+    const company = await connection.getRepository(Company).findOne({
+      relations: ['companyStatistics'],
+      where: {
+        companyCode: companyCode,
+      },
+    });
+
+    return company;
   }
 }

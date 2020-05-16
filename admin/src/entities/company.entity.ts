@@ -1,5 +1,6 @@
 import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Line } from './line.entity';
+import { CompanyStatistics } from './company-statistics.entity';
 
 @Entity()
 export class Company {
@@ -24,4 +25,8 @@ export class Company {
   @OneToMany((type) => Line, (line) => line.company)
   @JoinColumn({ name: 'company_id' })
   lines: Line[];
+
+  @OneToMany(() => CompanyStatistics, (t) => t.company)
+  @JoinColumn({ name: 'company_id' })
+  companyStatistics: CompanyStatistics[];
 }
