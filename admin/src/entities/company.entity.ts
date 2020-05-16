@@ -22,7 +22,10 @@ export class Company {
   @Column({ name: 'corporate_color' })
   corporateColor: string | null;
 
-  @OneToMany((type) => Line, (line) => line.company)
+  @Column({ name: 'status' })
+  status: number;
+
+  @OneToMany(() => Line, (line) => line.company)
   @JoinColumn({ name: 'company_id' })
   lines: Line[];
 

@@ -16,7 +16,7 @@ export class ApiCompanyController {
   async detail(@Param('companyCode') companyCode: string): Promise<Company> {
     const connection = await DB.getConnection();
     const company = await connection.getRepository(Company).findOne({
-      relations: ['companyStatistics'],
+      relations: ['lines', 'companyStatistics'],
       where: {
         companyCode: companyCode,
       },
