@@ -10,7 +10,7 @@ type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : n
 
 const Component: React.FC<Props> = ({ companies, lines }) => {
   companies = companies.filter(v => [1, 2].indexOf(v.companyTypeId) !== -1);
-  companies.push({ companyCode: '', companyId: 999, companyName: 'その他', companyNameAlias: 'その他', companyTypeId: 0, corporateColor: null });
+  companies.push({ companyCode: '', companyId: 999, companyName: 'その他', companyNameAlias: 'その他', companyTypeId: 0, corporateColor: null, status: 0 });
 
   const targetCompanyIds = companies.map(v => v.companyId);
   lines = lines.map(line => {
@@ -64,13 +64,9 @@ const Component: React.FC<Props> = ({ companies, lines }) => {
                 <a>{line.lineNameAlias}</a>
               </Link>
             </span>
-            <span className="mr-1">
-              <CmpBadge color={line.company.corporateColor}>{line.company.companyNameAlias}</CmpBadge>
-            </span>
+            <span className="badge badge-info mr-1">{line.company.companyNameAlias}</span>
             {line.statusId === 2 && (
-              <span>
-                <span className="badge badge-secondary font-weight-normal">廃線</span>
-              </span>
+              <span className="badge badge-secondary mr-1">廃線</span>
             )}
           </div>
         ))}

@@ -16,6 +16,8 @@ const Component: React.FC<Props> = ({ companies }) => {
           {companies.map(company => (
             <div className="col-md-4 col-6">
               <Link href={`/company/${company.companyCode}`}>{company.companyNameAlias}</Link>
+              {company.corporateColor !== null && (<span className="badge px-1 ml-1 rounded-circle" style={{ backgroundColor: company.corporateColor }}>&nbsp;&nbsp;</span>)}
+              {company.status === 1 && (<span className="badge badge-secondary ml-1">廃止</span>)}
             </div>
           ))}
         </div>

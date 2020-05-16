@@ -72,7 +72,7 @@ const Component: React.FC<Props> = ({ company }) => {
         <div className="form-row">
           {
             company.lines.map(line => (
-              <div className="col-md-3 col-4 text-nowrap"><Link href={`/line/${line.lineCode}`}>{line.lineName}</Link></div>
+              <div className="col-md-3 col-4 text-nowrap"><Link href={`/line/${line.lineCode}`}>{line.lineNameAlias}</Link></div>
             ))
           }
         </div>
