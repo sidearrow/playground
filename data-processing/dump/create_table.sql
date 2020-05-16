@@ -94,6 +94,15 @@ CREATE TABLE `company_statistics` (
   `transport_passengers_teikigai` int(10) unsigned DEFAULT NULL,
   `transport_passengers_teikigai_percent` int(10) unsigned DEFAULT NULL,
   `transport_passengers_sum` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_teiki_tsukin` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_teiki_tsugaku` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_teiki_total` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_teiki_percent` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_teikigai` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_teikigai_percent` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_total` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_baggage` int(10) unsigned DEFAULT NULL,
+  `transport_revenue_passenger_total2` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`company_id`,`year`),
   CONSTRAINT `FK_company_statistics_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -381,4 +390,4 @@ CREATE TABLE `t_passengers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-16  9:25:26
+-- Dump completed on 2020-05-16 23:31:50
