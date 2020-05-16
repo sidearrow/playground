@@ -1,3 +1,5 @@
+import { CompanyStatisticsEntity } from "./company-statistics.entity";
+
 export type CompanyEntity = {
   companyId: number;
   companyCode: string;
@@ -5,4 +7,6 @@ export type CompanyEntity = {
   companyNameAlias: string;
   companyTypeId: number;
   corporateColor: string | null;
+
+  companyStatistics: CompanyStatisticsEntity[];
 };
