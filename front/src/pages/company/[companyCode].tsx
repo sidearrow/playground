@@ -65,7 +65,9 @@ const TransportPassengersTable: React.FC<{
             <th className="alert-dark">通勤</th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportPassengersTeikiTsukin.toLocaleString()}
+                {v.transportPassengersTeikiTsukin === null
+                  ? '-'
+                  : v.transportPassengersTeikiTsukin.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -73,7 +75,9 @@ const TransportPassengersTable: React.FC<{
             <th className="alert-dark">通学</th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportPassengersTeikiTsugaku.toLocaleString()}
+                {v.transportPassengersTeikiTsugaku === null
+                  ? '-'
+                  : v.transportPassengersTeikiTsugaku.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -81,7 +85,9 @@ const TransportPassengersTable: React.FC<{
             <th className="alert-dark">計</th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportPassengersTeikiTotal.toLocaleString()}
+                {v.transportPassengersTeikiTotal === null
+                  ? '-'
+                  : v.transportPassengersTeikiTotal.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -91,7 +97,9 @@ const TransportPassengersTable: React.FC<{
             </th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportPassengersTeikigai.toLocaleString()}
+                {v.transportPassengersTeikigai === null
+                  ? '-'
+                  : v.transportPassengersTeikigai.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -101,7 +109,9 @@ const TransportPassengersTable: React.FC<{
             </th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportPassengersSum.toLocaleString()}
+                {v.transportPassengersTeikigai === null
+                  ? '-'
+                  : v.transportPassengersSum.toLocaleString()}
               </td>
             ))}
           </tr>

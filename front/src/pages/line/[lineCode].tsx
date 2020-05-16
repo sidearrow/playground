@@ -2,7 +2,6 @@ import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { LineRepository } from '../../repositories/line.repository';
 import CmpLayout from '../../components/layout.cmp';
-import CmpBadge from '../../components/badge.cmp';
 import Link from 'next/link';
 import CmpBreadcrumb from '../../components/breadcrumb.cmp';
 import { LineEntiry } from '../../entities/line.entity';
@@ -52,7 +51,7 @@ const Component: React.FC<Props> = ({ line }) => {
             className="table table-sm table-bordered"
             style={{ fontSize: '0.9em' }}
           >
-            <thead className="alert-info text-center">
+            <thead className="alert-dark text-center">
               <tr>
                 <th className="text-nowrap">駅名</th>
                 <th className="text-nowrap d-md-table-cell d-none">駅名かな</th>
