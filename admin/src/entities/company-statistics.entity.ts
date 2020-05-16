@@ -33,4 +33,19 @@ export class CompanyStatistics {
 
   @Column({ name: 'transport_passengers_sum' })
   transportPassengersSum: number;
+
+  @Column({ name: 'transport_revenue_passenger_teiki_tsukin' })
+  transportRevenuePassengerTeikiTsukin: number;
+
+  @Column({ name: 'transport_revenue_passenger_teiki_tsugaku' })
+  transportRevenuePassengerTeikiTsugaku: number;
+
+  @Column({ name: 'transport_revenue_passenger_teiki_total' })
+  transportRevenuePassengerTeikiTotal: number;
+
+  @Column({ name: 'transport_revenue_passenger_teikigai' })
+  transportRevenuePassengerTeikigai: number;
+
+  @Column({ name: 'transport_revenue_passenger_total' })
+  transportRevenuePassengerTotal: number;
 }
