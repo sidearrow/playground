@@ -4,6 +4,7 @@ import { CompanyRepository } from '../../repositories/company.repository';
 import CmpLayout from '../../components/layout.cmp';
 import { LineChart, XAxis, Line, YAxis, Tooltip, Legend } from 'recharts';
 import Link from 'next/link';
+import CmpBreadcrumb from '../../components/breadcrumb.cmp'
 
 type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props']
 
@@ -12,10 +13,10 @@ const TransportPassengersTable: React.FC<{ data: Props['company']['companyStatis
 
   return (
     <div className="table-responsive">
-      <table className="table table-sm table-bordered" style={{ fontSize: '0.9em' }}>
+      <table className="table table-sm table-bordered" style={{ fontSize: '0.85em', whiteSpace: 'nowrap' }}>
         <thead>
-          <tr>
-            <th colSpan={2}></th>
+          <tr className="alert-dark">
+            <th colSpan={2} style={{ textAlign: 'center' }}>(千人) / 年度</th>
             {data.map(v => (
               <th style={{ textAlign: 'center' }}>{v.year}</th>
             ))}
@@ -23,28 +24,29 @@ const TransportPassengersTable: React.FC<{ data: Props['company']['companyStatis
         </thead>
         <tbody>
           <tr>
-            <td rowSpan={3}>定期</td>
-            <td>通勤</td>
+            <th rowSpan={3} className="alert-dark">定期</th>
+            <th className="alert-dark">通勤</th>
             {data.map(v => <td style={{ textAlign: 'right' }}>{v.transportPassengersTeikiTsukin.toLocaleString()}</td>)}
           </tr>
           <tr>
-            <td>通学</td>
+            <th className="alert-dark">通学</th>
             {data.map(v => <td style={{ textAlign: 'right' }}>{v.transportPassengersTeikiTsugaku.toLocaleString()}</td>)}
           </tr>
           <tr>
-            <td>計</td>
+            <th className="alert-dark">計</th>
             {data.map(v => <td style={{ textAlign: 'right' }}>{v.transportPassengersTeikiTotal.toLocaleString()}</td>)}
           </tr>
           <tr>
-            <td colSpan={2}>定期外</td>
+            <th colSpan={2} className="alert-dark">定期外</th>
             {data.map(v => <td style={{ textAlign: 'right' }}>{v.transportPassengersTeikigai.toLocaleString()}</td>)}
           </tr>
           <tr>
-            <td colSpan={2}>計</td>
+            <th colSpan={2} className="alert-dark">計</th>
             {data.map(v => <td style={{ textAlign: 'right' }}>{v.transportPassengersSum.toLocaleString()}</td>)}
           </tr>
         </tbody>
       </table>
+      <div className="text-secondary"><small>国土交通省 鉄道統計年報 より作成</small></div>
     </div>
   )
 }
@@ -55,14 +57,21 @@ const Component: React.FC<Props> = ({ company }) => {
 
   return (
     <CmpLayout title={`${company.companyNameAlias}`}>
-      <Link href="/company">事業者一覧</Link>
-      <h1>{company.companyNameAlias}</h1>
-      <h2>輸送人員</h2>
       <section>
-        <div className="alert alert-info">
-          国土交通省 鉄道統計年報 より作成<br />
+        <CmpBreadcrumb items={[{ name: 'TOP', path: '/' }, { name: '事業者一覧', path: '/company' }, { name: company.companyNameAlias, path: null }]} />
+      </section>
+      <h1>{company.companyNameAlias}</h1>
+      <h2>路線一覧</h2>
+      <section>
+        <div className="form-row">
+          {
+            company.lines.map(line => (
+              <div className="col-md-3 col-4 text-nowrap"><Link href={`/line/${line.lineCode}`}>{line.lineName}</Link></div>
+            ))
+          }
         </div>
       </section>
+      <h2>輸送人員</h2>
       <h3>直近 5 年の推移</h3>
       <section>
         <TransportPassengersTable data={company.companyStatistics} />

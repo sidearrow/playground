@@ -2,19 +2,23 @@ import React from 'react'
 import CmpLayout from '../../components/layout.cmp'
 import { CompanyRepository } from '../../repositories/company.repository';
 import Link from 'next/link';
+import CmpBreadcrumb from '../../components/breadcrumb.cmp';
 
 type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props']
 
 const Component: React.FC<Props> = ({ companies }) => {
   return (
     <CmpLayout title="事業者一覧">
+      <CmpBreadcrumb items={[{ name: 'TOP', path: '/' }, { name: '事業者一覧', path: null }]} />
       <h1>事業者一覧</h1>
       <section>
-        {companies.map(company => (
-          <span className="mr-1 d-inline-block">
-            <Link href={`/company/${company.companyCode}`}>{company.companyNameAlias}</Link>
-          </span>
-        ))}
+        <div className="form-row">
+          {companies.map(company => (
+            <div className="col-md-4 col-6">
+              <Link href={`/company/${company.companyCode}`}>{company.companyNameAlias}</Link>
+            </div>
+          ))}
+        </div>
       </section>
     </CmpLayout>
   )

@@ -1,4 +1,5 @@
 import { CompanyStatisticsEntity } from "./company-statistics.entity";
+import { LineEntiry } from "./line.entity";
 
 export type CompanyEntity = {
   companyId: number;
@@ -8,5 +9,6 @@ export type CompanyEntity = {
   companyTypeId: number;
   corporateColor: string | null;
 
+  lines: LineEntiry[];
   companyStatistics: CompanyStatisticsEntity[];
 };
