@@ -45,6 +45,22 @@ CREATE TABLE `company` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `company_name_alias`
+--
+
+DROP TABLE IF EXISTS `company_name_alias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `company_name_alias` (
+  `company_id` int(10) unsigned NOT NULL,
+  `company_name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  UNIQUE KEY `company_name` (`company_name`),
+  KEY `FK_company_name_alias_company` (`company_id`),
+  CONSTRAINT `FK_company_name_alias_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `company_name_hist`
 --
 
@@ -77,6 +93,7 @@ CREATE TABLE `company_statistics` (
   `transport_passengers_teiki_percent` int(10) unsigned DEFAULT NULL,
   `transport_passengers_teikigai` int(10) unsigned DEFAULT NULL,
   `transport_passengers_teikigai_percent` int(10) unsigned DEFAULT NULL,
+  `transport_passengers_sum` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`company_id`,`year`),
   CONSTRAINT `FK_company_statistics_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -364,4 +381,4 @@ CREATE TABLE `t_passengers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-14 21:45:13
+-- Dump completed on 2020-05-16  9:25:26
