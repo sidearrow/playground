@@ -9,6 +9,12 @@ import CmpBreadcrumb from '../../components/breadcrumb.cmp'
 type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props']
 
 const TransportPassengersTable: React.FC<{ data: Props['company']['companyStatistics'] }> = ({ data }) => {
+  if (data.length === 0) {
+    return (
+      <div className="alert alert-warning">データなし</div>
+    )
+  }
+
   data = data.slice(-5).reverse();
 
   return (

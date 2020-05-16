@@ -4,6 +4,7 @@ import { LineRepository } from '../../repositories/line.repository';
 import CmpLayout from '../../components/layout.cmp';
 import CmpBadge from '../../components/badge.cmp';
 import Link from 'next/link';
+import CmpBreadcrumb from '../../components/breadcrumb.cmp';
 
 type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props']
 
@@ -12,6 +13,7 @@ const Component: React.FC<Props> = ({ line }) => {
 
   return (
     <CmpLayout title={line.lineNameAlias}>
+      <CmpBreadcrumb items={[{ name: 'TOP', path: '/' }, { name: '路線一覧', path: '/line' }, { name: line.lineNameAlias, path: null }]} />
       <Link href="/line">
         <a>路線一覧</a>
       </Link>

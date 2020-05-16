@@ -4,6 +4,7 @@ import CmpLayout from '../../components/layout.cmp';
 import { CompanyRepository } from '../../repositories/company.repository';
 import { LineRepository } from '../../repositories/line.repository';
 import CmpBadge from '../../components/badge.cmp';
+import CmpBreadcrumb from '../../components/breadcrumb.cmp';
 
 type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T> ? T : never)['props'];
 
@@ -37,6 +38,7 @@ const Component: React.FC<Props> = ({ companies, lines }) => {
 
   return (
     <CmpLayout title="路線一覧">
+      <CmpBreadcrumb items={[{ name: 'TOP', path: '/' }, { name: '路線一覧', path: null }]} />
       <h1>路線一覧</h1>
       <section>
         <div className="card">
@@ -56,7 +58,7 @@ const Component: React.FC<Props> = ({ companies, lines }) => {
       </section>
       <div className="form-row">
         {viewLines.map((line, i) => (
-          <div className="col-md-4 col-6 mb-2">
+          <div className="col-md-4 col-12 mb-1">
             <span className="mr-3">
               <Link href={`/line/${line.lineCode}`}>
                 <a>{line.lineNameAlias}</a>

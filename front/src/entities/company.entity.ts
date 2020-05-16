@@ -9,6 +9,6 @@ export type CompanyEntity = {
   companyTypeId: number;
   corporateColor: string | null;
 
-  lines: LineEntiry[];
-  companyStatistics: CompanyStatisticsEntity[];
+  lines?: LineEntiry[];
+  companyStatistics?: CompanyStatisticsEntity[];
 };

@@ -8,7 +8,7 @@ const CmpLayout: React.FC<{
     <>
       <CmpHead title={title} />
       <header>
-        <nav className="navbar navbar-light shadow">
+        <nav className="navbar navbar-light border-bottom border-dark">
           <div className="container">
             <a className="navbar-brand" href="/">鉄道統計情報</a>
           </div>
