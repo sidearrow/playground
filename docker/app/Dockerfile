@@ -11,4 +11,4 @@ RUN apt-get update && \
 
 COPY ./zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
-WORKDIR /workspace/app
+WORKDIR /var/www/app
