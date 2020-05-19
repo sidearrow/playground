@@ -1,6 +1,10 @@
+FROM node:14.2-buster as node
 FROM php:7.4-fpm-buster
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
+
+COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /opt /opt
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
