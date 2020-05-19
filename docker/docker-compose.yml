@@ -1,6 +1,7 @@
 version: "3.7"
 volumes:
   php-fpm-socket:
+  db:
 services:
   app:
     build: ./app
@@ -14,3 +15,9 @@ services:
     volumes:
       - php-fpm-socket:/var/run/php-fpm
       - ../app:/var/www/app
+  db:
+    build: ./mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
