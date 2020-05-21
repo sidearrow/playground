@@ -1,1 +1,0 @@
-# typescript-express-mpa-sandbox
