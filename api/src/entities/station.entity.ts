@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { StationGroupStation } from './station-group-station.entity';
-import { Company } from './company.entity';
+import { CompanyEntity } from './company.entity';
 import { LineStation } from './line-station.entity';
 
 @Entity()
@@ -29,9 +29,9 @@ export class Station {
   @JoinColumn({ name: 'station_id' })
   stationGroupStation: StationGroupStation;
 
-  @ManyToOne(() => Company, (company) => company.companyId)
+  @ManyToOne(() => CompanyEntity, (company) => company.companyId)
   @JoinColumn({ name: 'company_id' })
-  company: Company;
+  company: CompanyEntity;
 
   @OneToMany(() => LineStation, (t) => t.station)
   @JoinColumn({ name: 'station_id' })

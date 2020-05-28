@@ -10,7 +10,7 @@
   "servers": [],
   "components": {
     "schemas": {
-      "Company": {
+      "CompanyFindAllResponseDto": {
         "type": "object",
         "properties": {
           "companyId": {
@@ -44,6 +44,63 @@
           "corporateColor",
           "status"
         ]
+      },
+      "LineResponseDto": {
+        "type": "object",
+        "properties": {
+          "lineId": {
+            "type": "number"
+          },
+          "lineCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lineId",
+          "lineCode"
+        ]
+      },
+      "CompanyFindResponseDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "number"
+          },
+          "companyCode": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "companyNameAlias": {
+            "type": "string"
+          },
+          "companyTypeId": {
+            "type": "number"
+          },
+          "corporateColor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineResponseDto"
+            }
+          }
+        },
+        "required": [
+          "companyId",
+          "companyCode",
+          "companyName",
+          "companyNameAlias",
+          "companyTypeId",
+          "corporateColor",
+          "status",
+          "lines"
+        ]
       }
     }
   },
@@ -71,8 +128,26 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Company"
+                    "$ref": "#/components/schemas/CompanyFindAllResponseDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/{companyId}": {
+      "get": {
+        "operationId": "CompanyController_find",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyFindResponseDto"
                 }
               }
             }

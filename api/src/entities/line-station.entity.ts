@@ -1,5 +1,5 @@
 import { Entity, ManyToOne, JoinColumn, PrimaryColumn, OneToMany } from 'typeorm';
-import { Line } from './line.entity';
+import { LineEntity } from './line.entity';
 import { Station } from './station.entity';
 import { LineSectionLineStation } from './line-section-line-station.entity';
 
@@ -11,9 +11,9 @@ export class LineStation {
   @PrimaryColumn({ name: 'station_id' })
   stationId: number;
 
-  @ManyToOne(() => Line, (line) => line.lineId)
+  @ManyToOne(() => LineEntity, (line) => line.lineId)
   @JoinColumn({ name: 'line_id' })
-  line: Line;
+  line: LineEntity;
 
   @ManyToOne(() => Station, (station) => station.stationId)
   @JoinColumn({ name: 'station_id' })

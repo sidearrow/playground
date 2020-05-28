@@ -1,7 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { CompanyService } from './company.service';
-import { Company } from 'src/response-dto/company.response-dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { CompanyFindAllResponseDto, CompanyFindResponseDto } from './company.reponse.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -10,23 +10,24 @@ export class CompanyController {
   ) { }
 
   @Get()
-  @ApiResponse({ status: 200, type: Company, isArray: true })
-  async findAll(): Promise<Company[]> {
+  @ApiResponse({ status: 200, type: CompanyFindAllResponseDto, isArray: true })
+  async findAll(): Promise<CompanyFindAllResponseDto[]> {
     const companies = await this.companyService.findAll()
 
-    const res: Company[] = [];
-    companies.map(company => {
-      res.push({
-        companyId: company.companyId,
-        companyCode: company.companyCode,
-        companyName: company.companyName,
-        companyNameAlias: company.companyNameAlias,
-        companyTypeId: company.companyTypeId,
-        corporateColor: company.corporateColor,
-        status: company.status,
-      });
-    });
+    const res = companies.map(company => CompanyFindAllResponseDto.createFromEntity(company));
 
     return res;
+  }
+
+  @Get('/:companyId')
+  @ApiResponse({ status: 200, type: CompanyFindResponseDto })
+  async find(@Param('companyId') companyId): Promise<CompanyFindResponseDto> {
+    const company = await this.companyService.find(companyId)
+
+    if (company === undefined) {
+      throw new NotFoundException();
+    }
+
+    return CompanyFindResponseDto.mappingFromEntity(company);
   }
 }

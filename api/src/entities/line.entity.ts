@@ -7,11 +7,11 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { LineSection } from './line-section.entity';
-import { Company } from './company.entity';
+import { CompanyEntity } from './company.entity';
 import { LineStation } from './line-station.entity';
 
-@Entity()
-export class Line {
+@Entity({ name: 'line' })
+export class LineEntity {
   @PrimaryColumn({ name: 'line_id' })
   lineId: number;
 
@@ -41,7 +41,7 @@ export class Line {
   @JoinColumn({ name: 'line_id' })
   lineSections: LineSection[];
 
-  @ManyToOne(() => Company, (company) => company.lines)
+  @ManyToOne(() => CompanyEntity, (company) => company.lines)
   @JoinColumn({ name: 'company_id' })
-  company: Company;
+  company: CompanyEntity;
 }

@@ -1,16 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Company } from 'src/entities/company.entity';
+import { CompanyEntity } from 'src/entities/company.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class CompanyService {
   constructor(
-    @InjectRepository(Company)
-    private companyRepository: Repository<Company>
+    @InjectRepository(CompanyEntity)
+    private companyRepository: Repository<CompanyEntity>
   ) { }
 
-  findAll(): Promise<Company[]> {
+  find(companyId: number): Promise<CompanyEntity> {
+    return this.companyRepository.findOne({
+      where: { companyId: companyId },
+      relations: ['lines']
+    });
+  }
+
+  findAll(): Promise<CompanyEntity[]> {
     return this.companyRepository.find();
   }
 }

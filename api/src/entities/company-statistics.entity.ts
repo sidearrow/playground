@@ -1,14 +1,14 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Company } from './company.entity';
+import { CompanyEntity } from './company.entity';
 
 @Entity()
 export class CompanyStatistics {
   @PrimaryColumn({ name: 'company_id' })
   companyId: number;
 
-  @ManyToOne(() => Company, (t) => t.companyStatistics)
+  @ManyToOne(() => CompanyEntity, (t) => t.companyStatistics)
   @JoinColumn({ name: 'company_id' })
-  company: Company;
+  company: CompanyEntity;
 
   @PrimaryColumn({ name: 'year' })
   year: number;

@@ -1,9 +1,9 @@
 import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn } from 'typeorm';
-import { Line } from './line.entity';
+import { LineEntity } from './line.entity';
 import { CompanyStatistics } from './company-statistics.entity';
 
-@Entity()
-export class Company {
+@Entity({ name: 'company' })
+export class CompanyEntity {
   @PrimaryColumn({ name: 'company_id' })
   companyId: number;
 
@@ -25,9 +25,9 @@ export class Company {
   @Column({ name: 'status' })
   status: number;
 
-  @OneToMany(() => Line, (line) => line.company)
+  @OneToMany(() => LineEntity, (line) => line.company)
   @JoinColumn({ name: 'company_id' })
-  lines: Line[];
+  lines: LineEntity[];
 
   @OneToMany(() => CompanyStatistics, (t) => t.company)
   @JoinColumn({ name: 'company_id' })
