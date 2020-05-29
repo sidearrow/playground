@@ -1,7 +1,17 @@
 version: "3.8"
 volumes:
+  api_node_modules:
   railway_db_data:
+  php-fpm-socket:
 services:
+  api:
+    build: ./api
+    ports:
+      - 3000:3000
+    volumes:
+      - ./../api:/usr/src/app
+      - api_node_modules:/usr/src/app/node_modules
+    tty: true
   db:
     image: mysql:5.7
     volumes:
@@ -11,3 +21,15 @@ services:
       - 33060:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
+  admin-page:
+    build: ./admin-page
+    volumes:
+      - php-fpm-socket:/var/run/php-fpm
+      - ../admin-page:/var/www/app
+  admin-page-nginx:
+    build: ./admin-page-nginx
+    ports:
+      - 8888:80
+    volumes:
+      - php-fpm-socket:/var/run/php-fpm
+      - ../admin-page:/var/www/app
