@@ -1,5 +1,9 @@
 @extends('layout')
 
 @section('main')
-<div>aaa</div>
+<section>
+  @foreach ($companies as $company)
+  <span class="d-inline-block">{{ $company['companyName'] }}</span>
+  @endforeach
+</section>
 @endsection

@@ -9,3 +9,7 @@ Route::get('/', function () {
 Route::prefix('/company')->group(function () {
     Route::get('/', 'CompanyController@index');
 });
+
+Route::prefix('/station-group')->group(function () {
+    Route::get('/', 'StationGroupController@index');
+});
