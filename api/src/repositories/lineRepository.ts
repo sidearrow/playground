@@ -40,16 +40,60 @@ export class LineRepository extends BaseRepository {
         'lineSections',
         'lineSections.lineSectionLineStations',
         'lineSections.lineSectionLineStations.station',
+        'lineSections.lineSectionLineStations.station.stationGroupStation',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station.lineStations.line',
+        'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroup.stationGroupStations.station.company',
       ],
       where: { lineId: lineId }
     });
 
     const lineSectionEntities = line.lineSections.map(ls => {
       const stationEntities = ls.lineSectionLineStations.map(lsls => {
+
+        let groupStations: StationEntity[] = [];
+        if (lsls.station.stationGroupStation !== null) {
+          groupStations = lsls.station.stationGroupStation.stationGroup.stationGroupStations.map(sgs => {
+
+            const companyEntity = new CompanyEntity(
+              sgs.station.company.companyId,
+              sgs.station.company.companyName,
+              sgs.station.company.companyNameAlias,
+              sgs.station.company.companyTypeId,
+              sgs.station.company.corporateColor,
+              sgs.station.company.status,
+            );
+
+            const lineEntities = sgs.station.lineStations.map(ls => (
+              new LineEntity(
+                ls.line.lineId,
+                ls.line.lineCode,
+                ls.line.lineName,
+                ls.line.lineNameAlias,
+                ls.line.lineNameKana,
+                ls.line.statusId,
+              )
+            ));
+
+            return new StationEntity(
+              sgs.station.stationId,
+              sgs.station.stationName,
+              sgs.station.stationNameKana,
+              [],
+              companyEntity,
+              lineEntities,
+            )
+          });
+        }
+
         return new StationEntity(
           lsls.station.stationId,
           lsls.station.stationName,
           lsls.station.stationNameKana,
+          groupStations,
         );
       });
 
