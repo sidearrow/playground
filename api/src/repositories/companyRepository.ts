@@ -33,7 +33,8 @@ export class CompanyRepository extends BaseRepository {
     }
 
     const lineEntities = company.lines.map(line => new LineEntity(
-      line.companyId,
+      line.lineId,
+      line.lineCode,
       line.lineName,
       line.lineNameAlias,
       line.lineNameKana,

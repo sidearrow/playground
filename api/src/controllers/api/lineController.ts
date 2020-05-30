@@ -1,21 +1,26 @@
 import { Controller, Get, Param } from 'routing-controllers';
 import { LineOrmEntity } from '../../database/entities/lineOrmEntity';
 import { DB } from '../../database/database';
+import { LineRepository } from '../../repositories/lineRepository';
+import { LineEntity } from '../../entities/lineEntity';
 
 @Controller('/api/line')
 export class ApiLineController {
   @Get('/')
-  async index(): Promise<LineOrmEntity[]> {
-    const con = await DB.getConnection();
-    const lines = await con
-      .getRepository(LineOrmEntity)
-      .find({ relations: ['company'] });
+  async index(): Promise<LineEntity[]> {
+    const lineRepository = new LineRepository;
+    const lines = await lineRepository.getAll();
 
     return lines;
   }
 
-  @Get('/:lineCode')
-  async detail(@Param('lineCode') lineCode: string): Promise<LineOrmEntity> {
+  @Get('/:lineId')
+  async detail(@Param('lineId') lineId: number): Promise<LineEntity> {
+    const lineRepository = new LineRepository;
+    const line = await lineRepository.getDetail(lineId);
+
+    return line;
+    /*
     const con = await DB.getConnection();
     const line = con.getRepository(LineOrmEntity).findOne({
       relations: [
@@ -35,7 +40,6 @@ export class ApiLineController {
       ],
       where: { lineCode: lineCode },
     });
-
-    return line;
+    */
   }
 }

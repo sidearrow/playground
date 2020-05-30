@@ -1,9 +1,7 @@
 export class StationEntity {
-  readonly stationId: number;
-
   constructor(
-    stationId: number
-  ) {
-    this.stationId = stationId;
-  }
+    public readonly stationId,
+    public readonly stationName,
+    public readonly stationNameKana,
+  ) { }
 }
