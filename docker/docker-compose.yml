@@ -21,15 +21,11 @@ services:
       - 33060:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
-  admin-page:
-    build: ./admin-page
+  swagger-ui:
+    image: swaggerapi/swagger-ui:v3.25.5
     volumes:
-      - php-fpm-socket:/var/run/php-fpm
-      - ../admin-page:/var/www/app
-  admin-page-nginx:
-    build: ./admin-page-nginx
+      - ../openapi/openapi.yaml:/usr/share/nginx/html/openapi.yaml
+    environment:
+      API_URL: openapi.yaml
     ports:
-      - 8888:80
-    volumes:
-      - php-fpm-socket:/var/run/php-fpm
-      - ../admin-page:/var/www/app
+      - 8080:8080
