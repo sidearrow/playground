@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { CompanyOrmEntity } from './companyOrmEntity';
 
-@Entity()
+@Entity({ name: 'company_statistics' })
 export class CompanyStatisticsOrmEntity {
   @PrimaryColumn({ name: 'company_id' })
   companyId: number;

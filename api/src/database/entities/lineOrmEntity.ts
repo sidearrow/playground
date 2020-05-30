@@ -19,7 +19,7 @@ export class LineOrmEntity {
   lineCode: string;
 
   @Column({ name: 'company_id' })
-  companyId: string;
+  companyId: number;
 
   @Column({ name: 'line_name' })
   lineName: string;

@@ -1,6 +1,4 @@
 import { Controller, Get, Param } from 'routing-controllers';
-import { DB } from '../../database/database';
-import { CompanyOrmEntity } from '../../database/entities/companyOrmEntity';
 import { CompanyRepository } from '../../repositories/companyRepository';
 import { CompanyEntity } from '../../entities/companyEntity';
 
@@ -14,15 +12,12 @@ export class ApiCompanyController {
     return companies;
   }
 
-  @Get('/:companyCode')
-  async detail(@Param('companyCode') companyCode: string): Promise<CompanyOrmEntity> {
-    const connection = await DB.getConnection();
-    const company = await connection.getRepository(CompanyOrmEntity).findOne({
-      relations: ['lines', 'companyStatistics'],
-      where: {
-        companyCode: companyCode,
-      },
-    });
+  @Get('/:companyId')
+  async detail(
+    @Param('companyId') companyId: number
+  ): Promise<CompanyEntity> {
+    const companyRepository = new CompanyRepository;
+    const company = await companyRepository.getDetail(companyId);
 
     return company;
   }
