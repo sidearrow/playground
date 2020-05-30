@@ -12,23 +12,26 @@ export class CompanyStatisticsRepository extends BaseRepository {
       .find({ where: { companyId: companyId } });
 
     const companyStatisticsEntities = statistics.map(
-      (v) =>
-        new CompanyStatisticsEntity(
-          v.companyId,
-          v.year,
-          v.transportPassengersTeikiTsukin,
-          v.transportPassengersTeikiTsugaku,
-          v.transportPassengersTeikiTotal,
-          v.transportPassengersTeikiPercent,
-          v.transportPassengersTeikigai,
+      (v): CompanyStatisticsEntity => ({
+        companyId: v.companyId,
+        year: v.year,
+        transportPassengersTeikiTsukin: v.transportPassengersTeikiTsukin,
+        transportPassengersTeikiTsugaku: v.transportPassengersTeikiTsugaku,
+        transportPassengersTeikiTotal: v.transportPassengersTeikiTotal,
+        transportPassengersTeikiPercent: v.transportPassengersTeikiPercent,
+        transportPassengersTeikigai: v.transportPassengersTeikigai,
+        transportPassengersTeikigaiPercent:
           v.transportPassengersTeikigaiPercent,
-          v.transportPassengersSum,
+        transportPassengersSum: v.transportPassengersSum,
+        transportRevenuePassengerTeikiTsukin:
           v.transportRevenuePassengerTeikiTsukin,
+        transportRevenuePassengerTeikiTsugaku:
           v.transportRevenuePassengerTeikiTsugaku,
+        transportRevenuePassengerTeikiTotal:
           v.transportRevenuePassengerTeikiTotal,
-          v.transportRevenuePassengerTeikigai,
-          v.transportRevenuePassengerTotal
-        )
+        transportRevenuePassengerTeikigai: v.transportRevenuePassengerTeikigai,
+        transportRevenuePassengerTotal: v.transportRevenuePassengerTotal,
+      })
     );
 
     return companyStatisticsEntities;

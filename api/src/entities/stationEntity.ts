@@ -1,13 +1,12 @@
 import { CompanyEntity } from './companyEntity';
 import { LineEntity } from './lineEntity';
 
-export class StationEntity {
-  constructor(
-    public readonly stationId: number,
-    public readonly stationName: string,
-    public readonly stationNameKana: string,
-    public readonly groupStations: StationEntity[] = [],
-    public readonly company: CompanyEntity = null,
-    public readonly lines: LineEntity[] = []
-  ) { }
-}
+export type StationEntity = {
+  readonly stationId: number;
+  readonly stationName: string;
+  readonly stationNameKana: string;
+
+  readonly groupStations?: StationEntity[];
+  readonly company?: CompanyEntity;
+  readonly lines?: LineEntity[];
+};

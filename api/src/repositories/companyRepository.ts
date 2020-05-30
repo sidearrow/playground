@@ -7,15 +7,14 @@ export class CompanyRepository extends BaseRepository {
     const con = await this.getConnection();
     const companies = await con.getRepository(CompanyOrmEntity).find();
     const companyEntities = companies.map(
-      (company) =>
-        new CompanyEntity(
-          company.companyId,
-          company.companyName,
-          company.companyNameAlias,
-          company.companyTypeId,
-          company.corporateColor,
-          company.status
-        )
+      (company): CompanyEntity => ({
+        companyId: company.companyId,
+        companyName: company.companyName,
+        companyNameAlias: company.companyNameAlias,
+        companyTypeId: company.companyTypeId,
+        corporateColor: company.corporateColor,
+        status: company.status,
+      })
     );
 
     return companyEntities;
@@ -33,14 +32,14 @@ export class CompanyRepository extends BaseRepository {
       return undefined;
     }
 
-    const companyEntity = new CompanyEntity(
-      company.companyId,
-      company.companyName,
-      company.companyNameAlias,
-      company.companyTypeId,
-      company.corporateColor,
-      company.status
-    );
+    const companyEntity: CompanyEntity = {
+      companyId: company.companyId,
+      companyName: company.companyName,
+      companyNameAlias: company.companyNameAlias,
+      companyTypeId: company.companyTypeId,
+      corporateColor: company.corporateColor,
+      status: company.status,
+    };
 
     return companyEntity;
   }

@@ -2,8 +2,8 @@ import { BaseRepository } from './baseRepository';
 import { LineEntity } from '../entities/lineEntity';
 import { CompanyEntity } from '../entities/companyEntity';
 import { LineOrmEntity } from '../database/entities/lineOrmEntity';
-import { LineSectionEntity } from '../entities/lineSectionEntity';
 import { StationEntity } from '../entities/stationEntity';
+import { LineSectionEntity } from '../entities/lineSectionEntity';
 
 export class LineRepository extends BaseRepository {
   public async get(companyId: number = null): Promise<LineEntity[]> {
@@ -14,23 +14,22 @@ export class LineRepository extends BaseRepository {
     });
 
     const lineEntities = lines.map(
-      (line) =>
-        new LineEntity(
-          line.lineId,
-          line.lineCode,
-          line.lineName,
-          line.lineNameAlias,
-          line.lineNameKana,
-          line.statusId,
-          new CompanyEntity(
-            line.company.companyId,
-            line.company.companyName,
-            line.company.companyNameAlias,
-            line.company.companyTypeId,
-            line.company.corporateColor,
-            line.company.status
-          )
-        )
+      (line): LineEntity => ({
+        lineId: line.lineId,
+        lineCode: line.lineCode,
+        lineName: line.lineName,
+        lineNameAlias: line.lineNameAlias,
+        lineNameKana: line.lineNameKana,
+        statusId: line.statusId,
+        company: {
+          companyId: line.company.companyId,
+          companyName: line.company.companyName,
+          companyNameAlias: line.company.companyNameAlias,
+          companyTypeId: line.company.companyTypeId,
+          corporateColor: line.company.corporateColor,
+          status: line.company.status,
+        },
+      })
     );
 
     return lineEntities;
@@ -55,78 +54,80 @@ export class LineRepository extends BaseRepository {
       where: { lineId: lineId },
     });
 
-    const lineSectionEntities = line.lineSections.map((ls) => {
-      const stationEntities = ls.lineSectionLineStations.map((lsls) => {
-        let groupStations: StationEntity[] = [];
-        if (lsls.station.stationGroupStation !== null) {
-          groupStations = lsls.station.stationGroupStation.stationGroup.stationGroupStations.map(
-            (sgs) => {
-              const companyEntity = new CompanyEntity(
-                sgs.station.company.companyId,
-                sgs.station.company.companyName,
-                sgs.station.company.companyNameAlias,
-                sgs.station.company.companyTypeId,
-                sgs.station.company.corporateColor,
-                sgs.station.company.status
-              );
+    const lineSectionEntities: LineSectionEntity[] = line.lineSections.map(
+      (ls) => {
+        const stationEntities: StationEntity[] = ls.lineSectionLineStations.map(
+          (lsls) => {
+            let groupStations: StationEntity[] = [];
+            if (lsls.station.stationGroupStation !== null) {
+              groupStations = lsls.station.stationGroupStation.stationGroup.stationGroupStations.map(
+                (sgs) => {
+                  const companyEntity: CompanyEntity = {
+                    companyId: sgs.station.company.companyId,
+                    companyName: sgs.station.company.companyName,
+                    companyNameAlias: sgs.station.company.companyNameAlias,
+                    companyTypeId: sgs.station.company.companyTypeId,
+                    corporateColor: sgs.station.company.corporateColor,
+                    status: sgs.station.company.status,
+                  };
 
-              const lineEntities = sgs.station.lineStations.map(
-                (ls) =>
-                  new LineEntity(
-                    ls.line.lineId,
-                    ls.line.lineCode,
-                    ls.line.lineName,
-                    ls.line.lineNameAlias,
-                    ls.line.lineNameKana,
-                    ls.line.statusId
-                  )
-              );
+                  const lineEntities = sgs.station.lineStations.map(
+                    (ls): LineEntity => ({
+                      lineId: ls.line.lineId,
+                      lineCode: ls.line.lineCode,
+                      lineName: ls.line.lineName,
+                      lineNameAlias: ls.line.lineNameAlias,
+                      lineNameKana: ls.line.lineNameKana,
+                      statusId: ls.line.statusId,
+                    })
+                  );
 
-              return new StationEntity(
-                sgs.station.stationId,
-                sgs.station.stationName,
-                sgs.station.stationNameKana,
-                [],
-                companyEntity,
-                lineEntities
+                  return {
+                    stationId: sgs.station.stationId,
+                    stationName: sgs.station.stationName,
+                    stationNameKana: sgs.station.stationNameKana,
+                    company: companyEntity,
+                    lines: lineEntities,
+                  };
+                }
               );
             }
-          );
-        }
 
-        return new StationEntity(
-          lsls.station.stationId,
-          lsls.station.stationName,
-          lsls.station.stationNameKana,
-          groupStations
+            return {
+              stationId: lsls.station.stationId,
+              stationName: lsls.station.stationName,
+              stationNameKana: lsls.station.stationNameKana,
+              groupStations: groupStations,
+            };
+          }
         );
-      });
 
-      return new LineSectionEntity(
-        ls.lineId,
-        ls.sectionId,
-        ls.lineSectionName,
-        stationEntities
-      );
-    });
-
-    const lineEntity = new LineEntity(
-      line.lineId,
-      line.lineCode,
-      line.lineName,
-      line.lineNameAlias,
-      line.lineNameKana,
-      line.statusId,
-      new CompanyEntity(
-        line.company.companyId,
-        line.company.companyName,
-        line.company.companyNameAlias,
-        line.company.companyTypeId,
-        line.company.corporateColor,
-        line.company.status
-      ),
-      lineSectionEntities
+        return {
+          lineId: ls.lineId,
+          sectionId: ls.sectionId,
+          lineSectionName: ls.lineSectionName,
+          stations: stationEntities,
+        };
+      }
     );
+
+    const lineEntity: LineEntity = {
+      lineId: line.lineId,
+      lineCode: line.lineCode,
+      lineName: line.lineName,
+      lineNameAlias: line.lineNameAlias,
+      lineNameKana: line.lineNameKana,
+      statusId: line.statusId,
+      company: {
+        companyId: line.company.companyId,
+        companyName: line.company.companyName,
+        companyNameAlias: line.company.companyNameAlias,
+        companyTypeId: line.company.companyTypeId,
+        corporateColor: line.company.corporateColor,
+        status: line.company.status,
+      },
+      lineSections: lineSectionEntities,
+    };
 
     return lineEntity;
   }

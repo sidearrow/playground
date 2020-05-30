@@ -1,10 +1,9 @@
 import { StationEntity } from './stationEntity';
 
-export class LineSectionEntity {
-  constructor(
-    public readonly lineId: number,
-    public readonly sectionId: number,
-    public readonly lineSectionName: string,
-    public readonly stations: StationEntity[]
-  ) { }
-}
+export type LineSectionEntity = {
+  readonly lineId: number;
+  readonly sectionId: number;
+  readonly lineSectionName: string;
+
+  readonly stations: StationEntity[];
+};
