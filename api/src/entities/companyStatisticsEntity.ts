@@ -13,6 +13,6 @@ export class CompanyStatisticsEntity {
     public readonly transportRevenuePassengerTeikiTsugaku: number,
     public readonly transportRevenuePassengerTeikiTotal: number,
     public readonly transportRevenuePassengerTeikigai: number,
-    public readonly transportRevenuePassengerTotal: number,
+    public readonly transportRevenuePassengerTotal: number
   ) { }
 }

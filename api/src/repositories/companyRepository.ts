@@ -1,8 +1,6 @@
 import { BaseRepository } from './baseRepository';
 import { CompanyOrmEntity } from '../database/entities/companyOrmEntity';
 import { CompanyEntity } from '../entities/companyEntity';
-import { LineEntity } from '../entities/lineEntity';
-import { CompanyStatisticsEntity } from '../entities/companyStatisticsEntity';
 
 export class CompanyRepository extends BaseRepository {
   public async getAll(): Promise<CompanyEntity[]> {
@@ -35,35 +33,13 @@ export class CompanyRepository extends BaseRepository {
       return undefined;
     }
 
-    const companyStatisticsEntities = company.companyStatistics.map(
-      (v) =>
-        new CompanyStatisticsEntity(
-          v.companyId,
-          v.year,
-          v.transportPassengersTeikiTsukin,
-          v.transportPassengersTeikiTsugaku,
-          v.transportPassengersTeikiTotal,
-          v.transportPassengersTeikiPercent,
-          v.transportPassengersTeikigai,
-          v.transportPassengersTeikigaiPercent,
-          v.transportPassengersSum,
-          v.transportRevenuePassengerTeikiTsukin,
-          v.transportRevenuePassengerTeikiTsugaku,
-          v.transportRevenuePassengerTeikiTotal,
-          v.transportRevenuePassengerTeikigai,
-          v.transportRevenuePassengerTotal
-        )
-    );
-
     const companyEntity = new CompanyEntity(
       company.companyId,
       company.companyName,
       company.companyNameAlias,
       company.companyTypeId,
       company.corporateColor,
-      company.status,
-      null,
-      companyStatisticsEntities
+      company.status
     );
 
     return companyEntity;
