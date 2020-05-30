@@ -26,6 +26,17 @@ paths:
                 type: object
                 items:
                   $ref: "#/components/schemas/Company"
+  /company/{companyId}/statistics:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schema/CompanyStatistics"
   /line:
     get:
       responses:
@@ -70,3 +81,34 @@ components:
           type: string
         lineNameKana:
           type: string
+    CompanyStatistics:
+      type: object
+      properties:
+        companyId:
+          type: number
+        yaer:
+          type: number
+        transportPassengersTeikiTsukin:
+          type: number
+        transportPassengersTeikiTsugaku:
+          type: number
+        transportPassengersTeikiTotal:
+          type: number
+        transportPassengersTeikiPercent:
+          type: number
+        transportPassengersTeikigai:
+          type: number
+        transportPassengersTeikigaiPercent:
+          type: number
+        transportPassengersSum:
+          type: number
+        transportRevenuePassengerTeikiTsukin:
+          type: number
+        transportRevenuePassengerTeikiTsugaku:
+          type: number
+        transportRevenuePassengerTeikiTotal:
+          type: number
+        transportRevenuePassengerTeikigai:
+          type: number
+        transportRevenuePassengerTotal:
+          type: number
