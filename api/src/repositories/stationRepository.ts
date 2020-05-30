@@ -3,7 +3,9 @@ import { StationOrmEntity } from '../database/entities/stationOrmEntity';
 import { Like, FindConditions } from 'typeorm';
 
 export class StationRepository {
-  public static async find(stationName: string = null): Promise<StationOrmEntity[]> {
+  public static async find(
+    stationName: string = null
+  ): Promise<StationOrmEntity[]> {
     const con = await DB.getConnection();
 
     const where: FindConditions<StationOrmEntity> = {};

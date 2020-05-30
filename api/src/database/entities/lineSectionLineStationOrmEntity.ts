@@ -22,14 +22,17 @@ export class LineSectionLineStationOrmEntity {
   @JoinColumn({ name: 'station_id' })
   station: StationOrmEntity;
 
-  @ManyToOne(() => LineSectionOrmEntity, t => t.lineSectionLineStations)
+  @ManyToOne(() => LineSectionOrmEntity, (t) => t.lineSectionLineStations)
   @JoinColumn([
     { name: 'line_id', referencedColumnName: 'lineId' },
     { name: 'section_id', referencedColumnName: 'sectionId' },
   ])
   lineSection: LineSectionOrmEntity;
 
-  @ManyToOne(() => LineStationOrmEntity, t => t.lineSectionLineStations)
-  @JoinColumn([{ name: 'line_id', referencedColumnName: 'lineId' }, { name: 'station_id', referencedColumnName: 'stationId' }])
+  @ManyToOne(() => LineStationOrmEntity, (t) => t.lineSectionLineStations)
+  @JoinColumn([
+    { name: 'line_id', referencedColumnName: 'lineId' },
+    { name: 'station_id', referencedColumnName: 'stationId' },
+  ])
   lineStation: LineStationOrmEntity;
 }

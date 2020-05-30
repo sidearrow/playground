@@ -1,5 +1,5 @@
 import { Controller, Get, Render, QueryParam } from 'routing-controllers';
-import { StationRepository } from '../../repositories/station.repository';
+import { StationRepository } from '../../repositories/stationRepository';
 
 @Controller('/page/station')
 export class StationController {

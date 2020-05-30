@@ -9,7 +9,7 @@ import {
   QueryParam,
 } from 'routing-controllers';
 import { Response, Request } from 'express';
-import { StationGroupRepository } from '../../repositories/station-group.repository';
+import { StationGroupRepository } from '../../repositories/stationGroupRepository';
 
 @Controller('/page/station-group')
 export class StationGroupController {

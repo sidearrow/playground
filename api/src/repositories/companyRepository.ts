@@ -8,14 +8,17 @@ export class CompanyRepository extends BaseRepository {
   public async getAll(): Promise<CompanyEntity[]> {
     const con = await this.getConnection();
     const companies = await con.getRepository(CompanyOrmEntity).find();
-    const companyEntities = companies.map(company => new CompanyEntity(
-      company.companyId,
-      company.companyName,
-      company.companyNameAlias,
-      company.companyTypeId,
-      company.corporateColor,
-      company.status,
-    ));
+    const companyEntities = companies.map(
+      (company) =>
+        new CompanyEntity(
+          company.companyId,
+          company.companyName,
+          company.companyNameAlias,
+          company.companyTypeId,
+          company.corporateColor,
+          company.status
+        )
+    );
 
     return companyEntities;
   }
@@ -32,31 +35,37 @@ export class CompanyRepository extends BaseRepository {
       return undefined;
     }
 
-    const lineEntities = company.lines.map(line => new LineEntity(
-      line.lineId,
-      line.lineCode,
-      line.lineName,
-      line.lineNameAlias,
-      line.lineNameKana,
-      line.statusId,
-    ));
+    const lineEntities = company.lines.map(
+      (line) =>
+        new LineEntity(
+          line.lineId,
+          line.lineCode,
+          line.lineName,
+          line.lineNameAlias,
+          line.lineNameKana,
+          line.statusId
+        )
+    );
 
-    const companyStatisticsEntities = company.companyStatistics.map(v => new CompanyStatisticsEntity(
-      v.companyId,
-      v.year,
-      v.transportPassengersTeikiTsukin,
-      v.transportPassengersTeikiTsugaku,
-      v.transportPassengersTeikiTotal,
-      v.transportPassengersTeikiPercent,
-      v.transportPassengersTeikigai,
-      v.transportPassengersTeikigaiPercent,
-      v.transportPassengersSum,
-      v.transportRevenuePassengerTeikiTsukin,
-      v.transportRevenuePassengerTeikiTsugaku,
-      v.transportRevenuePassengerTeikiTotal,
-      v.transportRevenuePassengerTeikigai,
-      v.transportRevenuePassengerTotal,
-    ))
+    const companyStatisticsEntities = company.companyStatistics.map(
+      (v) =>
+        new CompanyStatisticsEntity(
+          v.companyId,
+          v.year,
+          v.transportPassengersTeikiTsukin,
+          v.transportPassengersTeikiTsugaku,
+          v.transportPassengersTeikiTotal,
+          v.transportPassengersTeikiPercent,
+          v.transportPassengersTeikigai,
+          v.transportPassengersTeikigaiPercent,
+          v.transportPassengersSum,
+          v.transportRevenuePassengerTeikiTsukin,
+          v.transportRevenuePassengerTeikiTsugaku,
+          v.transportRevenuePassengerTeikiTotal,
+          v.transportRevenuePassengerTeikigai,
+          v.transportRevenuePassengerTotal
+        )
+    );
 
     const companyEntity = new CompanyEntity(
       company.companyId,
@@ -66,7 +75,7 @@ export class CompanyRepository extends BaseRepository {
       company.corporateColor,
       company.status,
       lineEntities,
-      companyStatisticsEntities,
+      companyStatisticsEntities
     );
 
     return companyEntity;

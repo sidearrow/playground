@@ -21,7 +21,10 @@ export class StationGroupStationOrmEntity {
   @JoinColumn({ name: 'station_id' })
   station: StationOrmEntity;
 
-  @ManyToOne(() => StationGroupOrmEntity, (stationGroup) => stationGroup.stationGroupId)
+  @ManyToOne(
+    () => StationGroupOrmEntity,
+    (stationGroup) => stationGroup.stationGroupId
+  )
   @JoinColumn({ name: 'station_group_id' })
   stationGroup: StationGroupOrmEntity;
 }

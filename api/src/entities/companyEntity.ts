@@ -1,5 +1,5 @@
-import { LineEntity } from "./lineEntity";
-import { CompanyStatisticsEntity } from "./companyStatisticsEntity";
+import { LineEntity } from './lineEntity';
+import { CompanyStatisticsEntity } from './companyStatisticsEntity';
 
 export class CompanyEntity {
   constructor(
@@ -10,6 +10,6 @@ export class CompanyEntity {
     public readonly corporateColor: string | null,
     public readonly status: number,
     public readonly lines: LineEntity[] = [],
-    public readonly companyStatistics: CompanyStatisticsEntity[] = [],
+    public readonly companyStatistics: CompanyStatisticsEntity[] = []
   ) { }
 }

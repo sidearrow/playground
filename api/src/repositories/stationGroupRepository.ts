@@ -75,7 +75,9 @@ export class StationGroupRepository {
     }
   }
 
-  public static async find(stationName: string): Promise<StationGroupOrmEntity[]> {
+  public static async find(
+    stationName: string
+  ): Promise<StationGroupOrmEntity[]> {
     const con = await DB.getConnection();
 
     const stations = await con.getRepository(StationOrmEntity).find({

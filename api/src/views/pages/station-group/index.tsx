@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '../../layouts/main.layout';
-import { StationGroupController } from '../../../controllers/page/station-group.controller';
+import { StationGroupController } from '../../../controllers/page/stationGroupController';
 import { StationGroup } from '../../../database/entities/stationGroupOrmEntity';
 
 const CmpSearch: React.FC = () => {

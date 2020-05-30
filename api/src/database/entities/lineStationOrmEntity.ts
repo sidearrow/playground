@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, JoinColumn, PrimaryColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  ManyToOne,
+  JoinColumn,
+  PrimaryColumn,
+  OneToMany,
+} from 'typeorm';
 import { LineOrmEntity } from './lineOrmEntity';
 import { StationOrmEntity } from './stationOrmEntity';
 import { LineSectionLineStationOrmEntity } from './lineSectionLineStationOrmEntity';
@@ -19,10 +25,7 @@ export class LineStationOrmEntity {
   @JoinColumn({ name: 'station_id' })
   station: StationOrmEntity;
 
-  @OneToMany(() => LineSectionLineStationOrmEntity, t => t.lineStation)
-  @JoinColumn([
-    { name: 'line_id' },
-    { name: 'station_id' },
-  ])
+  @OneToMany(() => LineSectionLineStationOrmEntity, (t) => t.lineStation)
+  @JoinColumn([{ name: 'line_id' }, { name: 'station_id' }])
   lineSectionLineStations: LineSectionLineStationOrmEntity[];
 }

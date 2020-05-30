@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '../../layouts/main.layout';
-import { StationController } from '../../../controllers/page/station.controller';
+import { StationController } from '../../../controllers/page/stationController';
 
 type Props = ReturnType<StationController['index']> extends Promise<infer T>
   ? T

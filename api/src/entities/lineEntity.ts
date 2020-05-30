@@ -1,5 +1,5 @@
-import { CompanyEntity } from "./companyEntity";
-import { LineSectionEntity } from "./lineSectionEntity";
+import { CompanyEntity } from './companyEntity';
+import { LineSectionEntity } from './lineSectionEntity';
 
 export class LineEntity {
   constructor(
@@ -10,6 +10,6 @@ export class LineEntity {
     public readonly lineNameKana: string,
     public readonly statusId: number,
     public readonly company: CompanyEntity | null = null,
-    public readonly lineSections: LineSectionEntity[] = [],
+    public readonly lineSections: LineSectionEntity[] = []
   ) { }
 }
