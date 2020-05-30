@@ -5,3 +5,68 @@ info:
   version: 0.0.1
 paths:
   /company:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+  /company/{companyId}:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/Company"
+  /line:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Line"
+                  properties:
+                    company:
+                      $ref: "#/components/schemas/Company"
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        companyId:
+          type: integer
+        companyName:
+          type: string
+        companyNameAlias:
+          type: string
+        companyTypeId:
+          type: integer
+        corporateColor:
+          type: string
+        status:
+          type: integer
+    Line:
+      type: object
+      properties:
+        lineId:
+          type: integer
+        lineCode:
+          type: string
+        lineName:
+          type: string
+        lineNameAlias:
+          type: string
+        lineNameKana:
+          type: string
