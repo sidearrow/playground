@@ -23,7 +23,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 items:
                   $ref: "#/components/schemas/Company"
   /company/{companyId}/statistics:
@@ -36,7 +35,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schema/CompanyStatistics"
+                  $ref: "#/components/schemas/CompanyStatistics"
   /line:
     get:
       responses:
@@ -47,10 +46,55 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Line"
-                  properties:
-                    company:
-                      $ref: "#/components/schemas/Company"
+                  allOf:
+                    - $ref: "#/components/schemas/Line"
+                    - properties:
+                        company:
+                          $ref: "#/components/schemas/Company"
+  /line/{lineId}:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: "#/components/schemas/Line"
+                  - type: object
+                    properties:
+                      company:
+                        $ref: "#/components/schemas/Company"
+                  - type: object
+                    properties:
+                      lineSections:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: "#/components/schemas/LineSection"
+                            - type: object
+                              properties:
+                                stations:
+                                  type: array
+                                  items:
+                                    allOf:
+                                      - $ref: "#/components/schemas/Station"
+                                      - type: object
+                                        properties:
+                                          groupStations:
+                                            type: array
+                                            items:
+                                              allOf:
+                                                - $ref: "#/components/schemas/Station"
+                                                - type: object
+                                                  properties:
+                                                    company:
+                                                      $ref: "#/components/schemas/Company"
+                                                    lines:
+                                                      type: array
+                                                      items:
+                                                        $ref: "#/components/schemas/Line"
 components:
   schemas:
     Company:
@@ -80,6 +124,24 @@ components:
         lineNameAlias:
           type: string
         lineNameKana:
+          type: string
+    LineSection:
+      type: object
+      properties:
+        lineId:
+          type: integer
+        sectionId:
+          type: integer
+        lineSectionName:
+          type: string
+    Station:
+      type: object
+      properties:
+        stationId:
+          type: integer
+        stationName:
+          type: string
+        stationNameKana:
           type: string
     CompanyStatistics:
       type: object
