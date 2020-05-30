@@ -35,18 +35,6 @@ export class CompanyRepository extends BaseRepository {
       return undefined;
     }
 
-    const lineEntities = company.lines.map(
-      (line) =>
-        new LineEntity(
-          line.lineId,
-          line.lineCode,
-          line.lineName,
-          line.lineNameAlias,
-          line.lineNameKana,
-          line.statusId
-        )
-    );
-
     const companyStatisticsEntities = company.companyStatistics.map(
       (v) =>
         new CompanyStatisticsEntity(
@@ -74,7 +62,7 @@ export class CompanyRepository extends BaseRepository {
       company.companyTypeId,
       company.corporateColor,
       company.status,
-      lineEntities,
+      null,
       companyStatisticsEntities
     );
 

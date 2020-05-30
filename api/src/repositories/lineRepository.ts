@@ -6,10 +6,11 @@ import { LineSectionEntity } from '../entities/lineSectionEntity';
 import { StationEntity } from '../entities/stationEntity';
 
 export class LineRepository extends BaseRepository {
-  public async getAll(): Promise<LineEntity[]> {
+  public async get(companyId: number = null): Promise<LineEntity[]> {
     const con = await this.getConnection();
     const lines = await con.getRepository(LineOrmEntity).find({
       relations: ['company'],
+      where: companyId === null ? {} : { companyId: companyId },
     });
 
     const lineEntities = lines.map(

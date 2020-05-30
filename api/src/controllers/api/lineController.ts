@@ -1,13 +1,15 @@
-import { Controller, Get, Param } from 'routing-controllers';
+import { Controller, Get, Param, QueryParam } from 'routing-controllers';
 import { LineRepository } from '../../repositories/lineRepository';
 import { LineEntity } from '../../entities/lineEntity';
 
 @Controller('/api/line')
 export class ApiLineController {
   @Get('/')
-  async index(): Promise<LineEntity[]> {
+  async index(
+    @QueryParam('companyId') companyId: number
+  ): Promise<LineEntity[]> {
     const lineRepository = new LineRepository();
-    const lines = await lineRepository.getAll();
+    const lines = await lineRepository.get(companyId ?? null);
 
     return lines;
   }
