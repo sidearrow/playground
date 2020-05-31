@@ -1,9 +1,10 @@
-generate-client:
+openapi-generate-client-code:
 	docker run --rm \
-    -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-    -i /local/api/swagger-spec.json \
-    -g typescript-fetch \
-    -o /local/out
+	-v ${PWD}/openapi:/local/openapi \
+	openapitools/openapi-generator-cli generate \
+	-i /local/openapi/openapi.yaml \
+	-g typescript-axios \
+	-o /local/openapi/out
 
 
 start-admin-page:

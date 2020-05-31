@@ -1,8 +1,10 @@
-openapi: "3.0.3"
+openapi: 3.0.3
 info:
   title: railway-statistics-api
   description: Railway Statistics API
   version: 0.0.1
+servers:
+  - url: http://localhost:5000/api
 paths:
   /company:
     get:
@@ -17,6 +19,12 @@ paths:
                   $ref: "#/components/schemas/Company"
   /company/{companyId}:
     get:
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
       responses:
         200:
           description: _
@@ -27,6 +35,12 @@ paths:
                   $ref: "#/components/schemas/Company"
   /company/{companyId}/statistics:
     get:
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
       responses:
         200:
           description: _
@@ -53,6 +67,12 @@ paths:
                           $ref: "#/components/schemas/Company"
   /line/{lineId}:
     get:
+      parameters:
+        - in: path
+          name: lineId
+          schema:
+            type: integer
+          required: true
       responses:
         200:
           description: _
