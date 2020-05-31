@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import CmpLayout from '../../components/layout.cmp';
-import { CompanyRepository } from '../../repositories/company.repository';
+import { CompanyRepository } from '../../repositories/companyRepository';
 import { LineRepository } from '../../repositories/line.repository';
 import CmpBreadcrumb from '../../components/breadcrumb.cmp';
 import { GetStaticProps } from 'next';
-import { CompanyEntity } from '../../entities/company.entity';
-import { LineEntiry } from '../../entities/line.entity';
+import { CompanyEntity } from '../../entities/companyEntity';
+import { LineEntiry } from '../../entities/lineEntity';
 
 export const getStaticProps: GetStaticProps<{
   companies: CompanyEntity[];

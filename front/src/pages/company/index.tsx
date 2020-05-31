@@ -1,22 +1,20 @@
 import React from 'react';
 import CmpLayout from '../../components/layout.cmp';
-import { CompanyRepository } from '../../repositories/company.repository';
 import Link from 'next/link';
 import CmpBreadcrumb from '../../components/breadcrumb.cmp';
 import { GetStaticProps } from 'next';
-import { CompanyEntity } from '../../entities/company.entity';
+import { CompanyEntity } from '../../api/entities';
+import { ApiClient } from '../../api/client';
 
-export const getStaticProps: GetStaticProps<{
+type Props = {
   companies: CompanyEntity[];
-}> = async () => {
-  const companies = await CompanyRepository.getAll();
+};
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const companies = await new ApiClient().getCompanyAll();
 
   return { props: { companies: companies } };
 };
-
-type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T>
-  ? T
-  : never)['props'];
 
 const Component: React.FC<Props> = ({ companies }) => {
   return (

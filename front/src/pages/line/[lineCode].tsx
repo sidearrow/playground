@@ -4,7 +4,7 @@ import { LineRepository } from '../../repositories/line.repository';
 import CmpLayout from '../../components/layout.cmp';
 import Link from 'next/link';
 import CmpBreadcrumb from '../../components/breadcrumb.cmp';
-import { LineEntiry } from '../../entities/line.entity';
+import { LineEntiry } from '../../entities/lineEntity';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const lines = await LineRepository.getAll();

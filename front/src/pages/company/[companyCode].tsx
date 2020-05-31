@@ -1,14 +1,22 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { CompanyRepository } from '../../repositories/company.repository';
 import CmpLayout from '../../components/layout.cmp';
 /*import { LineChart, XAxis, Line, YAxis, Tooltip, Legend } from 'recharts';*/
 import Link from 'next/link';
 import CmpBreadcrumb from '../../components/breadcrumb.cmp';
-import { CompanyEntity } from '../../entities/company.entity';
+import { ApiClient } from '../../api/client';
+import {
+  CompanyEntity,
+  CompanyStatisticsEntity,
+  LineEntity,
+} from '../../api/entities';
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const companies = await CompanyRepository.getAll();
+type Params = {
+  companyCode: string;
+};
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  const companies = await new ApiClient().getCompanyAll();
   const paths = companies.map((copmany) => ({
     params: { companyCode: copmany.companyCode },
   }));
@@ -16,22 +24,27 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<{
+type Props = {
   company: CompanyEntity;
-}> = async ({ params }) => {
-  const company = await CompanyRepository.findByCompanyCode(
-    params?.companyCode as string
-  );
-
-  return { props: { company: company } };
+  lines: LineEntity[];
+  statistics: CompanyStatisticsEntity[];
 };
 
-type Props = (ReturnType<typeof getStaticProps> extends Promise<infer T>
-  ? T
-  : never)['props'];
+export const getStaticProps: GetStaticProps<Props, Params> = async ({
+  params,
+}) => {
+  const companyId = Number(params?.companyId);
+
+  const apiClient = new ApiClient();
+  const company = await apiClient.getCompanyDetail(companyId);
+  const lines = await apiClient.getLines(companyId);
+  const statistics = await apiClient.getCompanyStatistics(companyId);
+
+  return { props: { company: company, lines: lines, statistics: statistics } };
+};
 
 const TransportPassengersTable: React.FC<{
-  data: Props['company']['companyStatistics'];
+  data: Props['statistics'];
 }> = ({ data }) => {
   if (data === undefined || data.length === 0) {
     return <div className="alert alert-warning">データなし</div>;
@@ -125,7 +138,7 @@ const TransportPassengersTable: React.FC<{
 };
 
 const TransportRevenuePassengerTable: React.FC<{
-  data: Props['company']['companyStatistics'];
+  data: Props['statistics'];
 }> = ({ data }) => {
   if (data === undefined || data.length === 0) {
     return <div className="alert alert-warning">データなし</div>;
@@ -208,7 +221,7 @@ const TransportRevenuePassengerTable: React.FC<{
   );
 };
 
-const Component: React.FC<Props> = ({ company }) => {
+const Component: React.FC<Props> = ({ company, lines, statistics }) => {
   return (
     <CmpLayout title={`${company.companyNameAlias}`}>
       <section>
@@ -234,7 +247,7 @@ const Component: React.FC<Props> = ({ company }) => {
       <h2>路線一覧</h2>
       <section>
         <div className="form-row">
-          {company?.lines?.map((line, i) => (
+          {lines.map((line, i) => (
             <div className="col-md-3 col-4 text-nowrap" key={i}>
               <Link href={`/line/${line.lineCode}`}>{line.lineNameAlias}</Link>
             </div>
@@ -244,13 +257,11 @@ const Component: React.FC<Props> = ({ company }) => {
       <h2>統計情報</h2>
       <h3>輸送人員</h3>
       <section>
-        <TransportPassengersTable data={company.companyStatistics?.slice(-5)} />
+        <TransportPassengersTable data={statistics.slice(-5)} />
       </section>
       <h3>旅客輸送収入</h3>
       <section>
-        <TransportRevenuePassengerTable
-          data={company.companyStatistics?.slice(-5)}
-        />
+        <TransportRevenuePassengerTable data={statistics.slice(-5)} />
       </section>
       <section>
         {/**
