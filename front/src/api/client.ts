@@ -30,15 +30,23 @@ export class ApiClient extends AbstractApiClient {
     return await this.get<CompanyEntity>(`/company/${companyId}`);
   }
 
+  public async getCompanyDetailByCode(companyCode: string) {
+    return await this.get<CompanyEntity>(`/company/code=${companyCode}`);
+  }
+
   public async getCompanyStatistics(companyId: number) {
     return await this.get<CompanyStatisticsEntity[]>(
       `/company/${companyId}/statistics`
     );
   }
 
-  public async getLines(companyId?: number) {
+  public async getLines() {
+    return await this.get<(LineEntity & { company: CompanyEntity })[]>('/line');
+  }
+
+  public async getLinesByCompanyId(companyId: number) {
     return await this.get<(LineEntity & { company: CompanyEntity })[]>(
-      `/line/${companyId ?? ''}`
+      `/line?companyId=${companyId}`
     );
   }
 

@@ -23,6 +23,7 @@ export class LineRepository extends BaseRepository {
         statusId: line.statusId,
         company: {
           companyId: line.company.companyId,
+          companyCode: line.company.companyCode,
           companyName: line.company.companyName,
           companyNameAlias: line.company.companyNameAlias,
           companyTypeId: line.company.companyTypeId,
@@ -64,6 +65,7 @@ export class LineRepository extends BaseRepository {
                 (sgs) => {
                   const companyEntity: CompanyEntity = {
                     companyId: sgs.station.company.companyId,
+                    companyCode: sgs.station.company.companyCode,
                     companyName: sgs.station.company.companyName,
                     companyNameAlias: sgs.station.company.companyNameAlias,
                     companyTypeId: sgs.station.company.companyTypeId,
@@ -120,6 +122,7 @@ export class LineRepository extends BaseRepository {
       statusId: line.statusId,
       company: {
         companyId: line.company.companyId,
+        companyCode: line.company.companyCode,
         companyName: line.company.companyName,
         companyNameAlias: line.company.companyNameAlias,
         companyTypeId: line.company.companyTypeId,

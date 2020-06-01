@@ -9,6 +9,7 @@ export class CompanyRepository extends BaseRepository {
     const companyEntities = companies.map(
       (company): CompanyEntity => ({
         companyId: company.companyId,
+        companyCode: company.companyCode,
         companyName: company.companyName,
         companyNameAlias: company.companyNameAlias,
         companyTypeId: company.companyTypeId,
@@ -20,12 +21,14 @@ export class CompanyRepository extends BaseRepository {
     return companyEntities;
   }
 
-  public async getDetail(companyId: number): Promise<CompanyEntity> {
+  protected async getDetailBase(
+    search: { companyId: number } | { companyCode: string }
+  ): Promise<CompanyEntity> {
     const con = await this.getConnection();
 
     const company = await con.getRepository(CompanyOrmEntity).findOne({
       relations: ['lines', 'companyStatistics'],
-      where: { companyId: companyId },
+      where: search,
     });
 
     if (company === undefined) {
@@ -34,6 +37,7 @@ export class CompanyRepository extends BaseRepository {
 
     const companyEntity: CompanyEntity = {
       companyId: company.companyId,
+      companyCode: company.companyCode,
       companyName: company.companyName,
       companyNameAlias: company.companyNameAlias,
       companyTypeId: company.companyTypeId,
@@ -42,5 +46,15 @@ export class CompanyRepository extends BaseRepository {
     };
 
     return companyEntity;
+  }
+
+  public async getDetailByCompanyId(companyId: number): Promise<CompanyEntity> {
+    return await this.getDetailBase({ companyId: companyId });
+  }
+
+  public async getDetailByCompanyCode(
+    companyCode: string
+  ): Promise<CompanyEntity> {
+    return await this.getDetailBase({ companyCode: companyCode });
   }
 }

@@ -10,10 +10,11 @@ import {
   CompanyStatisticsEntity,
   LineEntity,
 } from '../../api/entities';
+import { ParsedUrlQuery } from 'querystring';
 
-type Params = {
+interface Params extends ParsedUrlQuery {
   companyCode: string;
-};
+}
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const companies = await new ApiClient().getCompanyAll();
@@ -33,12 +34,14 @@ type Props = {
 export const getStaticProps: GetStaticProps<Props, Params> = async ({
   params,
 }) => {
-  const companyId = Number(params?.companyId);
+  const companyCode = params?.companyCode as string;
 
   const apiClient = new ApiClient();
-  const company = await apiClient.getCompanyDetail(companyId);
-  const lines = await apiClient.getLines(companyId);
-  const statistics = await apiClient.getCompanyStatistics(companyId);
+  const company = await apiClient.getCompanyDetailByCode(companyCode);
+  const lines = await apiClient.getLinesByCompanyId(company.companyId);
+  const statistics = await apiClient.getCompanyStatistics(company.companyId);
+
+  console.log(lines);
 
   return { props: { company: company, lines: lines, statistics: statistics } };
 };
@@ -249,7 +252,9 @@ const Component: React.FC<Props> = ({ company, lines, statistics }) => {
         <div className="form-row">
           {lines.map((line, i) => (
             <div className="col-md-3 col-4 text-nowrap" key={i}>
-              <Link href={`/line/${line.lineCode}`}>{line.lineNameAlias}</Link>
+              <Link href={`/line/${line.lineCode}`}>
+                <a>{line.lineNameAlias}</a>
+              </Link>
             </div>
           ))}
         </div>

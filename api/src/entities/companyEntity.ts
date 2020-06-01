@@ -3,6 +3,7 @@ import { CompanyStatisticsEntity } from './companyStatisticsEntity';
 
 export type CompanyEntity = {
   readonly companyId: number;
+  readonly companyCode: string;
   readonly companyName: string;
   readonly companyNameAlias: string;
   readonly companyTypeId: number;

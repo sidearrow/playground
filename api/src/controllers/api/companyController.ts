@@ -6,6 +6,8 @@ import { CompanyStatisticsRepository } from '../../repositories/companyStatistic
 
 @Controller('/api/company')
 export class ApiCompanyController {
+  constructor(private companyRepository = new CompanyRepository()) { }
+
   @Get('/')
   async getAll(): Promise<CompanyEntity[]> {
     const companyRepository = new CompanyRepository();
@@ -14,14 +16,18 @@ export class ApiCompanyController {
     return companies;
   }
 
+  @Get('/code=:companyCode')
+  async getDetailByCompanyCode(
+    @Param('companyCode') companyCode: string
+  ): Promise<CompanyEntity> {
+    return await this.companyRepository.getDetailByCompanyCode(companyCode);
+  }
+
   @Get('/:companyId')
   async getDetail(
     @Param('companyId') companyId: number
   ): Promise<CompanyEntity> {
-    const companyRepository = new CompanyRepository();
-    const company = await companyRepository.getDetail(companyId);
-
-    return company;
+    return await this.companyRepository.getDetailByCompanyId(companyId);
   }
 
   @Get('/:companyId/statistics')
