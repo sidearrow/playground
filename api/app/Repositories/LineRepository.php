@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\LineEntity;
 use App\Models\LineModel;
 
 class LineRepository extends AbstractRepository
@@ -16,13 +17,23 @@ class LineRepository extends AbstractRepository
 
         $lineEntities = [];
         foreach ($lineModels as $lineModel) {
-            $lineEntity = $this->lineModelToEntity($lineModel);
-            $lineEntity->setCompany(
-                $this->companyModelToEntity($lineModel->company)
-            );
-            $lineEntities[] = $lineEntity;
+            $lineEntities[] = $this->lineModelToEntity($lineModel, ['company']);
         }
 
         return $lineEntities;
+    }
+
+    public function getDetail(int $lineId): LineEntity
+    {
+        $lineModel = LineModel::with([
+            'company',
+            'lineSections.lineSectionLineStations.station.lines',
+            'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroupStations.station.company',
+            'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroupStations.station.lines',
+        ])->find($lineId);
+
+        $lineEntity = $this->lineModelToEntity($lineModel, ['company', 'lineSections']);
+
+        return $lineEntity;
     }
 }

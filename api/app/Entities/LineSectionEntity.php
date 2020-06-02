@@ -8,16 +8,26 @@ class LineSectionEntity implements JsonSerializable
 {
     private int $lineId;
     private int $sectionId;
-    private string $lineSectionName;
+    private ?string $lineSectionName;
+
+    private ?array $stations;
 
     public function __construct(
         int $lineId,
         int $sectionId,
-        string $lineSectionName
+        ?string $lineSectionName
     ) {
         $this->lineId = $lineId;
         $this->sectionId = $sectionId;
         $this->lineSectionName = $lineSectionName;
+    }
+
+    /**
+     * @param \App\Entities\StationEntity[] $stations
+     */
+    public function setStations(array $stations): void
+    {
+        $this->stations = $stations;
     }
 
     public function jsonSerialize()
@@ -26,6 +36,7 @@ class LineSectionEntity implements JsonSerializable
             'lineId' => $this->lineId,
             'sectionId' => $this->sectionId,
             'lineSectionName' => $this->lineSectionName,
+            'stations' => $this->stations,
         ];
     }
 }

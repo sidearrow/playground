@@ -18,4 +18,9 @@ class LineModel extends Model
     {
         return $this->hasOne(CompanyModel::class, 'company_id', 'company_id');
     }
+
+    public function lineSections()
+    {
+        return $this->hasMany(LineSectionModel::class, 'line_id', 'line_id');
+    }
 }

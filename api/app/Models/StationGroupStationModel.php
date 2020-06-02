@@ -13,4 +13,14 @@ class StationGroupStationModel extends Model
     public $incrementing = false;
 
     public $timestamps = false;
+
+    public function station()
+    {
+        return $this->hasOne(StationModel::class, 'station_id', 'station_id');
+    }
+
+    public function stationGroupStations()
+    {
+        return $this->hasMany(StationGroupStationModel::class, 'station_group_id', 'station_group_id');
+    }
 }

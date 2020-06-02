@@ -15,7 +15,8 @@ class LineEntity implements JsonSerializable
     private ?float $operatingLength;
     private ?float $realLength;
 
-    private CompanyEntity $company;
+    private ?CompanyEntity $company = null;
+    private ?array $lineSections = null;
 
     public function __construct(
         int $lineId,
@@ -42,6 +43,14 @@ class LineEntity implements JsonSerializable
         $this->company = $company;
     }
 
+    /**
+     * @param \App\Entities\LineSectionEntity[] $lineSections
+     */
+    public function setLineSections(array $lineSections): void
+    {
+        $this->lineSections = $lineSections;
+    }
+
     public function jsonSerialize()
     {
         $res = [
@@ -57,6 +66,10 @@ class LineEntity implements JsonSerializable
 
         if ($this->company !== null) {
             $res['company'] = $this->company;
+        }
+
+        if ($this->lineSections !== null) {
+            $res['lineSections'] = $this->lineSections;
         }
 
         return $res;

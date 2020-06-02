@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/company')->group(function () {
@@ -9,4 +8,5 @@ Route::prefix('/company')->group(function () {
 
 Route::prefix('/line')->group(function () {
     Route::get('/', 'LineController@getAll');
+    Route::get('/{lineId}', 'LineController@getDetail');
 });

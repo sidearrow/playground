@@ -8,7 +8,7 @@ class StationEntity implements JsonSerializable
 {
     private int $stationId;
     private string $stationName;
-    private string $stationNameKana;
+    private ?string $stationNameKana;
 
     private ?CompanyEntity $company = null;
     private ?array $lines = null;
@@ -17,7 +17,7 @@ class StationEntity implements JsonSerializable
     public function __construct(
         int $stationId,
         string $stationName,
-        string $stationNameKana
+        ?string $stationNameKana
     ) {
         $this->stationId = $stationId;
         $this->stationName = $stationName;

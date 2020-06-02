@@ -21,4 +21,11 @@ class LineController extends Controller
 
         return $lines;
     }
+
+    public function getDetail(int $lineId)
+    {
+        $line = $this->lineRepository->getDetail($lineId);
+
+        return $line;
+    }
 }
