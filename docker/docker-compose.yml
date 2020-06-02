@@ -7,11 +7,9 @@ services:
   api:
     build: ./api
     ports:
-      - 5000:5000
+      - 80:80
     volumes:
-      - ./../api:/usr/src/app
-      - api_node_modules:/usr/src/app/node_modules
-    tty: true
+      - ./../api:/var/www/app
   db:
     image: mysql:5.7
     volumes:
@@ -29,3 +27,11 @@ services:
       API_URL: openapi.yaml
     ports:
       - 8080:8080
+  __old_api:
+    build: ./__old_api
+    ports:
+      - 5000:5000
+    volumes:
+      - ./../__old_api:/usr/src/app
+      - api_node_modules:/usr/src/app/node_modules
+    tty: true
