@@ -3,22 +3,44 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\CompanyRepository;
-use Illuminate\Http\Request;
+use App\Services\CompanyService;
+use App\Services\LineService;
 
 class CompanyController extends Controller
 {
-    private CompanyRepository $companyRepository;
+    private CompanyService $companyService;
+    private LineService $lineService;
 
     public function __construct()
     {
-        $this->companyRepository = new CompanyRepository();
+        $this->companyService = new CompanyService();
+        $this->lineService = new LineService();
     }
 
     public function index()
     {
-        $companies = $this->companyRepository->getAll();
+        return $this->companyService->getAll();
+    }
 
-        return $companies;
+    public function getOne(int $companyId)
+    {
+        return $this->companyService->getOne($companyId);
+    }
+
+    public function getOneByCode(string $companyCode)
+    {
+        return $this->companyService->getOneByCompanyCode($companyCode);
+    }
+
+    public function getLines(int $companyId)
+    {
+        return $this->lineService->getByCompanyId($companyId);
+    }
+
+    public function getLinesByCode(string $companyCode)
+    {
+        $company = $this->companyService->getOneByCompanyCode($companyCode);
+
+        return $this->lineService->getByCompanyId($company->getCompanyId());
     }
 }

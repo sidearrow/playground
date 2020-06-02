@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Entities\LineEntity;
 use App\Models\LineModel;
+use Illuminate\Database\Eloquent\Collection;
 
 class LineRepository extends AbstractRepository
 {
@@ -21,6 +22,15 @@ class LineRepository extends AbstractRepository
         }
 
         return $lineEntities;
+    }
+
+
+    /**
+     * @return Collection<LineModel>
+     */
+    public function getByCompanyId(int $companyId): Collection
+    {
+        return LineModel::where('company_id', '=', $companyId)->get();
     }
 
     public function getDetail(int $lineId): LineEntity

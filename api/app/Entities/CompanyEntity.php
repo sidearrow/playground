@@ -51,6 +51,11 @@ class CompanyEntity implements JsonSerializable
         $this->lines = $lines;
     }
 
+    public function getCompanyId(): int
+    {
+        return $this->companyId;
+    }
+
     public function jsonSerialize()
     {
         $res = [

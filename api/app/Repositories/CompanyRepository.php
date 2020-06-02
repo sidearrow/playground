@@ -3,18 +3,25 @@
 namespace App\Repositories;
 
 use App\Models\CompanyModel;
+use Illuminate\Database\Eloquent\Collection;
 
 class CompanyRepository extends AbstractRepository
 {
-    public function getAll(): array
+    /**
+     * @return Collection<CompanyModel>
+     */
+    public function getAll(): Collection
     {
-        $companyModels = CompanyModel::all();
+        return CompanyModel::all();
+    }
 
-        $companyEntities = [];
-        foreach ($companyModels as $companyModel) {
-            $companyEntities[] = $this->companyModelToEntity($companyModel);
-        }
+    public function getOne(int $companyId): CompanyModel
+    {
+        return CompanyModel::find($companyId);
+    }
 
-        return $companyEntities;
+    public function getOneByCompanyCode(string $companyCode): CompanyModel
+    {
+        return CompanyModel::where('company_code', '=', $companyCode)->first();
     }
 }

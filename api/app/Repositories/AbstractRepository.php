@@ -2,32 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Entities\CompanyEntity;
 use App\Entities\LineEntity;
 use App\Entities\LineSectionEntity;
 use App\Entities\StationEntity;
-use App\Models\CompanyModel;
 use App\Models\LineModel;
 use App\Models\LineSectionModel;
 use App\Models\StationModel;
 
 abstract class AbstractRepository
 {
-    protected function companyModelToEntity(CompanyModel $model): CompanyEntity
-    {
-        return new CompanyEntity(
-            $model->company_id,
-            $model->company_code,
-            $model->company_name,
-            $model->company_name_alias,
-            $model->company_name_kana,
-            $model->length,
-            $model->line_num,
-            $model->station_num,
-            $model->corporate_color
-        );
-    }
-
     protected function lineModelToEntity(LineModel $lineModel, array $relations = []): LineEntity
     {
         $lineEntity = new LineEntity(
