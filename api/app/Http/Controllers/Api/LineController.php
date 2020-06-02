@@ -3,29 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\LineRepository;
-use Illuminate\Http\Request;
+use App\Services\LineService;
 
 class LineController extends Controller
 {
-    private LineRepository $lineRepository;
+    private LineService $lineService;
 
     public function __construct()
     {
-        $this->lineRepository = new LineRepository();
+        $this->lineService = new LineService();
     }
 
     public function getAll()
     {
-        $lines = $this->lineRepository->getAll();
-
-        return $lines;
+        return $this->lineService->getAll();
     }
 
     public function getDetail(int $lineId)
     {
-        $line = $this->lineRepository->getDetail($lineId);
-
-        return $line;
+        return $this->lineService->getOne($lineId);
     }
 }

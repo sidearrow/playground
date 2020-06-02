@@ -10,7 +10,7 @@ class LineSectionEntity implements JsonSerializable
     private int $sectionId;
     private ?string $lineSectionName;
 
-    private ?array $stations;
+    private ?array $stations = null;
 
     public function __construct(
         int $lineId,

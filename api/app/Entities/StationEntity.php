@@ -6,6 +6,10 @@ use JsonSerializable;
 
 class StationEntity implements JsonSerializable
 {
+    public const RELATION_COMPANY = 'relation_company';
+    public const RELATION_LINES = 'relation_lines';
+    public const RELATION_GROUP_STATIONS = 'relation_group_stations';
+
     private int $stationId;
     private string $stationName;
     private ?string $stationNameKana;

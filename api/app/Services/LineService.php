@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entities\LineEntity;
 use App\Factories\LineEntityFactory;
 use App\Repositories\LineRepository;
 
@@ -19,16 +20,30 @@ class LineService
     /**
      * @return \App\Entities\LineEntity[]
      */
+    public function getAll(): array
+    {
+        return $this->lineEntityFactory->createFromModelCollection(
+            $this->lineRepository->getAll()
+        );
+    }
+
+    /**
+     * @return \App\Entities\LineEntity[]
+     */
     public function getByCompanyId(int $companyId): array
     {
+        return $this->lineEntityFactory->createFromModelCollection(
+            $this->lineRepository->getByCompanyId($companyId)
+        );
+    }
 
-        $lineModels = $this->lineRepository->getByCompanyId($companyId);
-
-        $lineEntities = [];
-        foreach ($lineModels as $lineModel) {
-            $lineEntities[] = $this->lineEntityFactory->createFromModel($lineModel);
-        }
-
-        return $lineEntities;
+    public function getOne(int $lineId): LineEntity
+    {
+        return $this->lineEntityFactory->createFromModel(
+            $this->lineRepository->getOne($lineId),
+            [
+                LineEntityFactory::class => LineEntityFactory::RELATION_LINE_SECTION,
+            ]
+        );
     }
 }
