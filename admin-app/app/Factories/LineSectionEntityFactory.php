@@ -10,13 +10,6 @@ class LineSectionEntityFactory
 {
     public const RELATION_STATIONS = 'relations_stations';
 
-    private StationEntityFactory $stationEntityFactory;
-
-    public function __construct()
-    {
-        //$this->stationEntityFactory = new StationEntityFactory();
-    }
-
     public function createFromModel(LineSectionModel $lineSectionModel): LineSectionEntity
     {
         $lineSectionEntity = new LineSectionEntity(

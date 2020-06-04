@@ -33,4 +33,14 @@ class LineRepository extends AbstractRepository
             'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroupStations.station.lines',
         ])->find($lineId);
     }
+
+    public function getOneByCode(string $lineCode): LineModel
+    {
+        return LineModel::with([
+            'company',
+            'lineSections.lineSectionLineStations.station.lines',
+            'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroupStations.station.company',
+            'lineSections.lineSectionLineStations.station.stationGroupStation.stationGroupStations.station.lines',
+        ])->where('line_code', '=', $lineCode)->first();
+    }
 }

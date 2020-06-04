@@ -43,7 +43,7 @@ class StationEntityFactory
                     }
                     $lineEntities[] = $lineEntityFactory->createFromModel($line);
                 }
-                $stationEntity->setGroupStations($lineEntities);
+                $stationEntity->setLines($lineEntities);
             }
         }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class LineEntityFactory
 {
+    public const RELATION_COMPANY = 'relation_company';
     public const RELATION_LINE_SECTION = 'relation_line_section';
 
     private LineSectionEntityFactory $lineSectionEntityFactory;
@@ -30,12 +31,20 @@ class LineEntityFactory
             $lineModel->real_kilo,
         );
 
-        if (($relations[self::class] ?? null) === self::RELATION_LINE_SECTION) {
-            $lineSectionEntities = [];
-            foreach ($lineModel->lineSections as $lineSectionModel) {
-                $lineSectionEntities[] = $this->lineSectionEntityFactory->createFromModel($lineSectionModel);
+        if (array_key_exists(self::class, $relations)) {
+            if (in_array(self::RELATION_LINE_SECTION, $relations[self::class])) {
+                $lineSectionEntities = [];
+                foreach ($lineModel->lineSections as $lineSectionModel) {
+                    $lineSectionEntities[] = $this->lineSectionEntityFactory->createFromModel($lineSectionModel);
+                }
+                $lineEntity->setLineSections($lineSectionEntities);
             }
-            $lineEntity->setLineSections($lineSectionEntities);
+
+            if (in_array(self::RELATION_COMPANY, $relations[self::class])) {
+                $lineEntity->setCompany(
+                    (new CompanyEntityFactory())->createFromModel($lineModel->company)
+                );
+            }
         }
 
         return $lineEntity;
@@ -44,11 +53,11 @@ class LineEntityFactory
     /**
      * @param \Illuminate\Database\Eloquent\Collection<LineModel> $lineModelCollection
      */
-    public function createFromModelCollection(Collection $lineModelCollection): array
+    public function createFromModelCollection(Collection $lineModelCollection, $relations = []): array
     {
         $lineEntities = [];
         foreach ($lineModelCollection as $lineModel) {
-            $lineEntities[] = $this->createFromModel($lineModel);
+            $lineEntities[] = $this->createFromModel($lineModel, $relations);
         }
 
         return $lineEntities;

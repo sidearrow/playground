@@ -23,7 +23,8 @@ class LineService
     public function getAll(): array
     {
         return $this->lineEntityFactory->createFromModelCollection(
-            $this->lineRepository->getAll()
+            $this->lineRepository->getAll(),
+            [LineEntityFactory::class => [LineEntityFactory::RELATION_COMPANY]]
         );
     }
 
@@ -44,6 +45,14 @@ class LineService
             [
                 LineEntityFactory::class => LineEntityFactory::RELATION_LINE_SECTION,
             ]
+        );
+    }
+
+    public function getOneByCode(string $lineCode): LineEntity
+    {
+        return $this->lineEntityFactory->createFromModel(
+            $this->lineRepository->getOneByCode($lineCode),
+            [LineEntityFactory::class => [LineEntityFactory::RELATION_LINE_SECTION, LineEntityFactory::RELATION_COMPANY]],
         );
     }
 }
