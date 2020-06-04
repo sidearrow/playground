@@ -1,15 +1,15 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import CmpLayout from '../../components/layout.cmp';
+import CmpLayout from '../../../components/layout.cmp';
 /*import { LineChart, XAxis, Line, YAxis, Tooltip, Legend } from 'recharts';*/
 import Link from 'next/link';
-import CmpBreadcrumb from '../../components/breadcrumb.cmp';
-import { ApiClient } from '../../api/client';
+import CmpBreadcrumb from '../../../components/breadcrumb.cmp';
+import { ApiClient } from '../../../api/client';
 import {
   CompanyEntity,
   CompanyStatisticsEntity,
   LineEntity,
-} from '../../api/entities';
+} from '../../../api/entities';
 import { ParsedUrlQuery } from 'querystring';
 
 interface Params extends ParsedUrlQuery {
@@ -127,7 +127,7 @@ const TransportPassengersTable: React.FC<{
               <td key={i} style={{ textAlign: 'right' }}>
                 {v.transportPassengersTeikigai === null
                   ? '-'
-                  : v.transportPassengersSum.toLocaleString()}
+                  : v.transportPassengersTotal?.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -175,7 +175,7 @@ const TransportRevenuePassengerTable: React.FC<{
             <th className="alert-dark">通勤</th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportRevenuePassengerTeikiTsukin.toLocaleString()}
+                {v.transportRevenuePassengerTeikiTsukin?.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -183,7 +183,7 @@ const TransportRevenuePassengerTable: React.FC<{
             <th className="alert-dark">通学</th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportRevenuePassengerTeikiTsugaku.toLocaleString()}
+                {v.transportRevenuePassengerTeikiTsugaku?.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -191,7 +191,7 @@ const TransportRevenuePassengerTable: React.FC<{
             <th className="alert-dark">計</th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportRevenuePassengerTotal.toLocaleString()}
+                {v.transportRevenuePassengerTotal?.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -201,7 +201,7 @@ const TransportRevenuePassengerTable: React.FC<{
             </th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportRevenuePassengerTeikigai.toLocaleString()}
+                {v.transportRevenuePassengerTeikigai?.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -211,7 +211,7 @@ const TransportRevenuePassengerTable: React.FC<{
             </th>
             {data.map((v, i) => (
               <td key={i} style={{ textAlign: 'right' }}>
-                {v.transportRevenuePassengerTotal.toLocaleString()}
+                {v.transportRevenuePassengerTotal?.toLocaleString()}
               </td>
             ))}
           </tr>
@@ -252,7 +252,9 @@ const Component: React.FC<Props> = ({ company, lines, statistics }) => {
         <div className="form-row">
           {lines.map((line, i) => (
             <div className="col-md-3 col-4 text-nowrap" key={i}>
-              <Link href={`/line/${line.lineCode}`}>
+              <Link
+                href={`/company/${company.companyCode}/line/${line.lineCode}`}
+              >
                 <a>{line.lineNameAlias}</a>
               </Link>
             </div>

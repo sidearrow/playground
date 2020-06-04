@@ -11,18 +11,18 @@ export type CompanyEntity = {
 export type CompanyStatisticsEntity = {
   companyId: number;
   year: number;
-  transportPassengersTeikiTsukin: number;
-  transportPassengersTeikiTsugaku: number;
-  transportPassengersTeikiTotal: number;
-  transportPassengersTeikiPercent: number;
-  transportPassengersTeikigai: number;
-  transportPassengersTeikigaiPercent: number;
-  transportPassengersSum: number;
-  transportRevenuePassengerTeikiTsukin: number;
-  transportRevenuePassengerTeikiTsugaku: number;
-  transportRevenuePassengerTeikiTotal: number;
-  transportRevenuePassengerTeikigai: number;
-  transportRevenuePassengerTotal: number;
+  transportPassengersTeikiTsukin: number | null;
+  transportPassengersTeikiTsugaku: number | null;
+  transportPassengersTeikiTotal: number | null;
+  transportPassengersTeikiPercent: number | null;
+  transportPassengersTeikigai: number | null;
+  transportPassengersTeikigaiPercent: number | null;
+  transportPassengersTotal: number | null;
+  transportRevenuePassengerTeikiTsukin: number | null;
+  transportRevenuePassengerTeikiTsugaku: number | null;
+  transportRevenuePassengerTeikiTotal: number | null;
+  transportRevenuePassengerTeikigai: number | null;
+  transportRevenuePassengerTotal: number | null;
 };
 
 export type LineEntity = {
@@ -45,4 +45,17 @@ export type StationEntity = {
   stationId: number;
   stationName: string;
   stationNameKana: string;
+};
+
+export type LineResponse = LineEntity & {
+  company: CompanyEntity;
+  lineSections: (LineSectionEntity & {
+    stations: (StationEntity & {
+      groupStations: (StationEntity & {
+        company: CompanyEntity;
+        lines: LineEntity[];
+      })[];
+      lines: LineEntity[];
+    })[];
+  })[];
 };

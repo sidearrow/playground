@@ -5,6 +5,7 @@ import {
   LineEntity,
   LineSectionEntity,
   StationEntity,
+  LineResponse,
 } from './entities';
 
 abstract class AbstractApiClient {
@@ -12,7 +13,7 @@ abstract class AbstractApiClient {
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: 'http://localhost:5000/api',
+      baseURL: 'http://localhost/api',
     });
   }
 
@@ -46,18 +47,11 @@ export class ApiClient extends AbstractApiClient {
 
   public async getLinesByCompanyId(companyId: number) {
     return await this.get<(LineEntity & { company: CompanyEntity })[]>(
-      `/line?companyId=${companyId}`
+      `/company/${companyId}/line`
     );
   }
 
-  public async getLineDetail(lineId: number) {
-    return await this.get<
-      LineEntity & {
-        company: CompanyEntity;
-        lineSections: (LineSectionEntity & {
-          stations: StationEntity & { groupStations: StationEntity[] };
-        })[];
-      }
-    >(`/line/${lineId}`);
+  public async getLineByCode(lineCode: string) {
+    return await this.get<LineResponse>(`/line/code=${lineCode}`);
   }
 }

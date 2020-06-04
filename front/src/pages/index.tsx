@@ -14,11 +14,6 @@ const Component: React.FC = () => {
               <a className="btn btn-block btn-outline-dark">事業者一覧</a>
             </Link>
           </div>
-          <div className="col-6">
-            <Link href="/line">
-              <a className="btn btn-block btn-outline-dark">路線一覧</a>
-            </Link>
-          </div>
         </div>
       </section>
     </CmpLayout>
