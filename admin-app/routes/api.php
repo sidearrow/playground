@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/company')->group(function () {
     Route::get('/', 'CompanyController@index');
 
-    Route::get('/code={companyCode}', 'CompanyController@getDetailByCode');
-    Route::get('/{companyId}', 'CompanyController@detail');
+    Route::get('/code={companyCode}', 'CompanyController@getOneByCode');
+    Route::get('/{companyId}', 'CompanyController@getOne');
 
-    Route::get('/code={companyId}/line', 'CompanyController@getLinesByCode');
     Route::get('/{companyId}/line', 'CompanyController@getLines');
+    Route::get('/{companyId}/statistics', 'CompanyController@getStatistics');
 });
 
 Route::prefix('/line')->group(function () {

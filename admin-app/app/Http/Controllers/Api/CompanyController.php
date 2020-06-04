@@ -37,10 +37,8 @@ class CompanyController extends Controller
         return $this->lineService->getByCompanyId($companyId);
     }
 
-    public function getLinesByCode(string $companyCode)
+    public function getStatistics(int $companyId)
     {
-        $company = $this->companyService->getOneByCompanyCode($companyCode);
-
-        return $this->lineService->getByCompanyId($company->getCompanyId());
+        return $this->companyService->getStatistics($companyId);
     }
 }
