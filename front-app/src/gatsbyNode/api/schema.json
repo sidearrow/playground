@@ -1,0 +1,277 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ApiResponseCompanyAll": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "companyId": {
+                        "type": "number",
+                        "title": "companyId"
+                    },
+                    "companyCode": {
+                        "type": "string",
+                        "title": "companyCode"
+                    },
+                    "companyName": {
+                        "type": "string",
+                        "title": "companyName"
+                    },
+                    "companyNameAlias": {
+                        "type": "string",
+                        "title": "companyNameAlias"
+                    },
+                    "corporateColor": {
+                        "type": [
+                            "null",
+                            "string"
+                        ],
+                        "title": "corporateColor"
+                    }
+                },
+                "required": [
+                    "companyCode",
+                    "companyId",
+                    "companyName",
+                    "companyNameAlias",
+                    "corporateColor"
+                ]
+            }
+        },
+        "CompanyEntity": {
+            "type": "object",
+            "properties": {
+                "companyId": {
+                    "type": "number",
+                    "title": "companyId"
+                },
+                "companyCode": {
+                    "type": "string",
+                    "title": "companyCode"
+                },
+                "companyName": {
+                    "type": "string",
+                    "title": "companyName"
+                },
+                "companyNameAlias": {
+                    "type": "string",
+                    "title": "companyNameAlias"
+                },
+                "corporateColor": {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "title": "corporateColor"
+                }
+            },
+            "required": [
+                "companyCode",
+                "companyId",
+                "companyName",
+                "companyNameAlias",
+                "corporateColor"
+            ]
+        },
+        "CompanyStatisticsEntity": {
+            "type": "object",
+            "properties": {
+                "companyId": {
+                    "type": "number",
+                    "title": "companyId"
+                },
+                "year": {
+                    "type": "number",
+                    "title": "year"
+                },
+                "transportPassengersTeikiTsukin": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTeikiTsukin"
+                },
+                "transportPassengersTeikiTsugaku": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTeikiTsugaku"
+                },
+                "transportPassengersTeikiTotal": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTeikiTotal"
+                },
+                "transportPassengersTeikiPercent": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTeikiPercent"
+                },
+                "transportPassengersTeikigai": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTeikigai"
+                },
+                "transportPassengersTeikigaiPercent": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTeikigaiPercent"
+                },
+                "transportPassengersTotal": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportPassengersTotal"
+                },
+                "transportRevenuePassengerTeikiTsukin": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportRevenuePassengerTeikiTsukin"
+                },
+                "transportRevenuePassengerTeikiTsugaku": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportRevenuePassengerTeikiTsugaku"
+                },
+                "transportRevenuePassengerTeikiTotal": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportRevenuePassengerTeikiTotal"
+                },
+                "transportRevenuePassengerTeikigai": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportRevenuePassengerTeikigai"
+                },
+                "transportRevenuePassengerTotal": {
+                    "type": [
+                        "null",
+                        "number"
+                    ],
+                    "title": "transportRevenuePassengerTotal"
+                }
+            },
+            "required": [
+                "companyId",
+                "transportPassengersTeikiPercent",
+                "transportPassengersTeikiTotal",
+                "transportPassengersTeikiTsugaku",
+                "transportPassengersTeikiTsukin",
+                "transportPassengersTeikigai",
+                "transportPassengersTeikigaiPercent",
+                "transportPassengersTotal",
+                "transportRevenuePassengerTeikiTotal",
+                "transportRevenuePassengerTeikiTsugaku",
+                "transportRevenuePassengerTeikiTsukin",
+                "transportRevenuePassengerTeikigai",
+                "transportRevenuePassengerTotal",
+                "year"
+            ]
+        },
+        "LineEntity": {
+            "type": "object",
+            "properties": {
+                "lineId": {
+                    "type": "number",
+                    "title": "lineId"
+                },
+                "lineCode": {
+                    "type": "string",
+                    "title": "lineCode"
+                },
+                "companyId": {
+                    "type": "number",
+                    "title": "companyId"
+                },
+                "lineName": {
+                    "type": "string",
+                    "title": "lineName"
+                },
+                "lineNameAlias": {
+                    "type": "string",
+                    "title": "lineNameAlias"
+                },
+                "lineNameKana": {
+                    "type": "string",
+                    "title": "lineNameKana"
+                },
+                "statusId": {
+                    "type": "number",
+                    "title": "statusId"
+                }
+            },
+            "required": [
+                "companyId",
+                "lineCode",
+                "lineId",
+                "lineName",
+                "lineNameAlias",
+                "lineNameKana",
+                "statusId"
+            ]
+        },
+        "LineSectionEntity": {
+            "type": "object",
+            "properties": {
+                "lineId": {
+                    "type": "number",
+                    "title": "lineId"
+                },
+                "sectionId": {
+                    "type": "number",
+                    "title": "sectionId"
+                },
+                "lineSectionName": {
+                    "type": "string",
+                    "title": "lineSectionName"
+                }
+            },
+            "required": [
+                "lineId",
+                "lineSectionName",
+                "sectionId"
+            ]
+        },
+        "StationEntity": {
+            "type": "object",
+            "properties": {
+                "stationId": {
+                    "type": "number",
+                    "title": "stationId"
+                },
+                "stationName": {
+                    "type": "string",
+                    "title": "stationName"
+                },
+                "stationNameKana": {
+                    "type": "string",
+                    "title": "stationNameKana"
+                }
+            },
+            "required": [
+                "stationId",
+                "stationName",
+                "stationNameKana"
+            ]
+        }
+    }
+}
