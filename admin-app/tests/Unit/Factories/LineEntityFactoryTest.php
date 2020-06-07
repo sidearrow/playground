@@ -2,8 +2,10 @@
 
 namespace Tests\Unit\Factories;
 
+use App\Entities\LineEntity;
 use App\Factories\LineEntityFactory;
 use App\Models\LineModel;
+use Illuminate\Database\Eloquent\Collection;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
