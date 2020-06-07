@@ -27,10 +27,12 @@ export type CompanyStatisticsEntity = {
   transportRevenuePassengerTotal: number | null;
 };
 
+export type LinesEntitiy = LineEntity[];
+
 export type LineEntity = {
   lineId: number;
   lineCode: string;
-  companyId: number;
+  //companyId: number;
   lineName: string;
   lineNameAlias: string;
   lineNameKana: string;

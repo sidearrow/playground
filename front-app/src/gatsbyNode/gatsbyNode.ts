@@ -20,4 +20,20 @@ export const createPages: GatsbyNode['createPages'] = async ({
       companies: companies,
     },
   });
+
+  companies.map(async (company) => {
+    try {
+      const lines = await apiClient.getCompanyLine(company.companyId);
+    } catch {
+      throw Error;
+    }
+
+    createPage({
+      path: `/company/${company.companyCode}`,
+      component: getTemplatePath('companyDetailTemplate'),
+      context: {
+        company: company,
+      },
+    });
+  });
 };

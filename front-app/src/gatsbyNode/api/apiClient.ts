@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 import { apiResponseValidation } from './apiResponseValidation';
 import schema from './schema.json';
-import { CompanyEntity } from 'entities';
+import { CompanyEntity, LineEntity } from '../../entities';
+import { config } from '../../config';
 
 abstract class AbstractApiClient {
   private static axiosInstance: AxiosInstance;
@@ -9,7 +10,7 @@ abstract class AbstractApiClient {
   constructor() {
     if (!AbstractApiClient.axiosInstance) {
       AbstractApiClient.axiosInstance = axios.create({
-        baseURL: 'http://localhost/api',
+        baseURL: config.apiUrl,
       });
     }
   }
@@ -25,6 +26,7 @@ abstract class AbstractApiClient {
     const res = apiResponseValidation(data, schema);
 
     if (res !== undefined && res !== null) {
+      console.log(data);
       console.log(res);
       throw new Error();
     }
@@ -38,6 +40,20 @@ export class ApiClient extends AbstractApiClient {
     return await this.get<CompanyEntity[]>(
       '/company',
       schema.definitions.ApiResponseCompanyAll
+    );
+  }
+
+  public async getCompanyOne(companyCode: string) {
+    return await this.get<CompanyEntity>(
+      `/company/code=${companyCode}`,
+      schema.definitions.CompanyEntity
+    );
+  }
+
+  public async getCompanyLine(companyId: number) {
+    return await this.get<LineEntity[]>(
+      `/company/${companyId}/line`,
+      schema.definitions.LinesEntitiy
     );
   }
 }

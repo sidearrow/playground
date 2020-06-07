@@ -187,6 +187,51 @@
                 "year"
             ]
         },
+        "LinesEntitiy": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "lineId": {
+                        "type": "number",
+                        "title": "lineId"
+                    },
+                    "lineCode": {
+                        "type": "string",
+                        "title": "lineCode"
+                    },
+                    "companyId": {
+                        "type": "number",
+                        "title": "companyId"
+                    },
+                    "lineName": {
+                        "type": "string",
+                        "title": "lineName"
+                    },
+                    "lineNameAlias": {
+                        "type": "string",
+                        "title": "lineNameAlias"
+                    },
+                    "lineNameKana": {
+                        "type": "string",
+                        "title": "lineNameKana"
+                    },
+                    "statusId": {
+                        "type": "number",
+                        "title": "statusId"
+                    }
+                },
+                "required": [
+                    "companyId",
+                    "lineCode",
+                    "lineId",
+                    "lineName",
+                    "lineNameAlias",
+                    "lineNameKana",
+                    "statusId"
+                ]
+            }
+        },
         "LineEntity": {
             "type": "object",
             "properties": {
