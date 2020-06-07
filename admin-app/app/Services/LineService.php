@@ -42,9 +42,7 @@ class LineService
     {
         return $this->lineEntityFactory->createFromModel(
             $this->lineRepository->getOne($lineId),
-            [
-                LineEntityFactory::class => LineEntityFactory::RELATION_LINE_SECTION,
-            ]
+            [LineEntityFactory::class => [LineEntityFactory::RELATION_LINE_SECTION, LineEntityFactory::RELATION_COMPANY]]
         );
     }
 
