@@ -39,6 +39,318 @@
                 ]
             }
         },
+        "ApiResponseLines": {
+            "type": "array",
+            "items": {
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "lineId": {
+                                "type": "number",
+                                "title": "lineId"
+                            },
+                            "lineCode": {
+                                "type": "string",
+                                "title": "lineCode"
+                            },
+                            "lineName": {
+                                "type": "string",
+                                "title": "lineName"
+                            },
+                            "lineNameAlias": {
+                                "type": "string",
+                                "title": "lineNameAlias"
+                            },
+                            "lineNameKana": {
+                                "type": "string",
+                                "title": "lineNameKana"
+                            }
+                        },
+                        "required": [
+                            "lineCode",
+                            "lineId",
+                            "lineName",
+                            "lineNameAlias",
+                            "lineNameKana"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "company": {
+                                "type": "object",
+                                "properties": {
+                                    "companyId": {
+                                        "type": "number",
+                                        "title": "companyId"
+                                    },
+                                    "companyCode": {
+                                        "type": "string",
+                                        "title": "companyCode"
+                                    },
+                                    "companyName": {
+                                        "type": "string",
+                                        "title": "companyName"
+                                    },
+                                    "companyNameAlias": {
+                                        "type": "string",
+                                        "title": "companyNameAlias"
+                                    },
+                                    "corporateColor": {
+                                        "type": [
+                                            "null",
+                                            "string"
+                                        ],
+                                        "title": "corporateColor"
+                                    }
+                                },
+                                "required": [
+                                    "companyCode",
+                                    "companyId",
+                                    "companyName",
+                                    "companyNameAlias",
+                                    "corporateColor"
+                                ],
+                                "title": "company"
+                            }
+                        },
+                        "required": [
+                            "company"
+                        ]
+                    }
+                ]
+            }
+        },
+        "ApiResponseLine": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "lineId": {
+                            "type": "number",
+                            "title": "lineId"
+                        },
+                        "lineCode": {
+                            "type": "string",
+                            "title": "lineCode"
+                        },
+                        "lineName": {
+                            "type": "string",
+                            "title": "lineName"
+                        },
+                        "lineNameAlias": {
+                            "type": "string",
+                            "title": "lineNameAlias"
+                        },
+                        "lineNameKana": {
+                            "type": "string",
+                            "title": "lineNameKana"
+                        }
+                    },
+                    "required": [
+                        "lineCode",
+                        "lineId",
+                        "lineName",
+                        "lineNameAlias",
+                        "lineNameKana"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "company": {
+                            "type": "object",
+                            "properties": {
+                                "companyId": {
+                                    "type": "number",
+                                    "title": "companyId"
+                                },
+                                "companyCode": {
+                                    "type": "string",
+                                    "title": "companyCode"
+                                },
+                                "companyName": {
+                                    "type": "string",
+                                    "title": "companyName"
+                                },
+                                "companyNameAlias": {
+                                    "type": "string",
+                                    "title": "companyNameAlias"
+                                },
+                                "corporateColor": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "title": "corporateColor"
+                                }
+                            },
+                            "required": [
+                                "companyCode",
+                                "companyId",
+                                "companyName",
+                                "companyNameAlias",
+                                "corporateColor"
+                            ],
+                            "title": "company"
+                        },
+                        "lineSections": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "lineId": {
+                                                "type": "number",
+                                                "title": "lineId"
+                                            },
+                                            "sectionId": {
+                                                "type": "number",
+                                                "title": "sectionId"
+                                            },
+                                            "lineSectionName": {
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ],
+                                                "title": "lineSectionName"
+                                            }
+                                        },
+                                        "required": [
+                                            "lineId",
+                                            "lineSectionName",
+                                            "sectionId"
+                                        ]
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "stations": {
+                                                "type": "array",
+                                                "items": {
+                                                    "allOf": [
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "stationId": {
+                                                                    "type": "number",
+                                                                    "title": "stationId"
+                                                                },
+                                                                "stationName": {
+                                                                    "type": "string",
+                                                                    "title": "stationName"
+                                                                },
+                                                                "stationNameKana": {
+                                                                    "type": [
+                                                                        "null",
+                                                                        "string"
+                                                                    ],
+                                                                    "title": "stationNameKana"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "stationId",
+                                                                "stationName",
+                                                                "stationNameKana"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "lines": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "lineId": {
+                                                                                "type": "number",
+                                                                                "title": "lineId"
+                                                                            },
+                                                                            "lineCode": {
+                                                                                "type": "string",
+                                                                                "title": "lineCode"
+                                                                            },
+                                                                            "lineName": {
+                                                                                "type": "string",
+                                                                                "title": "lineName"
+                                                                            },
+                                                                            "lineNameAlias": {
+                                                                                "type": "string",
+                                                                                "title": "lineNameAlias"
+                                                                            },
+                                                                            "lineNameKana": {
+                                                                                "type": "string",
+                                                                                "title": "lineNameKana"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "lineCode",
+                                                                            "lineId",
+                                                                            "lineName",
+                                                                            "lineNameAlias",
+                                                                            "lineNameKana"
+                                                                        ]
+                                                                    },
+                                                                    "title": "lines"
+                                                                },
+                                                                "groupStations": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "stationId": {
+                                                                                "type": "number",
+                                                                                "title": "stationId"
+                                                                            },
+                                                                            "stationName": {
+                                                                                "type": "string",
+                                                                                "title": "stationName"
+                                                                            },
+                                                                            "stationNameKana": {
+                                                                                "type": [
+                                                                                    "null",
+                                                                                    "string"
+                                                                                ],
+                                                                                "title": "stationNameKana"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "stationId",
+                                                                            "stationName",
+                                                                            "stationNameKana"
+                                                                        ]
+                                                                    },
+                                                                    "title": "groupStations"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "groupStations",
+                                                                "lines"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "title": "stations"
+                                            }
+                                        },
+                                        "required": [
+                                            "stations"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "title": "lineSections"
+                        }
+                    },
+                    "required": [
+                        "company",
+                        "lineSections"
+                    ]
+                }
+            ]
+        },
         "CompanyEntity": {
             "type": "object",
             "properties": {
@@ -187,7 +499,7 @@
                 "year"
             ]
         },
-        "LinesEntitiy": {
+        "LinesEntity": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -200,10 +512,6 @@
                         "type": "string",
                         "title": "lineCode"
                     },
-                    "companyId": {
-                        "type": "number",
-                        "title": "companyId"
-                    },
                     "lineName": {
                         "type": "string",
                         "title": "lineName"
@@ -215,20 +523,14 @@
                     "lineNameKana": {
                         "type": "string",
                         "title": "lineNameKana"
-                    },
-                    "statusId": {
-                        "type": "number",
-                        "title": "statusId"
                     }
                 },
                 "required": [
-                    "companyId",
                     "lineCode",
                     "lineId",
                     "lineName",
                     "lineNameAlias",
-                    "lineNameKana",
-                    "statusId"
+                    "lineNameKana"
                 ]
             }
         },
@@ -243,10 +545,6 @@
                     "type": "string",
                     "title": "lineCode"
                 },
-                "companyId": {
-                    "type": "number",
-                    "title": "companyId"
-                },
                 "lineName": {
                     "type": "string",
                     "title": "lineName"
@@ -258,20 +556,14 @@
                 "lineNameKana": {
                     "type": "string",
                     "title": "lineNameKana"
-                },
-                "statusId": {
-                    "type": "number",
-                    "title": "statusId"
                 }
             },
             "required": [
-                "companyId",
                 "lineCode",
                 "lineId",
                 "lineName",
                 "lineNameAlias",
-                "lineNameKana",
-                "statusId"
+                "lineNameKana"
             ]
         },
         "LineSectionEntity": {
@@ -286,7 +578,10 @@
                     "title": "sectionId"
                 },
                 "lineSectionName": {
-                    "type": "string",
+                    "type": [
+                        "null",
+                        "string"
+                    ],
                     "title": "lineSectionName"
                 }
             },
@@ -308,7 +603,10 @@
                     "title": "stationName"
                 },
                 "stationNameKana": {
-                    "type": "string",
+                    "type": [
+                        "null",
+                        "string"
+                    ],
                     "title": "stationNameKana"
                 }
             },

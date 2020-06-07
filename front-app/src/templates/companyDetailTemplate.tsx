@@ -1,16 +1,37 @@
 import React from 'react';
 import { CmpLayout } from '../components/cmpLayout';
-import { PagePropsCompany } from '../gatsbyNode/pagePropsTypes';
+import { PagePropsCompanyDetail } from '../gatsbyNode/pagePropsTypes';
 import { Link } from 'gatsby';
+import { CmpBreadcrumb } from '../components/cmpBreadcrumb';
 
 type Props = {
-  pageContext: PagePropsCompany;
+  pageContext: PagePropsCompanyDetail;
 };
 
-const Component: React.FC<Props> = ({ pageContext: { } }) => {
+const Component: React.FC<Props> = ({ pageContext: { lines, company } }) => {
   return (
     <CmpLayout>
-      <h1>事業者一覧</h1>
+      <CmpBreadcrumb
+        items={[
+          { text: '事業者一覧', path: '/company' },
+          { text: company.companyNameAlias, path: null },
+        ]}
+      />
+      <h1>{company.companyNameAlias}</h1>
+      <h2>路線一覧</h2>
+      <section>
+        <div className="row">
+          {lines.map((line, i) => (
+            <div className="col-md-4 col-6" key={i}>
+              <Link
+                to={`/company/${company.companyCode}/line/${line.lineCode}`}
+              >
+                {line.lineName}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
     </CmpLayout>
   );
 };

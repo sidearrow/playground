@@ -8,7 +8,6 @@ type Props = {
 };
 
 const Component: React.FC<Props> = ({ pageContext: { companies } }) => {
-  console.log(companies);
   return (
     <CmpLayout>
       <h1>事業者一覧</h1>

@@ -1,4 +1,14 @@
 export type ApiResponseCompanyAll = CompanyEntity[];
+export type ApiResponseLines = (LineEntity & { company: CompanyEntity })[];
+export type ApiResponseLine = LineEntity & {
+  company: CompanyEntity;
+  lineSections: (LineSectionEntity & {
+    stations: (StationEntity & {
+      lines: LineEntity[];
+      groupStations: StationEntity[];
+    })[];
+  })[];
+};
 
 export type CompanyEntity = {
   companyId: number;
@@ -27,7 +37,7 @@ export type CompanyStatisticsEntity = {
   transportRevenuePassengerTotal: number | null;
 };
 
-export type LinesEntitiy = LineEntity[];
+export type LinesEntity = LineEntity[];
 
 export type LineEntity = {
   lineId: number;
@@ -36,17 +46,17 @@ export type LineEntity = {
   lineName: string;
   lineNameAlias: string;
   lineNameKana: string;
-  statusId: number;
+  //statusId: number;
 };
 
 export type LineSectionEntity = {
   lineId: number;
   sectionId: number;
-  lineSectionName: string;
+  lineSectionName: string | null;
 };
 
 export type StationEntity = {
   stationId: number;
   stationName: string;
-  stationNameKana: string;
+  stationNameKana: string | null;
 };
