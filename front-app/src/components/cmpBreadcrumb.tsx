@@ -10,7 +10,7 @@ export const CmpBreadcrumb: React.FC<{
         if (item.path === null) {
           return (
             <li className="breadcrumb-item active" key={i}>
-              <a href="#">{item.text}</a>
+              {item.text}
             </li>
           );
         }

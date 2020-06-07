@@ -5,7 +5,10 @@ export type ApiResponseLine = LineEntity & {
   lineSections: (LineSectionEntity & {
     stations: (StationEntity & {
       lines: LineEntity[];
-      groupStations: StationEntity[];
+      groupStations: (StationEntity & {
+        company: CompanyEntity;
+        lines: LineEntity[];
+      })[];
     })[];
   })[];
 };

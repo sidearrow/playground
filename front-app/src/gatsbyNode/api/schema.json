@@ -298,28 +298,116 @@
                                                                 "groupStations": {
                                                                     "type": "array",
                                                                     "items": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "stationId": {
-                                                                                "type": "number",
-                                                                                "title": "stationId"
+                                                                        "allOf": [
+                                                                            {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "stationId": {
+                                                                                        "type": "number",
+                                                                                        "title": "stationId"
+                                                                                    },
+                                                                                    "stationName": {
+                                                                                        "type": "string",
+                                                                                        "title": "stationName"
+                                                                                    },
+                                                                                    "stationNameKana": {
+                                                                                        "type": [
+                                                                                            "null",
+                                                                                            "string"
+                                                                                        ],
+                                                                                        "title": "stationNameKana"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "stationId",
+                                                                                    "stationName",
+                                                                                    "stationNameKana"
+                                                                                ]
                                                                             },
-                                                                            "stationName": {
-                                                                                "type": "string",
-                                                                                "title": "stationName"
-                                                                            },
-                                                                            "stationNameKana": {
-                                                                                "type": [
-                                                                                    "null",
-                                                                                    "string"
-                                                                                ],
-                                                                                "title": "stationNameKana"
+                                                                            {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "company": {
+                                                                                        "type": "object",
+                                                                                        "properties": {
+                                                                                            "companyId": {
+                                                                                                "type": "number",
+                                                                                                "title": "companyId"
+                                                                                            },
+                                                                                            "companyCode": {
+                                                                                                "type": "string",
+                                                                                                "title": "companyCode"
+                                                                                            },
+                                                                                            "companyName": {
+                                                                                                "type": "string",
+                                                                                                "title": "companyName"
+                                                                                            },
+                                                                                            "companyNameAlias": {
+                                                                                                "type": "string",
+                                                                                                "title": "companyNameAlias"
+                                                                                            },
+                                                                                            "corporateColor": {
+                                                                                                "type": [
+                                                                                                    "null",
+                                                                                                    "string"
+                                                                                                ],
+                                                                                                "title": "corporateColor"
+                                                                                            }
+                                                                                        },
+                                                                                        "required": [
+                                                                                            "companyCode",
+                                                                                            "companyId",
+                                                                                            "companyName",
+                                                                                            "companyNameAlias",
+                                                                                            "corporateColor"
+                                                                                        ],
+                                                                                        "title": "company"
+                                                                                    },
+                                                                                    "lines": {
+                                                                                        "type": "array",
+                                                                                        "items": {
+                                                                                            "type": "array",
+                                                                                            "items": {
+                                                                                                "type": "object",
+                                                                                                "properties": {
+                                                                                                    "lineId": {
+                                                                                                        "type": "number",
+                                                                                                        "title": "lineId"
+                                                                                                    },
+                                                                                                    "lineCode": {
+                                                                                                        "type": "string",
+                                                                                                        "title": "lineCode"
+                                                                                                    },
+                                                                                                    "lineName": {
+                                                                                                        "type": "string",
+                                                                                                        "title": "lineName"
+                                                                                                    },
+                                                                                                    "lineNameAlias": {
+                                                                                                        "type": "string",
+                                                                                                        "title": "lineNameAlias"
+                                                                                                    },
+                                                                                                    "lineNameKana": {
+                                                                                                        "type": "string",
+                                                                                                        "title": "lineNameKana"
+                                                                                                    }
+                                                                                                },
+                                                                                                "required": [
+                                                                                                    "lineCode",
+                                                                                                    "lineId",
+                                                                                                    "lineName",
+                                                                                                    "lineNameAlias",
+                                                                                                    "lineNameKana"
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        "title": "lines"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "company",
+                                                                                    "lines"
+                                                                                ]
                                                                             }
-                                                                        },
-                                                                        "required": [
-                                                                            "stationId",
-                                                                            "stationName",
-                                                                            "stationNameKana"
                                                                         ]
                                                                     },
                                                                     "title": "groupStations"
