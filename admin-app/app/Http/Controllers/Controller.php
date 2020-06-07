@@ -10,4 +10,9 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public static function entitiyToArray($data)
+    {
+        return json_decode(json_encode($data), true);
+    }
 }

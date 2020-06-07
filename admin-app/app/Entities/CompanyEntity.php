@@ -76,4 +76,21 @@ class CompanyEntity implements JsonSerializable
 
         return $res;
     }
+
+    public function toArray()
+    {
+        $res = [
+            'companyId' => $this->companyId,
+            'companyCode' => $this->companyCode,
+            'companyName' => $this->companyName,
+            'companyNameAlias' => $this->companyNameAlias,
+            'companyNameKana' => $this->companyNameKana,
+            'length' => $this->length,
+            'lineNum' => $this->lineNum,
+            'stationNum' => $this->stationNum,
+            'corporateColor' => $this->corporateColor,
+        ];
+
+        return $res;
+    }
 }

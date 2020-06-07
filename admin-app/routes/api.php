@@ -18,3 +18,7 @@ Route::prefix('/line')->group(function () {
     Route::get('/code={lineCode}', 'LineController@getOneByCode');
     Route::get('/{lineId}', 'LineController@getDetail');
 });
+
+Route::prefix('/station')->group(function () {
+    Route::get('/', 'StationController@get');
+});
