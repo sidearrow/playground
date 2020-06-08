@@ -6,18 +6,25 @@ use JsonSerializable;
 
 class StationGroupEntity implements JsonSerializable
 {
+    private int $stationGroupId;
     private ?array $stations;
 
-    public function setStations(array $stations)
+    public function setStations(int $stationGroupId, array $stations)
     {
+        $this->stationGroupId = $stationGroupId;
         $this->stations = $stations;
     }
 
     public function jsonSerialize()
     {
+        $res = [
+            'stationGroupId' => $this->stationGroupId,
+        ];
+
         if ($this->stations !== null) {
-            return ['stations' => $this->stations];
+            $res['stations'] = $this->stations;
         }
-        return [];
+
+        return $res;
     }
 }

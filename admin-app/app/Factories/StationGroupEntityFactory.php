@@ -17,7 +17,7 @@ class StationGroupEntityFactory
             $stations[] = $stationEntityFactory->createFromModel($station, $relation['stations'] ?? []);
         }
 
-        $stationGroupEntity->setStations($stations);
+        $stationGroupEntity->setStations($stationGroupModel->station_group_id, $stations);
 
         return $stationGroupEntity;
     }
