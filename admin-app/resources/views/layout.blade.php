@@ -20,7 +20,12 @@
 </head>
 
 <body>
-    <main class="container">@yield('main')</main>
+    <header>
+        <nav class="navbar navbar-light border-bottom">
+            <a class="navbar-brand" href="{{ url('/') }}">鉄道統計情報 管理画面</a>
+        </nav>
+    </header>
+    <main class="container py-5">@yield('main')</main>
 </body>
 
 </html>

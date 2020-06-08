@@ -6,6 +6,8 @@ use JsonSerializable;
 
 class LineSectionEntity implements JsonSerializable
 {
+    public const RELATION_STATIONS = 'relation_stations';
+
     private int $lineId;
     private int $sectionId;
     private ?string $lineSectionName;

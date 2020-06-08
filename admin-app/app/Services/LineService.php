@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Entities\LineEntity;
+use App\Entities\LineSectionEntity;
+use App\Entities\StationEntity;
 use App\Factories\LineEntityFactory;
 use App\Repositories\LineRepository;
 
@@ -42,15 +44,18 @@ class LineService
     {
         return $this->lineEntityFactory->createFromModel(
             $this->lineRepository->getOne($lineId),
-            [LineEntityFactory::class => [LineEntityFactory::RELATION_LINE_SECTION, LineEntityFactory::RELATION_COMPANY]]
-        );
-    }
-
-    public function getOneByCode(string $lineCode): LineEntity
-    {
-        return $this->lineEntityFactory->createFromModel(
-            $this->lineRepository->getOneByCode($lineCode),
-            [LineEntityFactory::class => [LineEntityFactory::RELATION_LINE_SECTION, LineEntityFactory::RELATION_COMPANY]],
+            [
+                LineEntity::RELATION_COMPANY => [],
+                LineEntity::RELATION_LINE_SECTIONS => [
+                    LineSectionEntity::RELATION_STATIONS => [
+                        StationEntity::RELATION_LINES => [],
+                        StationEntity::RELATION_GROUP_STATIONS => [
+                            StationEntity::RELATION_COMPANY => [],
+                            StationEntity::RELATION_LINES => [],
+                        ],
+                    ]
+                ]
+            ]
         );
     }
 }

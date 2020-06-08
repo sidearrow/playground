@@ -3,10 +3,22 @@
 namespace App\Repositories;
 
 use App\Models\StationGroupModel;
+use App\Models\StationModel;
 use Illuminate\Support\Facades\DB;
 
 class StationRepository
 {
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<StationModel>
+     */
+    public function getManyByStationName(string $stationName)
+    {
+        return StationModel::with([
+            'company', 'lines', 'stationGroup.stations.company'
+        ])->where('station_name', 'like', "%{$stationName}%")
+            ->get();
+    }
+
     public function getGroupStations(string $stationName)
     {
         $res = DB::table('station as s')

@@ -18,7 +18,7 @@ class LineEntityFactory
         $this->lineSectionEntityFactory = new LineSectionEntityFactory();
     }
 
-    public function createFromModel(LineModel $lineModel, array $relations = []): LineEntity
+    public function createFromModel(LineModel $lineModel, array $relation = []): LineEntity
     {
         $lineEntity = new LineEntity(
             $lineModel->line_id,
@@ -31,20 +31,21 @@ class LineEntityFactory
             $lineModel->real_kilo,
         );
 
-        if (array_key_exists(self::class, $relations)) {
-            if (in_array(self::RELATION_LINE_SECTION, $relations[self::class])) {
-                $lineSectionEntities = [];
-                foreach ($lineModel->lineSections as $lineSectionModel) {
-                    $lineSectionEntities[] = $this->lineSectionEntityFactory->createFromModel($lineSectionModel);
-                }
-                $lineEntity->setLineSections($lineSectionEntities);
-            }
-
-            if (in_array(self::RELATION_COMPANY, $relations[self::class])) {
-                $lineEntity->setCompany(
-                    (new CompanyEntityFactory())->createFromModel($lineModel->company)
+        if (array_key_exists(LineEntity::RELATION_LINE_SECTIONS, $relation)) {
+            $lineSectionEntities = [];
+            foreach ($lineModel->lineSections as $lineSectionModel) {
+                $lineSectionEntities[] = $this->lineSectionEntityFactory->createFromModel(
+                    $lineSectionModel,
+                    $relation[LineEntity::RELATION_LINE_SECTIONS]
                 );
             }
+            $lineEntity->setLineSections($lineSectionEntities);
+        }
+
+        if (array_key_exists(LineEntity::RELATION_COMPANY, $relation)) {
+            $lineEntity->setCompany(
+                (new CompanyEntityFactory())->createFromModel($lineModel->company)
+            );
         }
 
         return $lineEntity;

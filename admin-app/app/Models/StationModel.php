@@ -19,6 +19,18 @@ class StationModel extends Model
         return $this->hasOne(StationGroupStationModel::class, 'station_id', 'station_id');
     }
 
+    public function stationGroup()
+    {
+        return $this->hasOneThrough(
+            StationGroupModel::class,
+            StationGroupStationModel::class,
+            'station_id',
+            'station_group_id',
+            'station_id',
+            'station_group_id'
+        );
+    }
+
     public function company()
     {
         return $this->hasOne(CompanyModel::class, 'company_id', 'company_id');

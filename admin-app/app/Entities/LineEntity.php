@@ -6,6 +6,9 @@ use JsonSerializable;
 
 class LineEntity implements JsonSerializable
 {
+    public const RELATION_COMPANY = 'relation_company';
+    public const RELATION_LINE_SECTIONS = 'relation_line_sections';
+
     private int $lineId;
     private string $lineCode;
     private string $lineName;

@@ -14,8 +14,6 @@ Route::prefix('/company')->group(function () {
 
 Route::prefix('/line')->group(function () {
     Route::get('/', 'LineController@getAll');
-
-    Route::get('/code={lineCode}', 'LineController@getOneByCode');
     Route::get('/{lineId}', 'LineController@getDetail');
 });
 

@@ -7,6 +7,10 @@ Route::get('/', 'IndexController@index');
 Route::get('/company', 'CompanyController@index');
 Route::get('/company/{companyId}', 'CompanyController@detail');
 
+Route::prefix('/station')->group(function () {
+    Route::get('/', 'StationController@index');
+});
+
 Route::prefix('/station-group')->group(function () {
     Route::get('/', 'StationGroupController@index');
     Route::post('/create', 'StationGroupController@create');
