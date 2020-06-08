@@ -17,7 +17,8 @@
           </form>
         </div>
         <div class="col-md-4">
-          <form method="POST" action="{{ url('form-group') }}">
+          <form method="POST" action="{{ url('station-group/create') }}">
+            @csrf
             <div class="input-group">
               <input class="form-control form-control-sm" name="stationId" placeholder="駅 ID" />
               <div class="input-group-append">
@@ -38,8 +39,9 @@
         <div class="card-body">
           @foreach ($stationGroup['stations'] as $station)
           <div class="mb-1">
-            <form action="{{ url('station-group' . $stationGroup['stationGroupId']) }}">
-              @method('delete')
+            <form method="POST" action="{{ url('station-group/delete') }}">
+              @csrf
+              <input type="hidden" name="stationGroupId" value="{{ $stationGroup['stationGroupId'] }}" />
               <input type="hidden" name="stationId" value="{{ $station['stationId'] }}" />
               <button class="btn btn-sm py-0 btn-danger">削除</button>
               <span>{{ $station['stationName'] }}</span>
@@ -48,7 +50,10 @@
           </div>
           @endforeach
           <div class="mt-3">
-            <form method="PUT" action="{{ url('group-station' . $stationGroup['stationGroupId']) }}">
+            <form method="POST" action="{{ url('station-group/update') }}">
+              @csrf
+              <input type="hidden" name="stationGroupId" value="{{ $stationGroup['stationGroupId'] }}" />
+              <input type="hidden" name="stationId" value="{{ $station['stationId'] }}" />
               <div class="input-group">
                 <input type="text" class="form-control form-control-sm" name="stationId" />
                 <div class="input-group-append">
