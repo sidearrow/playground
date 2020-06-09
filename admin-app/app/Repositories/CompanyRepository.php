@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\CompanyModel;
 use App\Models\CompanyStatisticsModel;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CompanyRepository extends AbstractRepository
 {
@@ -14,6 +15,11 @@ class CompanyRepository extends AbstractRepository
     public function getAll(): Collection
     {
         return CompanyModel::all();
+    }
+
+    public function getAllArraySpecifyColumns(array $columns): array
+    {
+        return DB::table('company')->select($columns)->get()->toArray();
     }
 
     public function getOne(int $companyId): CompanyModel
@@ -32,5 +38,10 @@ class CompanyRepository extends AbstractRepository
     public function getStatistics(int $companyId): Collection
     {
         return CompanyStatisticsModel::where('company_id', '=', $companyId)->get();
+    }
+
+    public function getColumnNames(): array
+    {
+        return parent::getColumnNamesCommon('company');
     }
 }

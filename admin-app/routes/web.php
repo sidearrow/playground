@@ -22,4 +22,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::post('/update', 'StationGroupController@update');
         Route::post('/delete', 'StationGroupController@delete');
     });
+
+    Route::prefix('/export')->group(function () {
+        Route::get('/', 'ExportController@index');
+        Route::get('/{tableName}', 'ExportController@export');
+    });
 });

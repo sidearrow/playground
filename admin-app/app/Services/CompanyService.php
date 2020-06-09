@@ -6,6 +6,7 @@ use App\Entities\CompanyEntity;
 use App\Factories\CompanyEntityFactory;
 use App\Factories\CompanyStatisticsEntityFactory;
 use App\Repositories\CompanyRepository;
+use App\Utils\StdClassUtil;
 
 class CompanyService
 {
@@ -66,5 +67,24 @@ class CompanyService
         }
 
         return $companyStatisticsEntities;
+    }
+
+    public function getColumnNames(): array
+    {
+        return $this->companyRepository->getColumnNames();
+    }
+
+    public function createCsv(CsvService $csvService, array $columns): CsvService
+    {
+        $data = $this->companyRepository->getAllArraySpecifyColumns($columns);
+        if (count($data) > 0) {
+            $csvService->writeRow(StdClassUtil::getProperties($data[0]));
+        }
+
+        $csvService->writeRows(
+            StdClassUtil::toArrayBulk($data)
+        );
+
+        return $csvService;
     }
 }
