@@ -9,7 +9,7 @@
         <div class="col-md-4">
           <form method="GET">
             <div class="input-group">
-              <input type="text" name="stationName" class="form-control form-control-sm" />
+              <input type="text" name="stationName" class="form-control" />
               <div class="input-group-append">
                 <button class="btn btn-sm btn-primary">検索</button>
               </div>

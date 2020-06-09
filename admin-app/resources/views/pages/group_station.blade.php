@@ -9,9 +9,9 @@
         <div class="col-md-4">
           <form>
             <div class="input-group">
-              <input class="form-control form-control-sm" name="stationName" placeholder="駅名" />
+              <input class="form-control" name="stationName" placeholder="駅名" />
               <div class="input-group-append">
-                <button class="btn btn-sm btn-primary" type="submit">検索</button>
+                <button class="btn btn-primary" type="submit">検索</button>
               </div>
             </div>
           </form>
@@ -20,9 +20,9 @@
           <form method="POST" action="{{ url('station-group/create') }}">
             @csrf
             <div class="input-group">
-              <input class="form-control form-control-sm" name="stationId" placeholder="駅 ID" />
+              <input class="form-control" name="stationId" placeholder="駅 ID" />
               <div class="input-group-append">
-                <button class="btn btn-sm btn-primary" type="submit">新規追加</button>
+                <button class="btn btn-primary" type="submit">新規追加</button>
               </div>
             </div>
           </form>
@@ -55,9 +55,9 @@
               <input type="hidden" name="stationGroupId" value="{{ $stationGroup['stationGroupId'] }}" />
               <input type="hidden" name="stationId" value="{{ $station['stationId'] }}" />
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="stationId" />
+                <input type="text" class="form-control" name="stationId" />
                 <div class="input-group-append">
-                  <button type="submit" class="btn btn-sm btn-primary">追加</button>
+                  <button type="submit" class="btn btn-primary">追加</button>
                 </div>
               </div>
             </form>
