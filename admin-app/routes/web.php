@@ -12,6 +12,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/company', 'CompanyController@index');
     Route::get('/company/{companyId}', 'CompanyController@detail');
 
+    Route::get('/line', 'LineController@index');
+    Route::get('/line/{lineId}', 'LineController@detail');
+
     Route::prefix('/station')->group(function () {
         Route::get('/', 'StationController@index');
     });

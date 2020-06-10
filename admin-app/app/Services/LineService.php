@@ -26,7 +26,7 @@ class LineService
     {
         return $this->lineEntityFactory->createFromModelCollection(
             $this->lineRepository->getAll(),
-            [LineEntityFactory::class => [LineEntityFactory::RELATION_COMPANY]]
+            [LineEntity::RELATION_COMPANY => []]
         );
     }
 
