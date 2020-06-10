@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CompanyService;
+use App\Services\Csv\CsvTypeEnum;
 use App\Services\CsvService;
 use Illuminate\Http\Request;
 
@@ -41,15 +42,11 @@ class ExportController extends Controller
     ) {
         $columns = $request->get('columns', []);
 
-        $delimiter = $format === self::FORMAT_TSV
-            ? CsvService::DELIMITER_TAB : CsvService::DELIMITER_CONMA;
+        $csvType = $format === self::FORMAT_TSV ? CsvTypeEnum::tsv() : CsvTypeEnum::csv();
 
-        $csvService = new CsvService($delimiter);
-        $csvService = $this->companyService->createCsv($csvService, $columns);
+        $csvService = new CsvService();
+        $companies = $this->companyService->getAllAssocArraySpecifyColumns($columns);
 
-        if ($reponseType === self::RESPONSE_TYPE_TEXT) {
-            return $csvService->getContent();
-        }
-        return response()->download($csvService->getFilePath())->deleteFileAfterSend();
+        return $csvService->createStringFromAssocArray($csvType, $companies);
     }
 }

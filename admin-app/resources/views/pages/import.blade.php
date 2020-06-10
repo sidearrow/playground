@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="mt-3">
-      <textarea class="form-control text-monospace" rows="10"></textarea>
+      <textarea class="form-control text-monospace" rows="10" name="data"></textarea>
     </div>
     <div class="row justify-content-center mt-3">
       <div class="col-md-4">

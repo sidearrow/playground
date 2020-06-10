@@ -74,17 +74,15 @@ class CompanyService
         return $this->companyRepository->getColumnNames();
     }
 
-    public function createCsv(CsvService $csvService, array $columns): CsvService
+    public function getAllAssocArraySpecifyColumns(array $columns): array
     {
-        $data = $this->companyRepository->getAllArraySpecifyColumns($columns);
-        if (count($data) > 0) {
-            $csvService->writeRow(StdClassUtil::getProperties($data[0]));
-        }
-
-        $csvService->writeRows(
-            StdClassUtil::toArrayBulk($data)
+        return StdClassUtil::toAssocArrayBulk(
+            $this->companyRepository->getAllArraySpecifyColumns($columns),
         );
+    }
 
-        return $csvService;
+    public function bulkUpdate(array $data): void
+    {
+        $this->companyRepository->bulkUpdate($data);
     }
 }

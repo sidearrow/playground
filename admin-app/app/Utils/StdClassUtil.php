@@ -38,4 +38,9 @@ class StdClassUtil
 
         return $res;
     }
+
+    public static function toAssocArrayBulk(array $stdClassArray): array
+    {
+        return json_decode(json_encode($stdClassArray), true);
+    }
 }

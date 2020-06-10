@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout', ['nav' => false])
 
 @section('main')
 <div class="row justify-content-center">

@@ -21,6 +21,16 @@
     <header>
         <nav class="navbar navbar-light border-bottom">
             <a class="navbar-brand" href="{{ url('/') }}">鉄道統計情報 管理画面</a>
+            @if (($nav ?? true) === true)
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <a href="/import">一括取込</a>
+                <a href="/export">出力</a>
+            </div>
+            @endif
         </nav>
     </header>
     <main class="container py-5">@yield('main')</main>

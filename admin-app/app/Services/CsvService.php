@@ -2,57 +2,41 @@
 
 namespace App\Services;
 
+use App\Services\Csv\CsvGenerator;
+use App\Services\Csv\CsvParser;
+use App\Services\Csv\CsvTypeEnum;
+
 class CsvService
 {
-    public const DELIMITER_TAB = "\t";
-    public const DELIMITER_CONMA = ',';
-
-    private $f;
-    private string $filePath;
-    private string $delimiter;
-
-    public function __construct(string $delimiter = self::DELIMITER_CONMA)
+    public function createStringFromArray(CsvTypeEnum $csvTypeEnum, array $data): string
     {
-        $this->delimiter = $delimiter;
-        $this->filePath = $this->getTmpFilePath();
-
-        $this->f = fopen($this->filePath, 'w');
-    }
-
-    public function __destruct()
-    {
-        fclose($this->f);
-    }
-
-    private function getTmpFilePath(): string
-    {
-        return storage_path('app/tmp/' . uniqid());
-    }
-
-    public function writeRow(array $row): void
-    {
-        fputcsv($this->f, $row, $this->delimiter);
-    }
-
-    public function writeRows(array $rows): void
-    {
-        foreach ($rows as $row) {
-            $this->writeRow($row);
+        if (count($data) === 0) {
+            return '';
         }
+
+        $csvGenerator = new CsvGenerator($csvTypeEnum);
+        $csvGenerator->writeRows($data);
+
+        return $csvGenerator->getContent();
     }
 
-    public function getFilePath(): string
+    public function createStringFromAssocArray(CsvTypeEnum $csvTypeEnum, array $data): string
     {
-        return $this->filePath;
+        if (count($data) === 0) {
+            return '';
+        }
+
+        $csvGenerator = new CsvGenerator($csvTypeEnum);
+        $csvGenerator->writeRow(array_keys($data[0]));
+        $csvGenerator->writeRows($data);
+
+        return $csvGenerator->getContent();
     }
 
-    public function getContent(): string
+    public function getAssocArrayFromTsvString(string $data)
     {
-        return file_get_contents($this->filePath);
-    }
+        $csvParser = new CsvParser($data);
 
-    public function toAssocArray(string $delimiter, string $str): array
-    {
-        return [];
+        return $csvParser->getAssocArray();
     }
 }

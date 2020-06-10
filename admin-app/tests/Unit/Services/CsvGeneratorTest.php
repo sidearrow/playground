@@ -2,14 +2,15 @@
 
 namespace Tests\Unit\Services;
 
-use App\Services\CsvService;
+use App\Services\Csv\CsvGenerator;
+use App\Services\Csv\CsvTypeEnum;
 use Tests\TestCase;
 
 class CsvServiceTest extends TestCase
 {
     public function testCsv()
     {
-        $csvService = new CsvService();
+        $csvService = new CsvGenerator(CsvTypeEnum::csv());
 
         $row = ['val11', 'val12'];
         $rows = [['val21', 'val22'], ['val31', 'val32']];
@@ -25,7 +26,7 @@ class CsvServiceTest extends TestCase
 
     public function testTsv()
     {
-        $csvService = new CsvService(CsvService::DELIMITER_TAB);
+        $csvService = new CsvGenerator(CsvTypeEnum::tsv());
 
         $row = ['val11', 'val12'];
         $rows = [['val21', 'val22'], ['val31', 'val32']];
