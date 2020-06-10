@@ -14,6 +14,15 @@
         html {
             font-size: 13px
         }
+
+        table {
+            font-size: 0.9rem
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 
@@ -21,13 +30,18 @@
     <!--nobanner-->
     <header>
         <nav class="navbar navbar-light border-bottom">
-            <a class="navbar-brand" href="{{ url('/') }}">鉄道統計情報 管理画面</a>
+            <div class="container">
+                <a class="navbar-brand" href="{{ url('/') }}">鉄道統計情報 管理画面</a>
+            </div>
             @if (($nav ?? true) === true)
+            <!--
             <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarContent">
+        -->
+            <div class="container d-block" id="navbarContent">
+                <a href="{{ url('/line') }}">路線一覧</a>
                 <a href="{{ url('/station') }}">駅検索</a>
                 <a href="{{ url('/station-group') }}">グループ駅編集</a>
                 <a href="{{ url('/import') }}">一括取込</a>

@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
     public function index()
     {
-        return view('pages/index');
+        $companyNum = DB::table('company')->count();
+        $lineNum = DB::table('line')->count();
+        $stationNum = DB::table('station')->count();
+
+        return view('pages/index', ['status' => [
+            ['title' => '事業者数', 'value' => $companyNum],
+            ['title' => '路線数', 'value' => $lineNum],
+            ['title' => '駅数', 'value' => $stationNum],
+        ]]);
     }
 }
