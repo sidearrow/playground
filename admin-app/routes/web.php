@@ -28,4 +28,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/{responseType}-{format}-{tableName}', 'ExportController@export')
             ->where(['responseType' => '(file|text)', 'format' => '(csv|tsv)']);
     });
+
+    Route::prefix('/import')->group(function () {
+        Route::get('/', 'ImportController@index');
+        Route::post('/', 'ImportController@import');
+    });
 });

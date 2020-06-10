@@ -50,4 +50,9 @@ class CsvService
     {
         return file_get_contents($this->filePath);
     }
+
+    public function toAssocArray(string $delimiter, string $str): array
+    {
+        return [];
+    }
 }

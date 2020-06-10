@@ -27,6 +27,7 @@ class LineSectionEntityFactoryTest extends TestCase
         return $lineSectionModel;
     }
 
+    /*
     public function testCreateFromModel()
     {
         $lineSectionModelMock = $this->getLineSectionModelMock();
@@ -47,4 +48,5 @@ class LineSectionEntityFactoryTest extends TestCase
             $this->assertEquals($expected, $prop->getValue($lineSectionEntity));
         }
     }
+    */
 }
