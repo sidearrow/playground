@@ -18,21 +18,28 @@
 </head>
 
 <body>
+    <!--nobanner-->
     <header>
         <nav class="navbar navbar-light border-bottom">
             <a class="navbar-brand" href="{{ url('/') }}">鉄道統計情報 管理画面</a>
             @if (($nav ?? true) === true)
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarContent">
-                <a href="/import">一括取込</a>
-                <a href="/export">出力</a>
+                <a href="{{ url('/station') }}">駅検索</a>
+                <a href="{{ url('/station-group') }}">グループ駅編集</a>
+                <a href="{{ url('/import') }}">一括取込</a>
+                <a href="{{ url('/export') }}">出力</a>
             </div>
             @endif
         </nav>
     </header>
+    <div class="text-center mt-3">
+        <script type="text/javascript" src="https://cache1.value-domain.com/xa.j?site=railwaystatistics.s1010.xrea.com">
+        </script>
+    </div>
     <main class="container py-5">@yield('main')</main>
     @yield('script')
 </body>
