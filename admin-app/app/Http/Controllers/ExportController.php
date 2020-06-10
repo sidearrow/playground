@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
+    private const RESPONSE_TYPE_FILE = 'file';
+    private const RESPONSE_TYPE_TEXT = 'text';
+
+    private const FORMAT_CSV = 'csv';
+    private const FORMAT_TSV = 'tsv';
+
     private CompanyService $companyService;
 
     public function __construct()
@@ -27,13 +33,23 @@ class ExportController extends Controller
         return view('pages/export', ['data' => $data]);
     }
 
-    public function export(Request $request, string $tableName)
-    {
+    public function export(
+        Request $request,
+        string $reponseType,
+        string $format,
+        string $tableName
+    ) {
         $columns = $request->get('columns', []);
 
-        $csvService = new CsvService();
+        $delimiter = $format === self::FORMAT_TSV
+            ? CsvService::DELIMITER_TAB : CsvService::DELIMITER_CONMA;
+
+        $csvService = new CsvService($delimiter);
         $csvService = $this->companyService->createCsv($csvService, $columns);
 
-        return response()->download($csvService->getFileName())->deleteFileAfterSend();
+        if ($reponseType === self::RESPONSE_TYPE_TEXT) {
+            return $csvService->getContent();
+        }
+        return response()->download($csvService->getFilePath())->deleteFileAfterSend();
     }
 }
