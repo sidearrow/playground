@@ -24,6 +24,18 @@
             font-size: 2rem;
             margin-bottom: 2rem;
         }
+
+        #xreaAd img {
+            max-width: 100%
+        }
+
+        thead th {
+            white-space: nowrap;
+        }
+
+        button {
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -44,14 +56,13 @@
             <div class="container d-block" id="navbarContent">
                 <a href="{{ url('/line') }}">路線一覧</a>
                 <a href="{{ url('/station') }}">駅検索</a>
-                <a href="{{ url('/station-group') }}">グループ駅編集</a>
                 <a href="{{ url('/import') }}">一括取込</a>
                 <a href="{{ url('/export') }}">出力</a>
             </div>
             @endif
         </nav>
     </header>
-    <div class="text-center mt-3">
+    <div class="text-center mt-3" id="xreaAd">
         <script type="text/javascript" src="https://cache1.value-domain.com/xa.j?site=railwaystatistics.s1010.xrea.com">
         </script>
     </div>

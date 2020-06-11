@@ -23,8 +23,13 @@ class StationGroupService
         $this->stationGroupRepository->update($stationGroupId, $stationId);
     }
 
-    public function delete(int $stationGroupId, int $stationId): void
+    public function delete(int $stationId): void
     {
-        $this->stationGroupRepository->delete($stationGroupId, $stationId);
+        $this->stationGroupRepository->delete($stationId);
+    }
+
+    public function createOrUpdate(int $baseStationId, int $addStationId): void
+    {
+        $this->stationGroupRepository->createOrUpdate($baseStationId, $addStationId);
     }
 }

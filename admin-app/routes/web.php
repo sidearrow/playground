@@ -17,13 +17,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
     Route::prefix('/station')->group(function () {
         Route::get('/', 'StationController@index');
-    });
-
-    Route::prefix('/station-group')->group(function () {
-        Route::get('/', 'StationGroupController@index');
-        Route::post('/create', 'StationGroupController@create');
-        Route::post('/update', 'StationGroupController@update');
-        Route::post('/delete', 'StationGroupController@delete');
+        Route::post('/{stationId}/station-group/update', 'StationController@stationGroupUpdate');
+        Route::post('/{stationId}/station-group/delete', 'StationController@stationGroupDelete');
     });
 
     Route::prefix('/export')->group(function () {

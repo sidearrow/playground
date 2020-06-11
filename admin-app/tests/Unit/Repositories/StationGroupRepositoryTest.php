@@ -68,9 +68,7 @@ class StationGroupRepositoryTest extends TestCase
         $targetStationGroupId = $stationGroupRepository->create($targetStationId);
 
         $this->assertEquals(1, $this->getCountStationGroup($targetStationGroupId));
-        $this->assertEquals(1, $this->getCountStationGroupStation($targetStationGroupId, $targetStationId));
 
-        $this->deleteStationGroupStation($targetStationGroupId, $targetStationId);
         $this->deleteStationGroup($targetStationGroupId);
     }
 
@@ -99,8 +97,23 @@ class StationGroupRepositoryTest extends TestCase
         $this->assertEquals(1, $this->getCountStationGroupStation($targetStationGroupId, $targetStationId));
 
         $stationGroupRepository = new StationGroupRepository();
-        $stationGroupRepository->delete($targetStationGroupId, $targetStationId);
+        $stationGroupRepository->delete($targetStationId);
 
         $this->assertEquals(0, $this->getCountStationGroupStation($targetStationGroupId, $targetStationId));
+    }
+
+    public function testGetStationGroupIdByStationId()
+    {
+        $row = DB::table('station_group_station')
+            ->select('station_group_id', 'station_id')
+            ->first();
+
+        $targetStationId = $row->station_id;
+        $targetStationGroupId = $row->station_group_id;
+
+        $stationGroupRepository = new StationGroupRepository();
+        $stationGroupId = $stationGroupRepository->getStationGroupIdByStationId($targetStationId);
+
+        $this->assertEquals($stationGroupId, $targetStationGroupId);
     }
 }
