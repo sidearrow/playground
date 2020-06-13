@@ -4,10 +4,17 @@ import { apiClient } from 'api/apiClient';
 import { useParams, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { GroupStationAddModal } from './components/GroupStationAddModal';
+import { StationSearchSelector } from 'components/StationSearchSelector';
 
 export const LineDetailPage: React.FC = () => {
   const lineId = Number(useParams<{ lineId: string }>().lineId);
   const [line, setLine] = useState<ApiResponseLine | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      setLine(await apiClient.getLine(lineId));
+    })();
+  }, [lineId]);
 
   const [
     groupStationAddModalStation,
@@ -15,6 +22,10 @@ export const LineDetailPage: React.FC = () => {
   ] = useState<{ stationId: number; stationName: string } | null>(null);
   const [groupStationAddModalIsShow, setGroupStationAddModalIsShow] = useState(
     false
+  );
+
+  const [selectGroupStationIds, setSelectGroupStationIds] = useState<number[]>(
+    []
   );
 
   const handleClickGroupStationAddBtn = (
@@ -28,11 +39,9 @@ export const LineDetailPage: React.FC = () => {
     setGroupStationAddModalIsShow(true);
   };
 
-  useEffect(() => {
-    (async () => {
-      setLine(await apiClient.getLine(lineId));
-    })();
-  }, [lineId]);
+  const handleClickGroupStationBtn = () => {
+    console.log(selectGroupStationIds);
+  };
 
   if (line === null) {
     return <div></div>;
@@ -105,9 +114,26 @@ export const LineDetailPage: React.FC = () => {
           setGroupStationAddModalIsShow(false);
         }}
       >
-        <div className="modal-content">
+        <div className="modal-content modal-lg">
           <div className="modal-body">
             <h5>接続駅追加 - {groupStationAddModalStation?.stationName}</h5>
+            <div className="my-2">
+              <div className="row justify-content-center">
+                <div className="col-md-4">
+                  <button
+                    className="btn btn-block btn-primary"
+                    onClick={handleClickGroupStationBtn}
+                  >
+                    追加
+                  </button>
+                </div>
+              </div>
+            </div>
+            <StationSearchSelector
+              handleSetSelectStationIds={(ids): void => {
+                setSelectGroupStationIds(ids);
+              }}
+            />
           </div>
         </div>
       </Modal>

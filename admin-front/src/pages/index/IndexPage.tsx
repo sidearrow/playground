@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import {
-  StationSearchSelector,
-  StationSearchSelectorResponse,
-} from 'components/StationSearchSelector';
+import { StationSearchSelector } from 'components/StationSearchSelector';
 
 export const IndexPage: React.FC = () => {
-  const [station, setStation] = useState<StationSearchSelectorResponse>(null);
+  const [stationIds, setStationIds] = useState<number[]>();
+
+  const handleSetSelectStationIds = (ids: number[]) => {
+    setStationIds(ids);
+  };
 
   return (
     <div>
-      <StationSearchSelector setStation={setStation} />
-      <div>{station?.stationName}</div>
+      <StationSearchSelector
+        handleSetSelectStationIds={handleSetSelectStationIds}
+      />
+      <div>
+        {stationIds?.map((v) => (
+          <span>{v}</span>
+        ))}
+      </div>
     </div>
   );
 };
