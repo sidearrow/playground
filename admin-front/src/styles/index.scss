@@ -1,5 +1,13 @@
 @import "./bootstrap";
 
+a {
+  display: inline-block;
+}
+
 a:not(:last-child) {
   margin-right: 0.5rem;
+}
+
+.container {
+  max-width: 720px;
 }

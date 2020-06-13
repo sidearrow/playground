@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export const Navbar: React.FC = () => (
-  <nav className="navbar navbar-light bg-transparent">
+  <nav className="navbar navbar-light bg-transparent d-block">
     <div className="container justify-content-center">
       <Link to="/" className="navbar-brand">
         鉄道統計情報 管理画面

@@ -9,7 +9,7 @@ export const App: React.FC = () => {
       <header>
         <Navbar />
       </header>
-      <main className="container">
+      <main className="container pb-5">
         <Router />
       </main>
     </BrowserRouter>
