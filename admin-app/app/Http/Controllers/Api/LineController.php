@@ -23,9 +23,4 @@ class LineController extends Controller
     {
         return $this->lineService->getOne($lineId);
     }
-
-    public function getOneByCode(string $lineCode)
-    {
-        return $this->lineService->getOneByCode($lineCode);
-    }
 }

@@ -5,17 +5,20 @@ namespace App\Services;
 use App\Entities\StationEntity;
 use App\Factories\StationEntityFactory;
 use App\Factories\StationGroupEntityFactory;
+use App\Repositories\StationGroupRepository;
 use App\Repositories\StationRepository;
 
 class StationService
 {
     private StationRepository $stationRepository;
+    private StationGroupRepository $stationGroupRepository;
     private StationEntityFactory $stationEntityFactory;
     private StationGroupEntityFactory $stationGroupEntityFactory;
 
     public function __construct()
     {
         $this->stationRepository = new StationRepository();
+        $this->stationGroupRepository = new StationGroupRepository();
         $this->stationEntityFactory = new StationEntityFactory();
         $this->stationGroupEntityFactory = new StationGroupEntityFactory();
     }
@@ -46,5 +49,10 @@ class StationService
         }
 
         return $res;
+    }
+
+    public function updateGroupStations(int $baseStationId, array $stationIds): void
+    {
+        $this->stationGroupRepository->bulkUpdateBaseStationId($baseStationId, $stationIds);
     }
 }

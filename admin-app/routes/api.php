@@ -19,4 +19,5 @@ Route::prefix('/line')->group(function () {
 
 Route::prefix('/station')->group(function () {
     Route::get('/', 'StationController@get');
+    Route::put('/{stationId}/group-station', 'StationController@groupStationUpdate');
 });

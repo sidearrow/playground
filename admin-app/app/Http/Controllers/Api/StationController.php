@@ -26,4 +26,9 @@ class StationController extends Controller
 
         return $stations;
     }
+
+    public function groupStationUpdate(Request $request, string $stationId)
+    {
+        $this->stationService->updateGroupStations($stationId, $request->json('stationIds', []));
+    }
 }

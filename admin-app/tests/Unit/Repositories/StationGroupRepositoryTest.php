@@ -8,112 +8,68 @@ use Tests\TestCase;
 
 class StationGroupRepositoryTest extends TestCase
 {
-    public function getMaxStationGroupId(): int
+    private static function createTestStations(array $stationIds): void
     {
-        return  (int) DB::selectOne(
-            'select max(station_group_id) as station_group_id from station_group'
-        )->station_group_id ?? 0;
+        $companyId = DB::table('company')->max('company_id');
+
+        DB::table('station')->insert(
+            array_map(function (int $stationId) use ($companyId) {
+                return [
+                    'station_id' => $stationId,
+                    'company_id' => $companyId,
+                    'station_name' => 'station_name',
+                    'station_name_kana' => 'station_name_kana',
+                    'station_name_wiki' => 'station_name_wiki',
+                    'prefecture_id' => 1,
+                    'address' => 'address',
+                    'status_id' => 1,
+                    'open_date' => null,
+                    'close_date' => null,
+                ];
+            }, $stationIds)
+        );
     }
 
-    public function getMaxStationId(): int
+    private static function deleteTestStations(array $stationIds): void
     {
-        return (int) DB::selectOne(
-            'select max(station_id) as station_id from station'
-        )->station_id;
+        DB::table('station_group_station')->whereIn('station_id', $stationIds)->delete();
+        DB::table('station')->whereIn('station_id', $stationIds)->delete();
     }
 
-    public function getCountStationGroup(int $stationGroupId): int
+    private static function getGroupStationIds(int $baseStationId): array
     {
-        return DB::table('station_group')
+        $stationGroupId = DB::table('station_group_station')
+            ->where('station_id', '=', $baseStationId)
+            ->first(['station_group_id'])
+            ->station_group_id;
+
+        $res = DB::table('station_group_station')
             ->where('station_group_id', '=', $stationGroupId)
-            ->count();
-    }
+            ->select(['station_id'])
+            ->orderBy('station_id')
+            ->get()
+            ->toArray();
 
-    public function getCountStationGroupStation(int $stationGroupId, int $stationId): int
-    {
-        return DB::table('station_group_station')
-            ->where('station_group_id', '=', $stationGroupId)
-            ->where('station_id', '=', $stationId)
-            ->count();
-    }
-
-    public function deleteStationGroup(int $stationGroupId): void
-    {
-        DB::table('station_group')
-            ->where('station_group_id', '=', $stationGroupId)
-            ->delete();
-    }
-
-    public function deleteStationGroupStation(int $stationGroupId, int $stationId): void
-    {
-        DB::table('station_group_station')
-            ->where('station_group_id', '=', $stationGroupId)
-            ->where('station_id', '=', $stationId)
-            ->delete();
-    }
-
-    public function createStationGroupStation(int $stationGroupId, int $stationId): void
-    {
-        DB::table('station_group_station')->insertOrIgnore([
-            'station_group_id' => $stationGroupId,
-            'station_id' => $stationId,
-        ]);
-    }
-
-    public function testCreate()
-    {
-        $targetStationId = $this->getMaxStationId();
-
-        $stationGroupRepository = new StationGroupRepository();
-        $targetStationGroupId = $stationGroupRepository->create($targetStationId);
-
-        $this->assertEquals(1, $this->getCountStationGroup($targetStationGroupId));
-
-        $this->deleteStationGroup($targetStationGroupId);
+        return array_map(function ($row) {
+            return $row->station_id;
+        }, $res);
     }
 
     public function testUpdate()
     {
-        $targetStationGroupId = $this->getMaxStationGroupId();
-        $targetStationId = $this->getMaxStationId();
+        self::deleteTestStations([1, 2, 3, 4]);
 
-        $this->deleteStationGroupStation($targetStationGroupId, $targetStationId);
-
-        $stationGroupRepository = new StationGroupRepository();
-        $stationGroupRepository->update($targetStationGroupId, $targetStationId);
-
-        $this->assertEquals(1, $this->getCountStationGroupStation($targetStationGroupId, $targetStationId));
-
-        $this->deleteStationGroupStation($targetStationGroupId, $targetStationId);
-    }
-
-    public function testDelete()
-    {
-        $targetStationGroupId = $this->getMaxStationGroupId();
-        $targetStationId = $this->getMaxStationId();
-
-        $this->createStationGroupStation($targetStationGroupId, $targetStationId);
-
-        $this->assertEquals(1, $this->getCountStationGroupStation($targetStationGroupId, $targetStationId));
+        self::createTestStations([1, 2, 3, 4]);
 
         $stationGroupRepository = new StationGroupRepository();
-        $stationGroupRepository->delete($targetStationId);
+        $stationGroupRepository->update(1, [2, 3, 4]);
 
-        $this->assertEquals(0, $this->getCountStationGroupStation($targetStationGroupId, $targetStationId));
-    }
+        $this->assertEquals([1, 2, 3, 4], self::getGroupStationIds(1));
 
-    public function testGetStationGroupIdByStationId()
-    {
-        $row = DB::table('station_group_station')
-            ->select('station_group_id', 'station_id')
-            ->first();
+        $stationGroupRepository->update(1, [2, 4]);
 
-        $targetStationId = $row->station_id;
-        $targetStationGroupId = $row->station_group_id;
+        $this->assertEquals([1, 2, 4], self::getGroupStationIds(1));
 
-        $stationGroupRepository = new StationGroupRepository();
-        $stationGroupId = $stationGroupRepository->getStationGroupIdByStationId($targetStationId);
-
-        $this->assertEquals($stationGroupId, $targetStationGroupId);
+        self::deleteTestStations([1, 2, 3, 4]);
     }
 }
