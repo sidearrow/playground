@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StationEntity, CompanyEntity } from 'entity';
+import { StationEntity } from 'entity';
 import { apiClient } from 'api/apiClient';
 
 export const StationSearchSelector: React.FC<{
+  initialSelectStations?: StationEntity[];
   handleSetSelectStationIds?: (ids: number[]) => void;
-}> = ({ handleSetSelectStationIds }) => {
-  const [stations, setStations] = useState<
-    (StationEntity & { company: CompanyEntity })[]
-  >([]);
-  const [selectStations, setSelectStations] = useState<
-    (StationEntity & { company: CompanyEntity })[]
-  >([]);
+}> = ({ initialSelectStations, handleSetSelectStationIds }) => {
+  const [stations, setStations] = useState<StationEntity[]>([]);
+  const [selectStations, setSelectStations] = useState<StationEntity[]>(
+    initialSelectStations ?? []
+  );
 
   useEffect(() => {
     if (handleSetSelectStationIds !== undefined) {
@@ -32,7 +31,8 @@ export const StationSearchSelector: React.FC<{
   };
 
   const handleClickSelectBtn = (stationIndex: number): void => {
-    setSelectStations([...selectStations, stations[stationIndex]]);
+    const targetStation = stations[stationIndex];
+    setSelectStations([...selectStations, targetStation]);
   };
 
   const handleClickDeleteSelectStationBtn = (index: number): void => {
@@ -46,9 +46,7 @@ export const StationSearchSelector: React.FC<{
           <span className="btn-group mr-1 mb-1" key={i}>
             <button className="btn btn-sm btn-primary">
               <span>{station.stationName}</span>
-              <small className="ml-1">
-                [{station.company.companyNameAlias}]
-              </small>
+              <small className="ml-1">[{station.company.companyName}]</small>
             </button>
             <button
               className="btn btn-sm btn-secondary"

@@ -53,6 +53,6 @@ class StationService
 
     public function updateGroupStations(int $baseStationId, array $stationIds): void
     {
-        $this->stationGroupRepository->bulkUpdateBaseStationId($baseStationId, $stationIds);
+        $this->stationGroupRepository->update($baseStationId, $stationIds);
     }
 }

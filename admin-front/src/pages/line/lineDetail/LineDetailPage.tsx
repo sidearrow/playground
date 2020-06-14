@@ -5,6 +5,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { GroupStationAddModal } from './components/GroupStationAddModal';
 import { StationSearchSelector } from 'components/StationSearchSelector';
+import { StationEntityWithGroupStations } from 'entity';
 
 export const LineDetailPage: React.FC = () => {
   const lineId = Number(useParams<{ lineId: string }>().lineId);
@@ -19,7 +20,7 @@ export const LineDetailPage: React.FC = () => {
   const [
     groupStationAddModalStation,
     setGroupStationAddModalStation,
-  ] = useState<{ stationId: number; stationName: string } | null>(null);
+  ] = useState<StationEntityWithGroupStations | null>(null);
   const [groupStationAddModalIsShow, setGroupStationAddModalIsShow] = useState(
     false
   );
@@ -29,18 +30,21 @@ export const LineDetailPage: React.FC = () => {
   );
 
   const handleClickGroupStationAddBtn = (
-    stationId: number,
-    stationName: string
+    station: StationEntityWithGroupStations
   ): void => {
-    setGroupStationAddModalStation({
-      stationId: stationId,
-      stationName: stationName,
-    });
+    setGroupStationAddModalStation(station);
     setGroupStationAddModalIsShow(true);
   };
 
-  const handleClickGroupStationBtn = () => {
-    console.log(selectGroupStationIds);
+  const handleClickGroupStationBtn = (): void => {
+    if (groupStationAddModalStation === null) return;
+    (async (): Promise<void> => {
+      await apiClient.updateGroupStations(
+        groupStationAddModalStation.stationId,
+        selectGroupStationIds
+      );
+      setLine(await apiClient.getLine(lineId));
+    })();
   };
 
   if (line === null) {
@@ -79,11 +83,8 @@ export const LineDetailPage: React.FC = () => {
                         <div>
                           <button
                             className="btn btn-sm btn-primary py-0"
-                            onClick={() =>
-                              handleClickGroupStationAddBtn(
-                                station.stationId,
-                                station.stationName
-                              )
+                            onClick={(): void =>
+                              handleClickGroupStationAddBtn(station)
                             }
                           >
                             追加
@@ -110,7 +111,7 @@ export const LineDetailPage: React.FC = () => {
       </section>
       <Modal
         show={groupStationAddModalIsShow}
-        onHide={() => {
+        onHide={(): void => {
           setGroupStationAddModalIsShow(false);
         }}
       >
@@ -130,6 +131,7 @@ export const LineDetailPage: React.FC = () => {
               </div>
             </div>
             <StationSearchSelector
+              initialSelectStations={groupStationAddModalStation?.groupStations}
               handleSetSelectStationIds={(ids): void => {
                 setSelectGroupStationIds(ids);
               }}

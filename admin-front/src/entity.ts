@@ -28,4 +28,10 @@ export type StationEntity = {
   stationId: number;
   stationName: string;
   stationNameKana: string | null;
+  company: CompanyEntity;
+  lines: LineEntity;
+};
+
+export type StationEntityWithGroupStations = StationEntity & {
+  groupStations: StationEntity[];
 };

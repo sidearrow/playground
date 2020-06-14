@@ -1,3 +1,4 @@
+import axios, { AxiosInstance } from 'axios';
 import {
   ApiResponseLines,
   ApiResponseCompanies,
@@ -7,6 +8,14 @@ import {
 
 class ApiClient {
   private baseUrl = 'http://localhost/api';
+
+  private axiosInstance: AxiosInstance;
+
+  public constructor() {
+    this.axiosInstance = axios.create({
+      baseURL: this.baseUrl,
+    });
+  }
 
   public async getCompanies(): Promise<ApiResponseCompanies> {
     return await (await fetch(this.baseUrl + '/company')).json();
@@ -28,11 +37,13 @@ class ApiClient {
     ).json();
   }
 
-  public async patchStationGroupStations(
+  public async updateGroupStations(
     stationId: number,
     groupStationIds: number[]
-  ): Promise<boolean> {
-    return true;
+  ): Promise<void> {
+    await this.axiosInstance.put(`/station/${stationId}/group-station`, {
+      stationIds: groupStationIds,
+    });
   }
 }
 

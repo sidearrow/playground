@@ -19,6 +19,9 @@ class StationEntityFactory
             $stationEntities = [];
             if ($stationModel->stationGroup !== null) {
                 foreach ($stationModel->stationGroup->stations as $sgs) {
+                    if ($stationModel->station_id === $sgs->station_id) {
+                        continue;
+                    }
                     $stationEntities[] = $this->createFromModel($sgs, $relation[StationEntity::RELATION_GROUP_STATIONS]);
                 }
             }
