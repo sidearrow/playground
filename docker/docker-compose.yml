@@ -3,11 +3,11 @@ volumes:
   railway_db_data:
 services:
   admin-app:
-    build: ./admin-app
+    build: ./api
     ports:
       - 80:80
     volumes:
-      - ./../admin-app:/var/www/app
+      - ./../api:/var/www/app
   db:
     image: mysql:5.7
     volumes:
