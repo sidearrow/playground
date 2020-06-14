@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { config } from 'config';
 import {
   ApiResponseLines,
   ApiResponseCompanies,
@@ -7,7 +8,7 @@ import {
 } from './apiResponse';
 
 class ApiClient {
-  private baseUrl = 'http://localhost/api';
+  private baseUrl = config.apiUrl;
 
   private axiosInstance: AxiosInstance;
 
