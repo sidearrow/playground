@@ -1,10 +1,5 @@
 {
   "hosting": {
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "app"
-      }
-    ]
+    "public": "public"
   }
 }
