@@ -14,19 +14,16 @@ class AuthController extends Controller
         $this->authService = new AuthService();
     }
 
-    public function login()
+    public function login(Request $request)
     {
-        return view('pages/login');
-    }
+        $mail = $request->json('mail');
+        $password = $request->json('password');
 
-    public function loginPost(Request $request)
-    {
-        $password = $request->post('password');
-
-        if ($password === null || !$this->authService->login($password)) {
-            return redirect('/login');
+        $status = false;
+        if ($mail !== null && $password !== null) {
+            $status = $this->authService->login($mail, $password);
         }
 
-        return redirect('/');
+        return ['status' => $status];
     }
 }
