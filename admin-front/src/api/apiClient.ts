@@ -38,23 +38,26 @@ class ApiClient {
   }
 
   public async getCompanies(): Promise<ApiResponseCompanies> {
-    return await (await fetch(this.baseUrl + '/company')).json();
+    return (await this.axiosInstance.get(this.baseUrl + '/company')).data;
   }
 
   public async getLines(): Promise<ApiResponseLines> {
-    return await (await fetch(this.baseUrl + '/line')).json();
+    return (await this.axiosInstance.get(this.baseUrl + '/line')).data;
   }
 
   public async getLine(lineId: number): Promise<ApiResponseLine> {
-    return await (await fetch(`${this.baseUrl}/line/${lineId}`)).json();
+    return (await this.axiosInstance.get(`${this.baseUrl}/line/${lineId}`))
+      .data;
   }
 
   public async getStationsByStationName(
     stationName: string
   ): Promise<ApiResponseStations> {
-    return await (
-      await fetch(`${this.baseUrl}/station?stationName=${stationName}`)
-    ).json();
+    return (
+      await this.axiosInstance.get(
+        `${this.baseUrl}/station?stationName=${stationName}`
+      )
+    ).data;
   }
 
   public async updateGroupStations(
