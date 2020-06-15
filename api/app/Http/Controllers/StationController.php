@@ -2,50 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\StationGroupService;
+use App\Http\Controllers\Controller;
 use App\Services\StationService;
 use Illuminate\Http\Request;
 
 class StationController extends Controller
 {
     private StationService $stationService;
-    private StationGroupService $stationGroupService;
 
     public function __construct()
     {
         $this->stationService = new StationService();
-        $this->stationGroupService = new StationGroupService();
     }
 
-    public function index(Request $request)
+    public function get(Request $request)
     {
-        $stationName = $request->get('stationName');
+        $searchStationName = $request->get('stationName');
 
         $stations = [];
-        if ($stationName !== null) {
-            $stations = $this->stationService->getManyByStationName($stationName);
+        if ($searchStationName !== null) {
+            $stations = $this->stationService->getManyByStationName($searchStationName);
         }
 
-        $viewData = self::entitiyToArray(['stations' => $stations]);
-
-        return view('pages/station', $viewData);
+        return $stations;
     }
 
-    public function stationGroupUpdate(Request $request, string $stationId)
+    public function groupStationUpdate(Request $request, string $stationId)
     {
-        $addStationId = $request->post('stationId');
-
-        if ($addStationId !== null) {
-            $this->stationGroupService->createOrUpdate($stationId, $addStationId);
-        }
-
-        return redirect(url()->previous());
-    }
-
-    public function stationGroupDelete(Request $request, string $stationId)
-    {
-        $this->stationGroupService->delete($stationId);
-
-        return redirect(url()->previous());
+        $this->stationService->updateGroupStations($stationId, $request->json('stationIds', []));
     }
 }

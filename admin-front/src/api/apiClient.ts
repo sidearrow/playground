@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { config } from 'config';
 import {
   ApiResponseLines,
@@ -15,27 +15,49 @@ class ApiClient {
   public constructor() {
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token') ?? ''}`,
+      },
     });
   }
 
+  public async login(
+    mail: string,
+    password: string
+  ): Promise<{ token: string }> {
+    const res = await this.axiosInstance.post<{ token: string }>('login', {
+      mail: mail,
+      password: password,
+    });
+
+    return res.data;
+  }
+
+  public async isLogin(): Promise<AxiosResponse<{ status: boolean }>> {
+    return await this.axiosInstance.get('/auth-check');
+  }
+
   public async getCompanies(): Promise<ApiResponseCompanies> {
-    return await (await fetch(this.baseUrl + '/company')).json();
+    return (await this.axiosInstance.get(this.baseUrl + '/company')).data;
   }
 
   public async getLines(): Promise<ApiResponseLines> {
-    return await (await fetch(this.baseUrl + '/line')).json();
+    return (await this.axiosInstance.get(this.baseUrl + '/line')).data;
   }
 
   public async getLine(lineId: number): Promise<ApiResponseLine> {
-    return await (await fetch(`${this.baseUrl}/line/${lineId}`)).json();
+    return (await this.axiosInstance.get(`${this.baseUrl}/line/${lineId}`))
+      .data;
   }
 
   public async getStationsByStationName(
     stationName: string
   ): Promise<ApiResponseStations> {
-    return await (
-      await fetch(`${this.baseUrl}/station?stationName=${stationName}`)
-    ).json();
+    return (
+      await this.axiosInstance.get(
+        `${this.baseUrl}/station?stationName=${stationName}`
+      )
+    ).data;
   }
 
   public async updateGroupStations(

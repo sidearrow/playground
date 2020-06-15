@@ -9,10 +9,14 @@ class AuthMiddleware
 {
     public function handle($request, Closure $next)
     {
-        $authServie = new AuthService();
+        $token = $request->bearerToken();
+        if ($token === null) {
+            abort(401);
+        }
 
-        if (!$authServie->isLogin()) {
-            return redirect('/login');
+        $authServie = new AuthService();
+        if (!$authServie->isLogin($token)) {
+            abort(401);
         }
 
         return $next($request);

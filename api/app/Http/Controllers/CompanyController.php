@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Services\CompanyService;
 use App\Services\LineService;
 
@@ -18,22 +19,26 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $companies = $this->companyService->getAll();
-        $companies = self::entitiyToArray($companies);
-
-        return view('pages/company', ['companies' => $companies]);
+        return $this->companyService->getAll();
     }
 
-    public function detail(string $companyId)
+    public function getOne(int $companyId)
     {
-        $company = $this->companyService->getOne($companyId);
-        $lines = $this->lineService->getByCompanyId($companyId);
+        return $this->companyService->getOne($companyId);
+    }
 
-        $viewData = self::entitiyToArray([
-            'company' => $company,
-            'lines' => $lines,
-        ]);
+    public function getOneByCode(string $companyCode)
+    {
+        return $this->companyService->getOneByCompanyCode($companyCode);
+    }
 
-        return view('pages/company_detail', $viewData);
+    public function getLines(int $companyId)
+    {
+        return $this->lineService->getByCompanyId($companyId);
+    }
+
+    public function getStatistics(int $companyId)
+    {
+        return $this->companyService->getStatistics($companyId);
     }
 }

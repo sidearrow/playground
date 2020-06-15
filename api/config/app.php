@@ -13,7 +13,8 @@ return [
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
 
-    'password' => env('PASSWORD'),
+    'auth_mail' => env('AUTH_MAIL'),
+    'auth_password' => env('AUTH_PASSWORD'),
 
     'providers' => [
         Illuminate\Auth\AuthServiceProvider::class,

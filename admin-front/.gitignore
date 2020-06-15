@@ -25,3 +25,5 @@ yarn-error.log*
 /*.zip
 
 public/.htaccess
+
+.firebase
