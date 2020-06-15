@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
+
 class AuthService
 {
-    private const SESSION_KEY = 'is_login';
+    private const CACHE_KEY = 'token';
 
     private string $mail;
     private string $password;
@@ -15,23 +17,29 @@ class AuthService
         $this->password = config('app.auth_password');
     }
 
-    public function isLogin(): bool
+    public function isLogin(string $token): bool
     {
-        return session()->get(self::SESSION_KEY) === true;
+        return Cache::get(self::CACHE_KEY) === $token;
     }
 
-    public function login(string $mail, string $password): bool
+    public function login(string $mail, string $password): ?string
     {
         $res = $mail === $this->mail
             && password_verify($password, $this->password) === true;
 
-        session()->put(self::SESSION_KEY, $res);
+        if ($res === false) {
+            return null;
+        }
 
-        return $res;
+        $token = md5(uniqid(rand(), true));
+
+        Cache::set(self::CACHE_KEY, $token);
+
+        return $token;
     }
 
     public function logout(): void
     {
-        session()->put(self::SESSION_KEY, false);
+        Cache::set(self::CACHE_KEY, null);
     }
 }

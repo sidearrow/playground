@@ -22,14 +22,14 @@ class AuthServiceTest extends TestCase
         $authServicePropPassword->setAccessible(true);
         $authServicePropPassword->setValue($authService, password_hash('password', PASSWORD_DEFAULT));
 
-        $this->assertTrue($authService->login('mail', 'password'));
-        $this->assertTrue($authService->isLogin());
+        $token = $authService->login('mail', 'password');
+        $this->assertTrue($authService->isLogin($token));
 
         $authService->logout();
 
-        $this->assertFalse($authService->isLogin());
+        $this->assertFalse($authService->isLogin($token));
 
-        $this->assertFalse($authService->login('mail', 'passwoooord'));
-        $this->assertFalse($authService->isLogin());
+        $token = $authService->login('mail', 'passwoooord');
+        $this->assertEquals($token, null);
     }
 }

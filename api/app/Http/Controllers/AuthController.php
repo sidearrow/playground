@@ -19,11 +19,26 @@ class AuthController extends Controller
         $mail = $request->json('mail');
         $password = $request->json('password');
 
-        $status = false;
+        $token = null;
         if ($mail !== null && $password !== null) {
-            $status = $this->authService->login($mail, $password);
+            $token = $this->authService->login($mail, $password);
         }
 
-        return ['status' => $status];
+        if ($token === null) {
+            abort(401);
+        }
+
+        return ['token' => $token];
+    }
+
+    public function check(Request $request)
+    {
+        $token = $request->bearerToken();
+
+        if ($token === null || !$this->authService->isLogin($token)) {
+            abort(401);
+        }
+
+        return ['status' => true];
     }
 }

@@ -4,9 +4,13 @@ import { IndexPage } from 'pages/index/IndexPage';
 import { LineIndexPage } from 'pages/line/LineIndexPage';
 import { CompanyIndexPage } from 'pages/company/CompanyIndexPage';
 import { LineDetailPage } from 'pages/line/lineDetail/LineDetailPage';
+import { LoginPage } from 'pages/login/LoginPage';
 
 export const Router: React.FC = () => (
   <Switch>
+    <Route exact path="/login">
+      <LoginPage />
+    </Route>
     <Route exact path="/">
       <IndexPage />
     </Route>
