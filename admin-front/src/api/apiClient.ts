@@ -7,7 +7,7 @@ import {
   ApiResponseStations,
 } from './apiResponse';
 
-class ApiClient {
+export class ApiClient {
   private baseUrl = config.apiUrl;
 
   private axiosInstance: AxiosInstance;
@@ -69,5 +69,3 @@ class ApiClient {
     });
   }
 }
-
-export const apiClient = new ApiClient();

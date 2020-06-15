@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ApiResponseLine } from 'api/apiResponse';
-import { apiClient } from 'api/apiClient';
+import { ApiClient } from 'api/apiClient';
 import { useParams, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
-import { GroupStationAddModal } from './components/GroupStationAddModal';
 import { StationSearchSelector } from 'components/StationSearchSelector';
 import { StationEntityWithGroupStations } from 'entity';
 
 export const LineDetailPage: React.FC = () => {
+  const apiClient = new ApiClient();
+
   const lineId = Number(useParams<{ lineId: string }>().lineId);
   const [line, setLine] = useState<ApiResponseLine | null>(null);
 

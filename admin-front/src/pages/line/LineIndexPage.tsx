@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient } from 'api/apiClient';
+import { ApiClient } from 'api/apiClient';
 import { Link } from 'react-router-dom';
 import { ApiResponseLines } from 'api/apiResponse';
 
@@ -7,6 +7,7 @@ const LineList: React.FC = () => {
   const [lines, setLines] = useState<ApiResponseLines>([]);
 
   useEffect(() => {
+    const apiClient = new ApiClient();
     (async () => {
       setLines(await apiClient.getLines());
     })();

@@ -1,6 +1,5 @@
 import React, { useState, createContext, useEffect } from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
-import { apiClient } from 'api/apiClient';
 import { authService } from 'services/authService';
 
 export const AuthContext = createContext<{

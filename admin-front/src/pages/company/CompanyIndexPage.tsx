@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { CompanyEntity } from 'entity';
-import { apiClient } from 'api/apiClient';
+import { ApiClient } from 'api/apiClient';
 import { Link } from 'react-router-dom';
 
 const CompanyList: React.FC = () => {
+  const apiClient = new ApiClient();
+
   const [companies, setCompanies] = useState<CompanyEntity[]>([]);
 
   useEffect(() => {

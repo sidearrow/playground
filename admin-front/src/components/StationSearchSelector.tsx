@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { StationEntity } from 'entity';
-import { apiClient } from 'api/apiClient';
+import { ApiClient } from 'api/apiClient';
 
 export const StationSearchSelector: React.FC<{
   initialSelectStations?: StationEntity[];
   handleSetSelectStationIds?: (ids: number[]) => void;
 }> = ({ initialSelectStations, handleSetSelectStationIds }) => {
+  const apiClient = new ApiClient();
+
   const [stations, setStations] = useState<StationEntity[]>([]);
   const [selectStations, setSelectStations] = useState<StationEntity[]>(
     initialSelectStations ?? []

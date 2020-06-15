@@ -4,7 +4,6 @@ import React, {
   ChangeEventHandler,
   useContext,
 } from 'react';
-import { apiClient } from 'api/apiClient';
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from 'AuthProvider';
 import { authService } from 'services/authService';
