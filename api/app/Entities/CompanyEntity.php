@@ -6,6 +6,11 @@ use JsonSerializable;
 
 class CompanyEntity implements JsonSerializable
 {
+    public const RELATION_LINES = 'relation_lines';
+    public const RELATION_COMPANY_TYPE = 'relation_company_types';
+    public const RELATION_RAILWAY_TYPES = 'relation_railway_types';
+    public const RELATION_RAILWAY_RAILTRACK_TYPES = 'relation_railway_railtrack_types';
+
     private int $companyId;
     private string $companyCode;
     private string $companyName;
@@ -16,10 +21,16 @@ class CompanyEntity implements JsonSerializable
     private int $stationNum;
     private ?string $corporateColor;
 
-    /**
-     * @var \App\Entities\LineEntity[] $lines
-     */
+    /** @var \App\Entities\LineEntity[]|null $lines */
     private ?array $lines = null;
+
+    private ?CompanyTypeEntity $companyType = null;
+
+    /** @var \App\Entities\RailwayTypeEntity[]|null $railwayTypes */
+    private ?array $railwayTypes = null;
+
+    /** @var \App\Entities\RailwayRailtrackTypeEntity[]|null $railwayRailtrackTypes */
+    private ?array $railwayRailtrackTypes = null;
 
     public function __construct(
         int $companyId,
@@ -43,17 +54,19 @@ class CompanyEntity implements JsonSerializable
         $this->corporateColor = $corporateColor;
     }
 
-    /**
-     * @param \App\Entities\LineEntity[] $lines
-     */
-    public function setLines(array $lines): void
+    public function setCompanyType(CompanyTypeEntity $companyType): void
     {
-        $this->lines = $lines;
+        $this->companyType = $companyType;
     }
 
-    public function getCompanyId(): int
+    public function setRailwayTypes(array $railwayTypes): void
     {
-        return $this->companyId;
+        $this->railwayTypes = $railwayTypes;
+    }
+
+    public function setRailwayRailtrackTypes(array $railwayRailtrackTypes): void
+    {
+        $this->railwayRailtrackTypes = $railwayRailtrackTypes;
     }
 
     public function jsonSerialize()
@@ -70,26 +83,21 @@ class CompanyEntity implements JsonSerializable
             'corporateColor' => $this->corporateColor,
         ];
 
+        if ($this->companyType !== null) {
+            $res['companyType'] = $this->companyType;
+        }
+
         if ($this->lines !== null) {
             $res['lines'] = $this->lines;
         }
 
-        return $res;
-    }
+        if ($this->railwayTypes !== null) {
+            $res['railwayTypes'] = $this->railwayTypes;
+        }
 
-    public function toArray()
-    {
-        $res = [
-            'companyId' => $this->companyId,
-            'companyCode' => $this->companyCode,
-            'companyName' => $this->companyName,
-            'companyNameAlias' => $this->companyNameAlias,
-            'companyNameKana' => $this->companyNameKana,
-            'length' => $this->length,
-            'lineNum' => $this->lineNum,
-            'stationNum' => $this->stationNum,
-            'corporateColor' => $this->corporateColor,
-        ];
+        if ($this->railwayRailtrackTypes !== null) {
+            $res['railwayRailtrackTypes'] = $this->railwayRailtrackTypes;
+        }
 
         return $res;
     }

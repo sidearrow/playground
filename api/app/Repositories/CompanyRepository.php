@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class CompanyRepository extends AbstractRepository
 {
-    /**
-     * @return Collection<CompanyModel>
-     */
+    /** @return Collection<CompanyModel> */
     public function getAll(): Collection
     {
-        return CompanyModel::all();
+        return CompanyModel::with([
+            'companyType',
+            'railwayRailtrackTypes',
+        ])->get();
     }
 
     public function getAllArraySpecifyColumns(array $columns): array

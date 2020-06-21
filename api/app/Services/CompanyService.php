@@ -34,7 +34,11 @@ class CompanyService
 
         $companyEntities = [];
         foreach ($companyModels as $companyModel) {
-            $companyEntities[] = $this->companyEntityFactory->createFromModel($companyModel);
+            $companyEntities[] = $this->companyEntityFactory->createFromModel($companyModel, [
+                CompanyEntity::RELATION_COMPANY_TYPE => [],
+                CompanyEntity::RELATION_RAILWAY_TYPES => [],
+                CompanyEntity::RELATION_RAILWAY_RAILTRACK_TYPES => [],
+            ]);
         }
 
         return $companyEntities;
