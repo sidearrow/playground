@@ -90,6 +90,8 @@ export const LineDetailPage: React.FC = () => {
                           >
                             追加
                           </button>
+                        </div>
+                        <div className="mt-1">
                           {station.groupStations.map((station, i) => (
                             <div key={i}>
                               <span>{station.stationName}</span>
@@ -126,7 +128,7 @@ export const LineDetailPage: React.FC = () => {
                     className="btn btn-block btn-primary"
                     onClick={handleClickGroupStationBtn}
                   >
-                    追加
+                    更新
                   </button>
                 </div>
               </div>

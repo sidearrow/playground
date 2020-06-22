@@ -4,10 +4,11 @@ namespace App\Http\Middleware;
 
 use App\Services\AuthService;
 use Closure;
+use Illuminate\Http\Request;
 
 class AuthMiddleware
 {
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $token = $request->bearerToken();
         if ($token === null) {

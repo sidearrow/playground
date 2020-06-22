@@ -7,6 +7,8 @@ import {
 
 export type ApiResponseCompanies = CompanyEntity[];
 
+export type ApiResponseCompany = CompanyEntity;
+
 export type ApiResponseLines = (LineEntity & { company: CompanyEntity })[];
 
 export type ApiResponseLine = LineEntity & {

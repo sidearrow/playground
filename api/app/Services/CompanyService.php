@@ -78,13 +78,6 @@ class CompanyService
         return $this->companyRepository->getColumnNames();
     }
 
-    public function getAllAssocArraySpecifyColumns(array $columns): array
-    {
-        return StdClassUtil::toAssocArrayBulk(
-            $this->companyRepository->getAllArraySpecifyColumns($columns),
-        );
-    }
-
     public function bulkUpdate(array $data): void
     {
         $this->companyRepository->bulkUpdate($data);

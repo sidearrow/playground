@@ -5,6 +5,8 @@ import { Router } from 'Router';
 import { config } from 'config';
 import { AuthProvider } from 'AuthProvider';
 
+import 'bootstrap/dist/js/bootstrap.bundle';
+
 export const App: React.FC = () => {
   return (
     <BrowserRouter basename={config.baseUrl}>

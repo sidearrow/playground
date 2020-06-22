@@ -5,6 +5,7 @@ import {
   ApiResponseCompanies,
   ApiResponseLine,
   ApiResponseStations,
+  ApiResponseCompany,
 } from './apiResponse';
 
 export class ApiClient {
@@ -39,6 +40,12 @@ export class ApiClient {
 
   public async getCompanies(): Promise<ApiResponseCompanies> {
     return (await this.axiosInstance.get(this.baseUrl + '/company')).data;
+  }
+
+  public async getCompany(companyId: number): Promise<ApiResponseCompany> {
+    return (
+      await this.axiosInstance.get(`${this.baseUrl}/company/${companyId}`)
+    ).data;
   }
 
   public async getLines(): Promise<ApiResponseLines> {
