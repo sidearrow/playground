@@ -46,6 +46,13 @@ class CompanyRepository extends AbstractRepository
         return parent::getColumnNamesCommon('company');
     }
 
+    public function update(int $companyId, array $data): void
+    {
+        DB::table('company')
+            ->where('company_id', '=', $companyId)
+            ->update($data);
+    }
+
     public function bulkUpdate(array $data)
     {
         DB::transaction(function () use ($data) {

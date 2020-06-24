@@ -82,4 +82,9 @@ class CompanyService
     {
         $this->companyRepository->bulkUpdate($data);
     }
+
+    public function update(int $companyId, array $data): void
+    {
+        $this->companyRepository->update($companyId, $data);
+    }
 }

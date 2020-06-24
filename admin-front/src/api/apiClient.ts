@@ -42,6 +42,21 @@ export class ApiClient {
     return (await this.axiosInstance.get(this.baseUrl + '/company')).data;
   }
 
+  public async patchCompany(
+    companyId: number,
+    data: {
+      companyCode?: string;
+      companyName?: string;
+      companyNameAlias?: string;
+      companyNameKana?: string;
+      length?: number;
+      lineNum?: number;
+      stationNum?: number;
+    }
+  ): Promise<void> {
+    await this.axiosInstance.patch(`/company/${companyId}`, data);
+  }
+
   public async getCompany(companyId: number): Promise<ApiResponseCompany> {
     return (
       await this.axiosInstance.get(`${this.baseUrl}/company/${companyId}`)
