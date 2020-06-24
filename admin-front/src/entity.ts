@@ -35,3 +35,9 @@ export type StationEntity = {
 export type StationEntityWithGroupStations = StationEntity & {
   groupStations: StationEntity[];
 };
+
+export type RailwayType = {
+  railwayTypeId: number;
+  railwayTypeCode: string;
+  railwayTypeName: string;
+};

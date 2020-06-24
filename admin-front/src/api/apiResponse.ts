@@ -3,9 +3,12 @@ import {
   LineEntity,
   LineSectionEntity,
   StationEntity,
+  RailwayType,
 } from 'entity';
 
-export type ApiResponseCompanies = CompanyEntity[];
+export type ApiResponseCompanies = (CompanyEntity & {
+  railwayTypes: RailwayType[];
+})[];
 
 export type ApiResponseCompany = CompanyEntity;
 
