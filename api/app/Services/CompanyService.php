@@ -47,7 +47,12 @@ class CompanyService
     public function getOne(int $companyId): CompanyEntity
     {
         return $this->companyEntityFactory->createFromModel(
-            $this->companyRepository->getOne($companyId)
+            $this->companyRepository->getOne($companyId),
+            [
+                CompanyEntity::RELATION_COMPANY_TYPE => [],
+                CompanyEntity::RELATION_RAILWAY_TYPES => [],
+                CompanyEntity::RELATION_RAILWAY_RAILTRACK_TYPES => [],
+            ],
         );
     }
 

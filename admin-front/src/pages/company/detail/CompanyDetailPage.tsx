@@ -1,46 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { ApiClient } from 'api/apiClient';
+import { ApiResponseCompany } from 'api/apiResponse';
 import { BasicInfoTabContent } from './BasicInfoTabContent';
-import { Tabs, Tab } from 'react-bootstrap';
 
-const LineTabContent: React.FC = () => <div>路線</div>;
+const apiClient = new ApiClient();
+
+const patchCompanyCode = async (
+  companyId: number,
+  companyCode: string
+): Promise<void> => {
+  await apiClient.patchCompany(companyId, { companyCode: companyCode });
+};
+
+const patchCompanyName = async (
+  companyId: number,
+  companyName: string
+): Promise<void> => {
+  await apiClient.patchCompany(companyId, { companyName: companyName });
+};
 
 export const CompanyDetailPage: React.FC = () => {
-  const tabs = [
-    { name: '基本情報', component: BasicInfoTabContent },
-    { name: '路線', component: LineTabContent },
-  ];
+  const companyId = Number(useParams<{ companyId: string }>().companyId);
 
-  const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
+  const [company, setCompany] = useState<ApiResponseCompany | null>(null);
+
+  const loadCompany = async (): Promise<void> => {
+    setCompany(await apiClient.getCompany(Number(companyId)));
+  };
+
+  useEffect(() => {
+    (async (): Promise<void> => await loadCompany())();
+  }, []);
+
+  const saveCompanyCode = (companyCode: string): void => {
+    (async (): Promise<void> => {
+      await patchCompanyCode(companyId, companyCode);
+      await loadCompany();
+    })();
+  };
+  const saveCompanyName = (companyName: string): void => {
+    (async (): Promise<void> => {
+      await patchCompanyName(companyId, companyName);
+      await loadCompany();
+    })();
+  };
+  const saveCompanyNameAlias = (companyNameAlias: string): void => {
+    (async (): Promise<void> => {
+      await apiClient.patchCompany(companyId, {
+        companyNameAlias: companyNameAlias,
+      });
+      await loadCompany();
+    })();
+  };
 
   return (
     <>
       <h1>事業者詳細画面</h1>
-      <ul className="nav nav-tabs">
-        {tabs.map((tab, i) => (
-          <li className="nav-item" key={i}>
-            <a
-              className={`nav-link ${activeTabIndex === i ? 'active' : ''}`}
-              href="#"
-              onClick={(): void => setActiveTabIndex(i)}
-            >
-              {tab.name}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div className="container pt-3">
-        {tabs.map((tab, i) => {
-          const Component = tab.component;
-          return (
-            <div
-              className={activeTabIndex === i ? 'd-block' : 'd-none'}
-              key={i}
-            >
-              <Component />
-            </div>
-          );
-        })}
-      </div>
+      <section>
+        {company === null && <span>NOW LOADING ...</span>}
+        {company !== null && (
+          <BasicInfoTabContent
+            company={company}
+            save={{
+              companyCode: saveCompanyCode,
+              companyName: saveCompanyName,
+              companyNameAlias: saveCompanyNameAlias,
+            }}
+          />
+        )}
+      </section>
     </>
   );
 };

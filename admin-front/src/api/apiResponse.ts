@@ -10,7 +10,9 @@ export type ApiResponseCompanies = (CompanyEntity & {
   railwayTypes: RailwayType[];
 })[];
 
-export type ApiResponseCompany = CompanyEntity;
+export type ApiResponseCompany = CompanyEntity & {
+  railwayTypes: RailwayType[];
+};
 
 export type ApiResponseLines = (LineEntity & { company: CompanyEntity })[];
 

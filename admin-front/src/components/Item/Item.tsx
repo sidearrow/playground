@@ -1,24 +1,25 @@
 import React, { useState, createContext, useContext } from 'react';
 import { ItemLabelBtn } from './ItemLabelBtn';
 
-const ItemCommonContext = createContext<{ isEdit: boolean }>({
+const ItemContext = createContext<{ isEdit: boolean }>({
   isEdit: false,
 });
 
-export const ItemCommonView: React.FC = ({ children }) => {
-  const { isEdit } = useContext(ItemCommonContext);
+export const ItemView: React.FC = ({ children }) => {
+  const { isEdit } = useContext(ItemContext);
   return isEdit ? <></> : <>{children}</>;
 };
 
-export const ItemCommonEdit: React.FC = ({ children }) => {
-  const { isEdit } = useContext(ItemCommonContext);
+export const ItemEdit: React.FC = ({ children }) => {
+  const { isEdit } = useContext(ItemContext);
   return isEdit ? <>{children}</> : <></>;
 };
 
-export const ItemCommon: React.FC<{
+export const Item: React.FC<{
   label: string;
   saveAction: () => void;
-}> = ({ label, saveAction, children }) => {
+  cancelAction: () => void;
+}> = ({ label, saveAction, cancelAction, children }) => {
   const [isEdit, setIsEdit] = useState(false);
 
   const handleClickEditBtn = (): void => {
@@ -33,11 +34,12 @@ export const ItemCommon: React.FC<{
   };
 
   const handleClickCancelBtn = (): void => {
+    cancelAction();
     setIsEdit(false);
   };
 
   return (
-    <ItemCommonContext.Provider value={{ isEdit: isEdit }}>
+    <ItemContext.Provider value={{ isEdit: isEdit }}>
       <div className="row py-1 mb-1">
         <div className="col-md-5 py-1 alert-info font-weight-bold">
           <div className="d-flex justify-content-between h-100">
@@ -54,6 +56,6 @@ export const ItemCommon: React.FC<{
         </div>
         <div className="col-md-7 py-1 align-self-center">{children}</div>
       </div>
-    </ItemCommonContext.Provider>
+    </ItemContext.Provider>
   );
 };

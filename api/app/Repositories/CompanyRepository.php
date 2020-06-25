@@ -25,7 +25,11 @@ class CompanyRepository extends AbstractRepository
 
     public function getOne(int $companyId): CompanyModel
     {
-        return CompanyModel::find($companyId);
+        return CompanyModel::with([
+            'companyType',
+            'railwayTypes',
+            'railwayRailtrackTypes',
+        ])->find($companyId);
     }
 
     public function getOneByCompanyCode(string $companyCode): CompanyModel
