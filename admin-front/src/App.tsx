@@ -6,6 +6,7 @@ import { config } from 'config';
 import { AuthProvider } from 'AuthProvider';
 
 import 'bootstrap/dist/js/bootstrap.bundle';
+import { Container } from '@material-ui/core';
 
 export const App: React.FC = () => {
   return (
@@ -14,9 +15,9 @@ export const App: React.FC = () => {
         <header>
           <Navbar />
         </header>
-        <main className="container pb-5">
+        <Container style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
           <Router />
-        </main>
+        </Container>
       </AuthProvider>
     </BrowserRouter>
   );

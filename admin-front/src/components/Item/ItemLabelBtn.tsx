@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@material-ui/core';
 
 export const ItemLabelBtn: React.FC<{
   isEdit: boolean;
@@ -9,21 +10,18 @@ export const ItemLabelBtn: React.FC<{
   if (isEdit) {
     return (
       <>
-        <button className="btn btn-sm btn-info" onClick={onClickSaveBtn}>
+        <Button onClick={onClickSaveBtn} variant="contained" color="primary">
           保存
-        </button>
-        <button
-          className="btn btn-sm btn-secondary ml-2"
-          onClick={onClickCancelBtn}
-        >
+        </Button>
+        <Button onClick={onClickCancelBtn} variant="contained">
           キャンセル
-        </button>
+        </Button>
       </>
     );
   }
   return (
-    <button className="btn btn-sm btn-info" onClick={onClickEditBtn}>
+    <Button onClick={onClickEditBtn} variant="contained" color="primary">
       編集
-    </button>
+    </Button>
   );
 };

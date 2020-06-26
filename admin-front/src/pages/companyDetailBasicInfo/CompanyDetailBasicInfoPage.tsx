@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ApiResponseCompany } from 'api/apiResponse';
 import { ApiClient } from 'api/apiClient';
 import { useParams } from 'react-router-dom';
-import { ItemCompanyCode } from './components/ItemCompanyCode';
 import { ItemCompanyName } from './components/ItemCompanyName';
 import { ItemCompanyNameAlias } from './components/ItemCompanyNameAlias';
 import { ItemRailwayTypes } from './components/ItemRailwayTypes';
+import { FormControl, TextField, Grid, Button } from '@material-ui/core';
 
 const Core: React.FC<{
   company: ApiResponseCompany;
@@ -20,9 +20,11 @@ const Core: React.FC<{
   const [companyNameAlias, setCompanyNameAlias] = useState<string>(
     company.companyNameAlias
   );
+  /*
   const [railwayTypes, setRailwayTypes] = useState<string[]>(
     company.railwayTypes.map((v) => String(v.railwayTypeId))
   );
+  */
 
   const saveActionCompanyCode = (): void => {
     save.companyCode(companyCode);
@@ -34,19 +36,20 @@ const Core: React.FC<{
     save.companyNameAlias(companyNameAlias);
   };
   const saveActionRailwayTypes = (): void => {
-    console.log(railwayTypes);
+    //console.log(railwayTypes);
   };
 
   return (
     <div>
-      <ItemCompanyCode
-        value={companyCode}
-        setValue={setCompanyCode}
-        saveAction={saveActionCompanyCode}
-        cancelAction={(): void => {
-          setCompanyCode(company.companyCode);
-        }}
-      />
+      <FormControl fullWidth>
+        <TextField
+          label="事業者コード"
+          value={companyCode}
+          onChange={(e): void => {
+            setCompanyCode(e.target.value);
+          }}
+        />
+      </FormControl>
       <ItemCompanyName
         value={companyName}
         setValue={setCompanyName}
@@ -63,18 +66,13 @@ const Core: React.FC<{
           setCompanyNameAlias(company.companyNameAlias);
         }}
       />
-      <ItemRailwayTypes
-        value={railwayTypes}
-        setValue={setRailwayTypes}
-        saveAction={saveActionRailwayTypes}
-        cancelAction={(): void => {
-          setRailwayTypes([]);
-        }}
-      >
-        {company.railwayTypes.map((v, i) => (
-          <span key={i}>{v.railwayTypeName}</span>
-        ))}
-      </ItemRailwayTypes>
+      <Grid container justify="center">
+        <Grid item sm={6} xs={12}>
+          <Button color="primary" variant="contained" fullWidth>
+            保存
+          </Button>
+        </Grid>
+      </Grid>
     </div>
   );
 };
