@@ -2,10 +2,24 @@
 
 namespace App\Entities;
 
+use App\TraitGetter;
 use JsonSerializable;
 
+/**
+ * @property int $companyId
+ * @property string $companyCode
+ * @property string $companyName
+ * @property string $companyNameAlias
+ * @property string $companyNameKana
+ * @property float $length
+ * @property int $lineNum
+ * @property int $stationNum
+ * @property string|null $corporateColor
+ */
 class CompanyEntity implements JsonSerializable
 {
+    use TraitGetter;
+
     public const RELATION_LINES = 'relation_lines';
     public const RELATION_COMPANY_TYPE = 'relation_company_types';
     public const RELATION_RAILWAY_TYPES = 'relation_railway_types';
@@ -67,6 +81,11 @@ class CompanyEntity implements JsonSerializable
     public function setRailwayRailtrackTypes(array $railwayRailtrackTypes): void
     {
         $this->railwayRailtrackTypes = $railwayRailtrackTypes;
+    }
+
+    public function setLines(array $lines): void
+    {
+        $this->lines = $lines;
     }
 
     public function jsonSerialize()

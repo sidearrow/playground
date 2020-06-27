@@ -58,6 +58,15 @@ class CompanyEntityFactory
             $companyEntity->setRailwayRailtrackTypes($railwayRailtrackTypes);
         }
 
+        if (array_key_exists(CompanyEntity::RELATION_LINES, $relations)) {
+            $lines = [];
+            $lineEntityFactory = new LineEntityFactory();
+            foreach ($companyModel->lines as $lineModel) {
+                $lines[] = $lineEntityFactory->createFromModel($lineModel);
+            }
+            $companyEntity->setLines($lines);
+        }
+
         return $companyEntity;
     }
 }

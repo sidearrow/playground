@@ -2,43 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\CompanyEntity;
 use App\Http\Controllers\Controller;
-use App\Services\CompanyService;
-use App\Services\LineService;
+use App\Repositories\CompanyRepository;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
-    private CompanyService $companyService;
-    private LineService $lineService;
+    private CompanyRepository $companyRepository;
 
     public function __construct()
     {
-        $this->companyService = new CompanyService();
-        $this->lineService = new LineService();
+        $this->companyRepository = new CompanyRepository();
     }
 
-    public function index()
+    public function get()
     {
-        return $this->companyService->getAll();
+        return $this->companyRepository->getAll();
     }
 
     public function getOne(int $companyId)
     {
-        return $this->companyService->getOne($companyId);
+        return $this->companyRepository->getOne($companyId);
     }
 
-    public function getOneByCode(string $companyCode)
+    public function update(Request $request, string $companyId)
     {
-        return $this->companyService->getOneByCompanyCode($companyCode);
-    }
-
-    public function getLines(int $companyId)
-    {
-        return $this->lineService->getByCompanyId($companyId);
-    }
-
-    public function getStatistics(int $companyId)
-    {
-        return $this->companyService->getStatistics($companyId);
+        $this->companyRepository->update(
+            new CompanyEntity(
+                $companyId,
+                $request->json('companyCode'),
+                $request->json('companyName'),
+                $request->json('companyNameAlias'),
+                $request->json('companyNameKana'),
+                $request->json('length'),
+                $request->json('lineNum'),
+                $request->json('stationNum'),
+                $request->json('corporateColor')
+            )
+        );
     }
 }

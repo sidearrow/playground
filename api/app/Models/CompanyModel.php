@@ -46,4 +46,9 @@ class CompanyModel extends Model
             'railway_railtrack_type_id',
         );
     }
+
+    public function lines()
+    {
+        return $this->hasMany(LineModel::class, 'company_id', 'company_id');
+    }
 }
