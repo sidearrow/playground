@@ -12,8 +12,17 @@ const railwayTypeSelectItems: SelectItem[] = [
   { value: '41', label: '鋼索鉄道' },
 ];
 
+const companyTypeSelectItems: SelectItem[] = [
+  { value: '1', label: 'JR' },
+  { value: '2', label: '大手私鉄' },
+  { value: '3', label: '準大手私鉄' },
+  { value: '4', label: '公営鉄道' },
+  { value: '5', label: '中小私鉄' },
+];
+
 export const constant = {
   selectItems: {
+    companyType: companyTypeSelectItems,
     railwayType: railwayTypeSelectItems,
   },
 };

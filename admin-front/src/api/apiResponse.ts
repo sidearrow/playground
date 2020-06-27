@@ -4,14 +4,18 @@ import {
   LineSectionEntity,
   StationEntity,
   RailwayType,
+  RailwayRailtrackTypes,
 } from 'entity';
 
 export type ApiResponseCompanies = (CompanyEntity & {
   railwayTypes: RailwayType[];
+  railwayRailtracTypes: RailwayRailtrackTypes[];
 })[];
 
 export type ApiResponseCompany = CompanyEntity & {
   railwayTypes: RailwayType[];
+  railwayRailtracTypes: RailwayRailtrackTypes[];
+  lines: LineEntity[];
 };
 
 export type ApiResponseLines = (LineEntity & { company: CompanyEntity })[];

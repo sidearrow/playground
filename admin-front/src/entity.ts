@@ -3,7 +3,11 @@ export type CompanyEntity = {
   companyCode: string;
   companyName: string;
   companyNameAlias: string;
+  companyNameKana: string;
   //companyTypeId: number;
+  length: number;
+  lineNum: number;
+  stationNum: number;
   corporateColor: string | null;
   //status: number;
 };
@@ -40,4 +44,10 @@ export type RailwayType = {
   railwayTypeId: number;
   railwayTypeCode: string;
   railwayTypeName: string;
+};
+
+export type RailwayRailtrackTypes = {
+  railwayRailtrackTypeId: number;
+  railwayRailtrackTypeCode: string;
+  railwayRailtrackTypeName: string;
 };
