@@ -11,9 +11,12 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Box,
 } from '@material-ui/core';
 import { Breadcrumbs } from 'components/Breadcrumbs';
 import { constant } from 'constant';
+import { CmpLink } from 'components/CmpLink';
+import { CmpLineListPanel } from './components/CmpLineListPanel';
 
 const apiClient = new ApiClient();
 
@@ -51,32 +54,38 @@ const Core: React.FC<{
   return (
     <div>
       <FormControl fullWidth margin="normal">
+        <FormLabel>事業者コード</FormLabel>
         <TextField
-          label="事業者コード"
           value={companyCode}
           margin="normal"
           onChange={(e): void => {
             setCompanyCode(e.target.value);
           }}
         />
+      </FormControl>
+      <FormControl fullWidth margin="normal">
+        <FormLabel>事業者名</FormLabel>
         <TextField
-          label="事業者名"
           value={companyName}
           margin="normal"
           onChange={(e): void => {
             setCompanyName(e.target.value);
           }}
         />
+      </FormControl>
+      <FormControl fullWidth margin="normal">
+        <FormLabel>事業者名 略称</FormLabel>
         <TextField
-          label="事業者名 略称"
           value={companyNameAlias}
           margin="normal"
           onChange={(e): void => {
             setCompanyNameAlias(e.target.value);
           }}
         />
+      </FormControl>
+      <FormControl fullWidth margin="normal">
+        <FormLabel>事業者名 かな</FormLabel>
         <TextField
-          label="事業者名 かな"
           value={companyNameKana}
           margin="normal"
           onChange={(e): void => {
@@ -86,9 +95,9 @@ const Core: React.FC<{
       </FormControl>
       <Grid container spacing={1}>
         <Grid item xs={6}>
-          <FormControl fullWidth>
+          <FormControl fullWidth margin="normal">
+            <FormLabel>総営業キロ</FormLabel>
             <TextField
-              label="総営業キロ"
               value={length}
               margin="normal"
               onChange={(e): void => {
@@ -98,9 +107,9 @@ const Core: React.FC<{
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl fullWidth>
+          <FormControl fullWidth margin="normal">
+            <FormLabel>路線数</FormLabel>
             <TextField
-              label="路線数"
               value={lineNum}
               margin="normal"
               onChange={(e): void => {
@@ -110,9 +119,9 @@ const Core: React.FC<{
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl fullWidth>
+          <FormControl fullWidth margin="normal">
+            <FormLabel>駅数</FormLabel>
             <TextField
-              label="駅数"
               value={stationNum}
               margin="normal"
               onChange={(e): void => {
@@ -122,7 +131,7 @@ const Core: React.FC<{
           </FormControl>
         </Grid>
       </Grid>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" margin="normal">
         <FormLabel>事業者タイプ</FormLabel>
         <RadioGroup>
           {constant.selectItems.companyType.map((v, i) => (
@@ -169,13 +178,18 @@ export const CompanyDetailBasicInfoPage: React.FC = () => {
   }
   return (
     <>
-      <Breadcrumbs
-        links={[
-          { text: 'HOME', href: '/' },
-          { text: '事業者一覧', href: '/company' },
-          { text: company.companyNameAlias, href: null },
-        ]}
-      />
+      <Box marginBottom={2}>
+        <Breadcrumbs
+          links={[
+            { text: 'HOME', href: '/' },
+            { text: '事業者一覧', href: '/company' },
+            { text: company.companyNameAlias, href: null },
+          ]}
+        />
+      </Box>
+      <Box marginBottom={2}>
+        <CmpLineListPanel lines={company.lines} />
+      </Box>
       <Core
         company={company}
         reloadCompany={() => {
