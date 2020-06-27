@@ -2,9 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { ApiResponseLine } from 'api/apiResponse';
 import { ApiClient } from 'api/apiClient';
 import { useParams, Link } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
 import { StationSearchSelector } from 'components/StationSearchSelector';
 import { StationEntityWithGroupStations } from 'entity';
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Button,
+  Typography,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+} from '@material-ui/core';
+import { CmpLink } from 'components/CmpLink';
 
 export const LineDetailPage: React.FC = () => {
   const apiClient = new ApiClient();
@@ -54,94 +69,97 @@ export const LineDetailPage: React.FC = () => {
 
   return (
     <>
-      <h1>{line.lineNameAlias}</h1>
+      <Typography variant="h1">{line.lineNameAlias}</Typography>
       <section>
         {line.lineSections.map((lineSection, i) => (
           <div key={i}>
-            <div className="table-responsive">
-              <table className="table table-sm table-bordered">
-                <thead>
-                  <tr className="alert-info">
-                    <th>駅名</th>
-                    <th>路線</th>
-                    <th>接続駅</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>駅名</TableCell>
+                    <TableCell>路線</TableCell>
+                    <TableCell>接続駅</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {lineSection.stations.map((station, i) => (
-                    <tr key={i}>
-                      <td>{station.stationName}</td>
-                      <td>
+                    <TableRow key={i}>
+                      <TableCell>{station.stationName}</TableCell>
+                      <TableCell>
                         {station.lines.map((line, i) => (
                           <div key={i}>
-                            <Link to={`/line/${line.lineId}`}>
+                            <CmpLink to={`/line/${line.lineId}`}>
                               {line.lineNameAlias}
-                            </Link>
+                            </CmpLink>
                           </div>
                         ))}
-                      </td>
-                      <td>
-                        <div>
-                          <button
-                            className="btn btn-sm btn-primary py-0"
-                            onClick={(): void =>
-                              handleClickGroupStationAddBtn(station)
-                            }
-                          >
-                            追加
-                          </button>
-                        </div>
-                        <div className="mt-1">
-                          {station.groupStations.map((station, i) => (
-                            <div key={i}>
-                              <span>{station.stationName}</span>
-                              <span>
-                                <small>
-                                  [{station.company.companyNameAlias}]
-                                </small>
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={(): void =>
+                            handleClickGroupStationAddBtn(station)
+                          }
+                        >
+                          追加
+                        </Button>
+                        {station.groupStations.length > 0 && (
+                          <Box marginTop={2}>
+                            {station.groupStations.map((station, i) => (
+                              <div key={i}>
+                                <span>{station.stationName}</span>
+                                <span>
+                                  <small>
+                                    [{station.company.companyNameAlias}]
+                                  </small>
+                                </span>
+                              </div>
+                            ))}
+                          </Box>
+                        )}
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         ))}
       </section>
-      <Modal
-        show={groupStationAddModalIsShow}
-        onHide={(): void => {
+      <Dialog
+        open={groupStationAddModalIsShow}
+        onClose={(): void => {
           setGroupStationAddModalIsShow(false);
         }}
       >
-        <div className="modal-content modal-lg">
-          <div className="modal-body">
-            <h5>接続駅追加 - {groupStationAddModalStation?.stationName}</h5>
-            <div className="my-2">
-              <div className="row justify-content-center">
-                <div className="col-md-4">
-                  <button
-                    className="btn btn-block btn-primary"
-                    onClick={handleClickGroupStationBtn}
-                  >
-                    更新
-                  </button>
-                </div>
-              </div>
-            </div>
-            <StationSearchSelector
-              initialSelectStations={groupStationAddModalStation?.groupStations}
-              handleSetSelectStationIds={(ids): void => {
-                setSelectGroupStationIds(ids);
-              }}
-            />
-          </div>
-        </div>
-      </Modal>
+        <DialogTitle>
+          接続駅追加 - {groupStationAddModalStation?.stationName}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box marginBottom={1}>
+            <Grid container justify="center">
+              <Grid xs={12} sm={6}>
+                <Button
+                  onClick={handleClickGroupStationBtn}
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                >
+                  更新
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+          <StationSearchSelector
+            initialSelectStations={groupStationAddModalStation?.groupStations}
+            handleSetSelectStationIds={(ids): void => {
+              setSelectGroupStationIds(ids);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
