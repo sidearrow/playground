@@ -1,13 +1,12 @@
 <?php
 
-use App\Http\Controllers\Company\CompanyPatchController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', 'AuthController@login');
 Route::get('/auth-check', 'AuthController@check');
 
-Route::middleware([/*AuthMiddleware::class*/])->group(function () {
+Route::middleware([AuthMiddleware::class])->group(function () {
     Route::prefix('/company')->group(function () {
         Route::get('/', 'CompanyController@get');
         Route::get('/{companyId}', 'CompanyController@getOne');

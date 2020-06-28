@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import { AuthContext } from 'AuthProvider';
 import {
   AppBar,
   Toolbar,
   Typography,
-  Button,
   IconButton,
-  Menu,
-  MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
 } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
+import { CmpLink } from './CmpLink';
 
 export const Navbar: React.FC = () => {
   const { status } = useContext(AuthContext);
@@ -32,19 +33,22 @@ export const Navbar: React.FC = () => {
         >
           <MenuIcon />
         </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => {
-            setAnchorEl(null);
-          }}
-          keepMounted
-        >
-          <MenuItem>
-            <Link to="/company">事業者一覧</Link>
-          </MenuItem>
-        </Menu>
       </Toolbar>
+      <Drawer
+        anchor="right"
+        open={Boolean(anchorEl)}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
+      >
+        <List style={{ minWidth: '250px' }}>
+          <ListItem>
+            <ListItemText>
+              <CmpLink to="/company">事業者一覧</CmpLink>
+            </ListItemText>
+          </ListItem>
+        </List>
+      </Drawer>
     </AppBar>
   );
 };

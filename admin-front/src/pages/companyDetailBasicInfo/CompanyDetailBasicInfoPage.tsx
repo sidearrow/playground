@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import { Breadcrumbs } from 'components/Breadcrumbs';
 import { constant } from 'constant';
-import { CmpLink } from 'components/CmpLink';
 import { CmpLineListPanel } from './components/CmpLineListPanel';
 
 const apiClient = new ApiClient();

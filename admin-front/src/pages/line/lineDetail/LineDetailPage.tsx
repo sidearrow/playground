@@ -20,6 +20,7 @@ import {
   Grid,
 } from '@material-ui/core';
 import { CmpLink } from 'components/CmpLink';
+import { Breadcrumbs } from 'components/Breadcrumbs';
 
 export const LineDetailPage: React.FC = () => {
   const apiClient = new ApiClient();
@@ -69,6 +70,19 @@ export const LineDetailPage: React.FC = () => {
 
   return (
     <>
+      <Box marginBottom={2}>
+        <Breadcrumbs
+          links={[
+            { text: 'HOME', href: '/' },
+            { text: '事業者一覧', href: '/company' },
+            {
+              text: line.company.companyNameAlias,
+              href: `/company/${line.company.companyId}`,
+            },
+            { text: line.lineNameAlias, href: null },
+          ]}
+        />
+      </Box>
       <Typography variant="h1">{line.lineNameAlias}</Typography>
       <section>
         {line.lineSections.map((lineSection, i) => (
@@ -130,6 +144,8 @@ export const LineDetailPage: React.FC = () => {
       </section>
       <Dialog
         open={groupStationAddModalIsShow}
+        maxWidth="lg"
+        fullWidth={true}
         onClose={(): void => {
           setGroupStationAddModalIsShow(false);
         }}
