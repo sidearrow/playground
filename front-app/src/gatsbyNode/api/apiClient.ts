@@ -6,6 +6,7 @@ import {
   LineEntity,
   ApiResponseLines,
   ApiResponseLine,
+  ApiResponseCompanies,
 } from '../../entities';
 import { config } from '../../config';
 
@@ -40,16 +41,16 @@ abstract class AbstractApiClient {
 }
 
 export class ApiClient extends AbstractApiClient {
-  public async getCompanyAll() {
-    return await this.get<CompanyEntity[]>(
+  public async getCompanyAll(): Promise<ApiResponseCompanies> {
+    return await this.get<ApiResponseCompanies>(
       '/company',
-      schema.definitions.ApiResponseCompanyAll
+      schema.definitions.ApiResponseCompanies
     );
   }
 
-  public async getCompanyOne(companyCode: string) {
+  public async getCompany(companyId: number) {
     return await this.get<CompanyEntity>(
-      `/company/code=${companyCode}`,
+      `/company/${companyId}`,
       schema.definitions.CompanyEntity
     );
   }

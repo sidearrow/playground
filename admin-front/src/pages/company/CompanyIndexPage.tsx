@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { CompanyEntity } from 'entity';
 import { ApiClient } from 'api/apiClient';
 import { Link } from 'react-router-dom';
+import { Typography } from '@material-ui/core';
+import { CmpLink } from 'components/CmpLink';
 
 const CompanyList: React.FC = () => {
   const apiClient = new ApiClient();
@@ -18,9 +20,11 @@ const CompanyList: React.FC = () => {
     <div className="row">
       {companies.map((company, i) => (
         <div key={i} className="col-md-4 col-6">
-          <Link to={`/company/${company.companyId}`}>
-            {company.companyNameAlias}
-          </Link>
+          <Typography>
+            <CmpLink to={`/company/${company.companyId}/basic-info`}>
+              {company.companyNameAlias}
+            </CmpLink>
+          </Typography>
         </div>
       ))}
     </div>

@@ -8,13 +8,11 @@ Route::get('/auth-check', 'AuthController@check');
 
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::prefix('/company')->group(function () {
-        Route::get('/', 'CompanyController@index');
-
-        Route::get('/code={companyCode}', 'CompanyController@getOneByCode');
+        Route::get('/', 'CompanyController@get');
         Route::get('/{companyId}', 'CompanyController@getOne');
+        Route::post('/{companyId}', 'CompanyController@update');
 
-        Route::get('/{companyId}/line', 'CompanyController@getLines');
-        Route::get('/{companyId}/statistics', 'CompanyController@getStatistics');
+        //Route::get('/{companyId}/statistics', 'CompanyController@getStatistics');
     });
 
     Route::prefix('/line')->group(function () {

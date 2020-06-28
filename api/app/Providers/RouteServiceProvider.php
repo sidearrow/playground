@@ -9,17 +9,10 @@ class RouteServiceProvider extends ServiceProvider
 {
     protected $namespace = 'App\Http\Controllers';
 
-    public const HOME = '/home';
-
     public function map()
     {
-        $this->mapApiRoutes();
-    }
-
-    protected function mapApiRoutes()
-    {
         Route::middleware('api')
-            ->namespace('App\Http\Controllers')
+            ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
     }
 }

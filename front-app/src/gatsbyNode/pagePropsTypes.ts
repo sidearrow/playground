@@ -1,17 +1,17 @@
 import {
-  ApiResponseCompanyAll,
+  ApiResponseCompanies,
   CompanyEntity,
-  LinesEntitiy,
+  LinesEntity,
   ApiResponseLine,
 } from '../entities';
 
 export type PagePropsCompany = {
-  companies: ApiResponseCompanyAll;
+  companies: ApiResponseCompanies;
 };
 
 export type PagePropsCompanyDetail = {
   company: CompanyEntity;
-  lines: LinesEntitiy;
+  lines: LinesEntity;
 };
 
 export type PagePropsLineDetail = {

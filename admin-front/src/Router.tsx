@@ -5,6 +5,7 @@ import { LineIndexPage } from 'pages/line/LineIndexPage';
 import { CompanyIndexPage } from 'pages/company/CompanyIndexPage';
 import { LineDetailPage } from 'pages/line/lineDetail/LineDetailPage';
 import { LoginPage } from 'pages/login/LoginPage';
+import { CompanyDetailBasicInfoPage } from 'pages/companyDetailBasicInfo/CompanyDetailBasicInfoPage';
 
 export const Router: React.FC = () => (
   <Switch>
@@ -16,6 +17,9 @@ export const Router: React.FC = () => (
     </Route>
     <Route exact path="/company">
       <CompanyIndexPage />
+    </Route>
+    <Route exact path="/company/:companyId/basic-info">
+      <CompanyDetailBasicInfoPage />
     </Route>
     <Route exact path="/line">
       <LineIndexPage />

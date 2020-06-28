@@ -1,23 +1,54 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import { AuthContext } from 'AuthProvider';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
+import { Menu as MenuIcon } from '@material-ui/icons';
+import { CmpLink } from './CmpLink';
 
 export const Navbar: React.FC = () => {
   const { status } = useContext(AuthContext);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   return (
-    <nav className="navbar navbar-light bg-transparent d-block">
-      <div className="container justify-content-center">
-        <Link to="/" className="navbar-brand">
+    <AppBar position="static" style={{ flexGrow: 1 }}>
+      <Toolbar>
+        <Typography variant="h6" style={{ flexGrow: 1 }}>
           鉄道統計情報 管理画面
-        </Link>
-      </div>
-      {status === true && (
-        <div className="container pb-2 border-bottom border-dark d-block">
-          <Link to="/company">事業者一覧</Link>
-          <Link to="/line">路線一覧</Link>
-        </div>
-      )}
-    </nav>
+        </Typography>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={(e) => {
+            setAnchorEl(e.currentTarget);
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+      </Toolbar>
+      <Drawer
+        anchor="right"
+        open={Boolean(anchorEl)}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
+      >
+        <List style={{ minWidth: '250px' }}>
+          <ListItem>
+            <ListItemText>
+              <CmpLink to="/company">事業者一覧</CmpLink>
+            </ListItemText>
+          </ListItem>
+        </List>
+      </Drawer>
+    </AppBar>
   );
 };

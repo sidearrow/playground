@@ -1,5 +1,11 @@
-export type ApiResponseCompanyAll = CompanyEntity[];
+export type ApiResponseCompanies = (CompanyEntity & {
+  companyType: CompanyTypeEntity;
+  railwayTypes: RailwayTypeEntity[];
+  railwayRailtrackTypes: RailwayRailtrackTypeEntity[];
+})[];
+
 export type ApiResponseLines = (LineEntity & { company: CompanyEntity })[];
+
 export type ApiResponseLine = LineEntity & {
   company: CompanyEntity;
   lineSections: (LineSectionEntity & {
@@ -18,9 +24,29 @@ export type CompanyEntity = {
   companyCode: string;
   companyName: string;
   companyNameAlias: string;
-  //companyTypeId: number;
+  companyNameKana: string;
+  length: number;
+  lineNum: number;
+  stationNum: number;
   corporateColor: string | null;
-  //status: number;
+};
+
+export type CompanyTypeEntity = {
+  companyTypeId: number;
+  companyTypeCode: string;
+  companyTypeName: string;
+};
+
+export type RailwayTypeEntity = {
+  railwayTypeId: number;
+  railwayTypeCode: string;
+  railwayTypeName: string;
+};
+
+export type RailwayRailtrackTypeEntity = {
+  railwayRailtrackTypeId: number;
+  railwayRailtrackTypeCode: string;
+  railwayRailtrackTypeName: string;
 };
 
 export type CompanyStatisticsEntity = {
