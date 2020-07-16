@@ -1,0 +1,7 @@
+*.geojson
+*.mbtiles
+
+/node_modules
+
+/tiles/railway-number-of-passengers/*
+!/tiles/railway-number-of-passengers/.gitkeep

@@ -1,0 +1,9 @@
+{
+  "hosting": {
+    "site": "sidearrow-gis-sandbox-tiles",
+    "public": "tiles",
+    "ignore": [
+      "**/metadata.json"
+    ]
+  }
+}
