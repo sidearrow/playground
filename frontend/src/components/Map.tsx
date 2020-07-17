@@ -1,17 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BaseMapSwitch } from './BaseMapSwitch';
-import { MainMap } from '../mainMap';
-import { config } from '../config';
+import { MainMap, MapState } from '../mainMap';
+import { MapStateViewer } from './MapStateViewer';
 
 export const Map: React.FC = () => {
+  const mainMap = MainMap.getInstance();
+  const [mapState, setMapState] = useState<MapState>(mainMap.getState());
+
   useEffect(() => {
-    MainMap.init(config.baseMaps[0].url);
+    mainMap.onChange((state) => {
+      setMapState(state);
+    });
   }, []);
 
   return (
     <>
+      <MapStateViewer {...mapState} />
       <BaseMapSwitch />
-      <div id="map"></div>
     </>
   );
 };

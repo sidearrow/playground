@@ -1,7 +1,13 @@
 import { Map, View } from 'ol';
-import { fromLonLat } from 'ol/proj';
+import { fromLonLat, transform } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+
+export type MapState = {
+  zoom: number;
+  latitude: number;
+  longitude: number;
+};
 
 export class MainMap {
   private static instance: MainMap;
@@ -9,10 +15,13 @@ export class MainMap {
   private map: Map;
   private layer: TileLayer;
 
-  public static init(defaultMapUrl: string): MainMap {
+  public static init(defaultMapUrl: string): void {
     if (MainMap.instance === undefined) {
       MainMap.instance = new MainMap(defaultMapUrl);
     }
+  }
+
+  public static getInstance(): MainMap {
     return MainMap.instance;
   }
 
@@ -31,6 +40,32 @@ export class MainMap {
         zoom: 10,
       }),
       layers: [this.layer],
+    });
+  }
+
+  public getState(): MapState {
+    const state = this.map.getView().getState();
+    const coordinate = transform(state.center, 'EPSG:3857', 'EPSG:4326');
+
+    return {
+      zoom: state.zoom,
+      latitude: coordinate[0],
+      longitude: coordinate[1],
+    };
+  }
+
+  public onChange(handler: (state: MapState) => void): void {
+    this.map.on('moveend', (e) => {
+      const coordinate = transform(
+        e.frameState.viewState.center,
+        'EPSG:3857',
+        'EPSG:4326'
+      );
+      handler({
+        zoom: e.frameState.viewState.zoom,
+        latitude: coordinate[0],
+        longitude: coordinate[1],
+      });
     });
   }
 }

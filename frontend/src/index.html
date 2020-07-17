@@ -13,9 +13,6 @@
 
     body {
       font-family: arial, sans-serif;
-    }
-
-    .wrapper {
       display: flex;
       flex-direction: column;
     }
@@ -27,43 +24,17 @@
 </head>
 
 <body>
-  <div id="app">
-    <!--
-    <header>
-      <nav class="py-4">
-        <div class="flex px-4 justify-between">
-          <a class="text-lg" href="/">sidearrow's GIS Sandbox</a>
-          <button>OPEN</button>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <div class="w-full md:w-1/2  bg-transparent absolute z-10 right-0">
-        <div class="bg-white m-1 p-2 border border-gray-500 rounded text-sm flex">
-          <div>
-            <h5 class="font-bold">ベース地図切替</h5>
-            <div id="baseMapRadioDiv"></div>
-          </div>
-        </div>
-        <div class="bg-white m-1 p-2 border border-gray-500 rounded text-sm flex">
-          <div class="px-2">
-            <span>ズームレベル</span>
-            <span id="metaZoom"></span>
-          </div>
-          <div class="px-2">
-            <span>緯度</span>
-            <span id="metaCenterLatitude"></span>
-          </div>
-          <div class="px-2">
-            <span>経度</span>
-            <span id="metaCenterLongitude"></span>
-          </div>
-        </div>
+  <header>
+    <nav className="py-4">
+      <div className="flex px-4 justify-between">
+        sidearrow's GIS Sandbox
       </div>
-      <div id="map"></div>
-    </main>
-  -->
-  </div>
+    </nav>
+  </header>
+  <main>
+    <div id="app"></div>
+    <div id="map"></div>
+  </main>
   <script src="./bundle.js"></script>
 </body>
 
