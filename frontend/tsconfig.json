@@ -6,6 +6,10 @@
     "module": "es6",
     "target": "ESNext",
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true
   }
 }
