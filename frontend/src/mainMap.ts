@@ -2,6 +2,7 @@ import { Map, View } from 'ol';
 import { fromLonLat, transform } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import LayerGroup from 'ol/layer/Group';
 
 export type MapState = {
   zoom: number;
@@ -67,5 +68,19 @@ export class MainMap {
         longitude: coordinate[1],
       });
     });
+  }
+
+  public setLayer(url: string): void {
+    this.map.setLayerGroup(
+      new LayerGroup({
+        layers: [
+          new TileLayer({
+            source: new OSM({
+              url: url,
+            }),
+          }),
+        ],
+      })
+    );
   }
 }
