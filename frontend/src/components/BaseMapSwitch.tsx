@@ -18,8 +18,8 @@ export const BaseMapSwitch: React.FC = () => {
         {baseMaps.map((v, i) => {
           const btnColor =
             activeMapIndex === i
-              ? 'bg-blue-700 hover:bg-blue-500'
-              : 'bg-blue-500 hover:bg-blue-700';
+              ? 'bg-blue-800 hover:bg-blue-500'
+              : 'bg-blue-500 hover:bg-blue-800';
 
           return (
             <div className="mr-1 inline-block">
