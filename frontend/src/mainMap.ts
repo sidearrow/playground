@@ -2,7 +2,10 @@ import { Map, View } from 'ol';
 import { fromLonLat, transform } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import MVT from 'ol/format/MVT';
 import LayerGroup from 'ol/layer/Group';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import VectorTileSource from 'ol/source/VectorTile';
 
 export type MapState = {
   zoom: number;
@@ -10,11 +13,19 @@ export type MapState = {
   longitude: number;
 };
 
+export type MapFeature = {
+  station: {
+    stationName: string;
+  };
+};
+
 export class MainMap {
   private static instance: MainMap;
 
   private map: Map;
-  private layer: TileLayer;
+  private layerGroup: LayerGroup;
+
+  private static MF_STATION_NAME = '駅名';
 
   public static init(defaultMapUrl: string): void {
     if (MainMap.instance === undefined) {
@@ -27,12 +38,22 @@ export class MainMap {
   }
 
   private constructor(defaultMapUrl: string) {
-    this.layer = new TileLayer({
-      source: new OSM({
-        url: defaultMapUrl,
-        attributions:
-          '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>',
-      }),
+    this.layerGroup = new LayerGroup({
+      layers: [
+        new TileLayer({
+          source: new OSM({
+            url: defaultMapUrl,
+            attributions:
+              '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>',
+          }),
+        }),
+        new VectorTileLayer({
+          source: new VectorTileSource({
+            format: new MVT(),
+            url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
+          }),
+        }),
+      ],
     });
     this.map = new Map({
       target: 'map',
@@ -40,7 +61,7 @@ export class MainMap {
         center: fromLonLat([135, 35]),
         zoom: 10,
       }),
-      layers: [this.layer],
+      layers: this.layerGroup,
     });
   }
 
@@ -70,6 +91,22 @@ export class MainMap {
     });
   }
 
+  public onPointerMove(handler: (feature: MapFeature | null) => void): void {
+    this.map.on('pointermove', (e) => {
+      const feature = this.map.getFeaturesAtPixel(e.pixel);
+      if (feature.length === 0) {
+        handler(null);
+        return;
+      }
+      const props = feature[0].getProperties();
+      handler({
+        station: {
+          stationName: props[MainMap.MF_STATION_NAME],
+        },
+      });
+    });
+  }
+
   public setLayer(url: string): void {
     this.map.setLayerGroup(
       new LayerGroup({
@@ -77,6 +114,12 @@ export class MainMap {
           new TileLayer({
             source: new OSM({
               url: url,
+            }),
+          }),
+          new VectorTileLayer({
+            source: new VectorTileSource({
+              format: new MVT(),
+              url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
             }),
           }),
         ],
