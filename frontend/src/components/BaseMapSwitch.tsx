@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { config } from '../config';
 import { MainMap } from '../mainMap';
+import { SwitchBtn } from './SwitchBtn';
 
 export const BaseMapSwitch: React.FC = () => {
   const baseMaps = config.baseMaps;
@@ -16,25 +17,16 @@ export const BaseMapSwitch: React.FC = () => {
 
   return (
     <>
-      <div className="font-bold">ベース地図切替</div>
       <div>
-        {baseMaps.map((v, i) => {
-          const btnColor =
-            activeMapIndex === i
-              ? 'bg-blue-800 hover:bg-blue-500'
-              : 'bg-blue-500 hover:bg-blue-800';
-
-          return (
-            <div className="mr-1 inline-block" key={i}>
-              <button
-                className={`${btnColor} text-white px-2 py-1 rounded`}
-                onClick={() => handleClickBtn(i)}
-              >
-                {v.name}
-              </button>
-            </div>
-          );
-        })}
+        {baseMaps.map((v, i) => (
+          <div className="mr-1 inline-block" key={i}>
+            <SwitchBtn
+              lable={v.name}
+              isOn={activeMapIndex === i}
+              onClick={() => handleClickBtn(i)}
+            />
+          </div>
+        ))}
       </div>
     </>
   );

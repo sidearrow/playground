@@ -1,20 +1,26 @@
-import React, { createContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
-const MapInfoManagerContext = createContext({});
+type MapInfoManagerState = { [key: string]: boolean };
 
-export const MapInfoManagerItem: React.FC<{ key: string }> = ({
-  key,
+const MapInfoManagerContext = createContext<MapInfoManagerState>({});
+
+export const MapInfoManagerItem: React.FC<{ itemKey: string }> = ({
+  itemKey,
   children,
 }) => {
-  return <>{children}</>;
+  const state = useContext(MapInfoManagerContext);
+  if (state[itemKey]) {
+    return <>{children}</>;
+  }
+  return <></>;
 };
 
 export const MapInfoManager: React.FC<{
-  state: { [key: string]: boolean };
-}> = ({ state }) => {
+  state: MapInfoManagerState;
+}> = ({ state, children }) => {
   return (
     <MapInfoManagerContext.Provider value={state}>
-      <div>aaa</div>
+      {children}
     </MapInfoManagerContext.Provider>
   );
 };
