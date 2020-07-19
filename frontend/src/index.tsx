@@ -7,7 +7,7 @@ import { config } from './config';
 import './style.css';
 import 'ol/ol.css';
 
-MainMap.init(config.baseMaps[2].url);
+MainMap.init(config.baseMaps[2].url, config.baseMaps[2].attributes);
 
 ReactDOM.render(
   <React.StrictMode>

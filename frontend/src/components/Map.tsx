@@ -4,7 +4,7 @@ import { MainMap, MapState, MapFeature } from '../mainMap';
 import { MapStateViewer } from './MapStateViewer';
 import { MapManagerItem } from './MapManagerItem';
 import { MapFeatureViewer } from './MapFeatureViewer';
-import { Btn } from './Btn';
+import { SwitchBtn } from './SwitchBtn';
 
 export const Map: React.FC = () => {
   const mainMap = MainMap.getInstance();
@@ -46,22 +46,21 @@ export const Map: React.FC = () => {
         <div>
           <div>
             {mapMangerItems.map((v, i) => (
-              <span className="inline-block mr-2">
-                <Btn
-                  isActive={mapManagerItemShow[v.key]}
+              <span className="inline-block mr-2" key={i}>
+                <SwitchBtn
+                  isOn={mapManagerItemShow[v.key]}
+                  lable={v.name}
                   onClick={() => {
                     handleClickManagerItemToggleBtn(v.key);
                   }}
-                >
-                  {v.name}
-                </Btn>
+                />
               </span>
             ))}
           </div>
         </div>
       </MapManagerItem>
       {mapManagerItemShow.mapStateViewer && (
-        <MapManagerItem>
+        <MapManagerItem title="地図情報">
           <MapStateViewer {...mapState} />
         </MapManagerItem>
       )}

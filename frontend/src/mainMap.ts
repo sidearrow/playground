@@ -27,9 +27,9 @@ export class MainMap {
 
   private static MF_STATION_NAME = '駅名';
 
-  public static init(defaultMapUrl: string): void {
+  public static init(defaultMapUrl: string, attributions: string): void {
     if (MainMap.instance === undefined) {
-      MainMap.instance = new MainMap(defaultMapUrl);
+      MainMap.instance = new MainMap(defaultMapUrl, attributions);
     }
   }
 
@@ -37,14 +37,13 @@ export class MainMap {
     return MainMap.instance;
   }
 
-  private constructor(defaultMapUrl: string) {
+  private constructor(defaultMapUrl: string, attributions: string) {
     this.layerGroup = new LayerGroup({
       layers: [
         new TileLayer({
           source: new OSM({
             url: defaultMapUrl,
-            attributions:
-              '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>',
+            attributions: attributions,
           }),
         }),
         new VectorTileLayer({
@@ -107,13 +106,14 @@ export class MainMap {
     });
   }
 
-  public setLayer(url: string): void {
+  public setLayer(url: string, attributions: string): void {
     this.map.setLayerGroup(
       new LayerGroup({
         layers: [
           new TileLayer({
             source: new OSM({
               url: url,
+              attributions: attributions,
             }),
           }),
           new VectorTileLayer({

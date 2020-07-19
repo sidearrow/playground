@@ -10,5 +10,13 @@
     "jsx": "react",
     "sourceMap": true,
     "strictNullChecks": true,
-  }
+    "esModuleInterop": true,
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

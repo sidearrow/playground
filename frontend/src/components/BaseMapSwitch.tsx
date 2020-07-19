@@ -8,7 +8,10 @@ export const BaseMapSwitch: React.FC = () => {
 
   function handleClickBtn(index: number) {
     setActiveMapIndex(index);
-    MainMap.getInstance().setLayer(baseMaps[index].url);
+    MainMap.getInstance().setLayer(
+      baseMaps[index].url,
+      baseMaps[index].attributes
+    );
   }
 
   return (
@@ -22,7 +25,7 @@ export const BaseMapSwitch: React.FC = () => {
               : 'bg-blue-500 hover:bg-blue-800';
 
           return (
-            <div className="mr-1 inline-block">
+            <div className="mr-1 inline-block" key={i}>
               <button
                 className={`${btnColor} text-white px-2 py-1 rounded`}
                 onClick={() => handleClickBtn(i)}

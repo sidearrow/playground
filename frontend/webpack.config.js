@@ -8,6 +8,7 @@ const OptimizeCSSAssetPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
+  devtool: 'source-map',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
@@ -40,6 +41,7 @@ module.exports = {
     }),
     new HTMLWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
+      hash: true,
     }),
     new OptimizeCSSAssetPlugin(),
   ],
