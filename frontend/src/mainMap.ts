@@ -2,11 +2,9 @@ import { Map, View } from 'ol';
 import { fromLonLat, transform } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import MVT from 'ol/format/MVT';
 import LayerGroup from 'ol/layer/Group';
 import VectorTileLayer from 'ol/layer/VectorTile';
-import VectorTileSource from 'ol/source/VectorTile';
-import { Stroke, Style } from 'ol/style';
+import { getRailwayLayer } from './map/railwayLayer';
 
 export type MapState = {
   zoom: number;
@@ -19,13 +17,6 @@ export type MapFeature = {
     stationName: string;
   };
 };
-
-const stationStyle = new Style({
-  stroke: new Stroke({ width: 3 }),
-});
-const railroadStyle = new Style({
-  stroke: new Stroke({ width: 1 }),
-});
 
 export class MainMap {
   private static instance: MainMap;
@@ -42,21 +33,6 @@ export class MainMap {
     }
   }
 
-  private static getRailwayLayer(): VectorTileLayer {
-    return new VectorTileLayer({
-      source: new VectorTileSource({
-        format: new MVT(),
-        url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
-      }),
-      style: (feature) => {
-        if (feature.get('layer') === 'station') {
-          return stationStyle;
-        }
-        return railroadStyle;
-      },
-    });
-  }
-
   public static getInstance(): MainMap {
     return MainMap.instance;
   }
@@ -70,7 +46,7 @@ export class MainMap {
             attributions: attributions,
           }),
         }),
-        MainMap.getRailwayLayer(),
+        getRailwayLayer(),
       ],
     });
     this.map = new Map({
@@ -136,7 +112,7 @@ export class MainMap {
               attributions: attributions,
             }),
           }),
-          MainMap.getRailwayLayer(),
+          getRailwayLayer(),
         ],
       })
     );
