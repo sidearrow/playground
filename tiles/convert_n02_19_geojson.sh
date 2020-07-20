@@ -7,7 +7,7 @@ IN_RS=./geojsons/N02-19_RailroadSection.geojson
 MBTILES_FILE_RS=./mbtiles/N02_19_RailroadSection.mbtiles
 
 LAYER_NAME_S=station
-MIN_ZOOM_LEVEL_S=6
+MIN_ZOOM_LEVEL_S=10
 MAX_ZOOM_LEVEL_S=15
 IN_S=./geojsons/N02-19_Station.geojson
 MBTILES_FILE_S=./mbtiles/N02_19_Station.mbtiles
