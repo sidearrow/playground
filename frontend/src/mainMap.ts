@@ -6,6 +6,7 @@ import MVT from 'ol/format/MVT';
 import LayerGroup from 'ol/layer/Group';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
+import { Stroke, Style } from 'ol/style';
 
 export type MapState = {
   zoom: number;
@@ -19,8 +20,16 @@ export type MapFeature = {
   };
 };
 
+const stationStyle = new Style({
+  stroke: new Stroke({ width: 3 }),
+});
+const railroadStyle = new Style({
+  stroke: new Stroke({ width: 1 }),
+});
+
 export class MainMap {
   private static instance: MainMap;
+  private static railwayLayer: VectorTileLayer;
 
   private map: Map;
   private layerGroup: LayerGroup;
@@ -31,6 +40,21 @@ export class MainMap {
     if (MainMap.instance === undefined) {
       MainMap.instance = new MainMap(defaultMapUrl, attributions);
     }
+  }
+
+  private static getRailwayLayer(): VectorTileLayer {
+    return new VectorTileLayer({
+      source: new VectorTileSource({
+        format: new MVT(),
+        url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
+      }),
+      style: (feature) => {
+        if (feature.get('layer') === 'station') {
+          return stationStyle;
+        }
+        return railroadStyle;
+      },
+    });
   }
 
   public static getInstance(): MainMap {
@@ -46,12 +70,7 @@ export class MainMap {
             attributions: attributions,
           }),
         }),
-        new VectorTileLayer({
-          source: new VectorTileSource({
-            format: new MVT(),
-            url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
-          }),
-        }),
+        MainMap.getRailwayLayer(),
       ],
     });
     this.map = new Map({
@@ -97,6 +116,7 @@ export class MainMap {
         handler(null);
         return;
       }
+      console.log(feature);
       const props = feature[0].getProperties();
       handler({
         station: {
@@ -116,12 +136,7 @@ export class MainMap {
               attributions: attributions,
             }),
           }),
-          new VectorTileLayer({
-            source: new VectorTileSource({
-              format: new MVT(),
-              url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
-            }),
-          }),
+          MainMap.getRailwayLayer(),
         ],
       })
     );
