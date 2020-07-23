@@ -5,7 +5,7 @@ export const MapFeatureViewer: React.FC<{ mapFeature: MapFeature | null }> = ({
   mapFeature,
 }) => {
   const stationName =
-    mapFeature === null ? '-' : mapFeature.station.stationName;
+    mapFeature?.station === null ? '-' : mapFeature?.station.stationName;
 
   return <div>駅名：{stationName}</div>;
 };

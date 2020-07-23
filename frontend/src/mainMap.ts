@@ -5,6 +5,14 @@ import OSM from 'ol/source/OSM';
 import LayerGroup from 'ol/layer/Group';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { getRailwayLayer } from './map/railwayLayer';
+import {
+  LineLayerFeature,
+  lineLayerFeatureFactory,
+} from './map/lineLayerFeature';
+import {
+  StationLayerFeature,
+  stationLayerFeatureFactory,
+} from './map/stationLayerFeature';
 
 export type MapState = {
   zoom: number;
@@ -13,9 +21,8 @@ export type MapState = {
 };
 
 export type MapFeature = {
-  station: {
-    stationName: string;
-  };
+  line: LineLayerFeature | null;
+  station: StationLayerFeature | null;
 };
 
 export class MainMap {
@@ -92,12 +99,12 @@ export class MainMap {
         handler(null);
         return;
       }
-      console.log(feature);
       const props = feature[0].getProperties();
+      const layerName = props.layer;
       handler({
-        station: {
-          stationName: props[MainMap.MF_STATION_NAME],
-        },
+        station:
+          layerName === 'station' ? stationLayerFeatureFactory(props) : null,
+        line: layerName === 'line' ? lineLayerFeatureFactory(props) : null,
       });
     });
   }

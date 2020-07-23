@@ -30,6 +30,12 @@ const baseMaps = [
   },
 ];
 
+const RAILWAY_TILE_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000/railway/{z}/{x}/{y}.pbf'
+    : '/tiles/railway/{z}/{x}/{y}.pbf';
+
 export const config = {
   baseMaps: baseMaps,
+  railwayTileUrl: RAILWAY_TILE_URL,
 };

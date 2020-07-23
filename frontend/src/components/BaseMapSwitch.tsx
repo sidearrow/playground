@@ -19,7 +19,7 @@ export const BaseMapSwitch: React.FC = () => {
     <>
       <div>
         {baseMaps.map((v, i) => (
-          <div className="mr-1 inline-block" key={i}>
+          <div className="mr-1 mb-1 inline-block" key={i}>
             <SwitchBtn
               lable={v.name}
               isOn={activeMapIndex === i}

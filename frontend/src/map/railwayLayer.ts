@@ -1,7 +1,8 @@
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
-import { Style, Stroke } from 'ol/style';
+import { Style, Stroke, Fill, Circle } from 'ol/style';
+import { config } from '../config';
 
 const CODELIST_COMPANY_TYPE = {
   '1': '新幹線',
@@ -22,7 +23,10 @@ const COMPANY_TYPE_COLOR_LIST: { [k in CompanyTypeCode]: string } = {
 };
 
 const stationStyle = new Style({
-  stroke: new Stroke({ width: 6, color: '#3E403F' }),
+  image: new Circle({
+    radius: 3,
+    fill: new Fill({ color: '#3E403F' }),
+  }),
 });
 
 function getRailroadStyle(companyTypeCode: CompanyTypeCode): Style {
@@ -38,7 +42,7 @@ export function getRailwayLayer(): VectorTileLayer {
   return new VectorTileLayer({
     source: new VectorTileSource({
       format: new MVT(),
-      url: 'http://localhost:3000/railway/{z}/{x}/{y}.pbf',
+      url: config.railwayTileUrl,
     }),
     style: (feature) => {
       if (feature.get('layer') === 'station') {
