@@ -1,10 +1,14 @@
-import { Map, View } from 'ol';
+import { Map, View, Feature } from 'ol';
 import { fromLonLat, transform } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import LayerGroup from 'ol/layer/Group';
-import VectorTileLayer from 'ol/layer/VectorTile';
-import { getRailwayLayer } from './map/railwayLayer';
+import {
+  getRailwayLayer,
+  getLineStyle,
+  getCompanyTypeCodeFromFeature,
+  RailwayLayer,
+} from './map/railwayLayer';
 import {
   LineLayerFeature,
   lineLayerFeatureFactory,
@@ -25,14 +29,16 @@ export type MapFeature = {
   station: StationLayerFeature | null;
 };
 
+const railwayLayer = new RailwayLayer();
+
 export class MainMap {
   private static instance: MainMap;
-  private static railwayLayer: VectorTileLayer;
 
   private map: Map;
   private layerGroup: LayerGroup;
-
-  private static MF_STATION_NAME = '駅名';
+  private state: {
+    zoom: number;
+  };
 
   public static init(defaultMapUrl: string, attributions: string): void {
     if (MainMap.instance === undefined) {
@@ -53,7 +59,7 @@ export class MainMap {
             attributions: attributions,
           }),
         }),
-        getRailwayLayer(),
+        railwayLayer.getLayer(),
       ],
     });
     this.map = new Map({
@@ -64,11 +70,15 @@ export class MainMap {
       }),
       layers: this.layerGroup,
     });
+    this.map.on('click', () => {
+      railwayLayer.reloadStyle();
+    });
   }
 
   public getState(): MapState {
     const state = this.map.getView().getState();
     const coordinate = transform(state.center, 'EPSG:3857', 'EPSG:4326');
+    //this.state.zoom = state.zoom;
 
     return {
       zoom: state.zoom,
@@ -94,17 +104,22 @@ export class MainMap {
 
   public onPointerMove(handler: (feature: MapFeature | null) => void): void {
     this.map.on('pointermove', (e) => {
-      const feature = this.map.getFeaturesAtPixel(e.pixel);
-      if (feature.length === 0) {
+      const features = this.map.getFeaturesAtPixel(e.pixel);
+      if (features.length === 0) {
+        this.map.getTargetElement().style.cursor = '';
         handler(null);
         return;
       }
-      const props = feature[0].getProperties();
+      this.map.getTargetElement().style.cursor = 'pointer';
+
+      const targetFeature = features[0];
+      //targetFeature
+      const props = targetFeature.getProperties();
       const layerName = props.layer;
       handler({
         station:
           layerName === 'station' ? stationLayerFeatureFactory(props) : null,
-        line: layerName === 'line' ? lineLayerFeatureFactory(props) : null,
+        line: layerName === 'railroad' ? lineLayerFeatureFactory(props) : null,
       });
     });
   }
@@ -119,7 +134,7 @@ export class MainMap {
               attributions: attributions,
             }),
           }),
-          getRailwayLayer(),
+          railwayLayer.getLayer(),
         ],
       })
     );
