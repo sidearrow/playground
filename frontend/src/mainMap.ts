@@ -1,17 +1,13 @@
-import { Map, View, Feature } from 'ol';
+import { Map, View } from 'ol';
 import { fromLonLat, transform } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import LayerGroup from 'ol/layer/Group';
-import {
-  getRailwayLayer,
-  getLineStyle,
-  getCompanyTypeCodeFromFeature,
-  RailwayLayer,
-} from './map/railwayLayer';
+import { RailwayLayer } from './map/railwayLayer';
 import {
   LineLayerFeature,
   lineLayerFeatureFactory,
+  LINE_LAYER_CONST,
 } from './map/lineLayerFeature';
 import {
   StationLayerFeature,
@@ -70,8 +66,16 @@ export class MainMap {
       }),
       layers: this.layerGroup,
     });
-    this.map.on('click', () => {
-      railwayLayer.reloadStyle();
+    this.map.on('click', (e) => {
+      const features = this.map.getFeaturesAtPixel(e.pixel);
+      if (features.length === 0) {
+        railwayLayer.selectLine();
+        return;
+      }
+      const targetFeature = features[0];
+      railwayLayer.selectLine(
+        targetFeature.get(LINE_LAYER_CONST.PROP_KEY.LINE_ID)
+      );
     });
   }
 
@@ -113,7 +117,6 @@ export class MainMap {
       this.map.getTargetElement().style.cursor = 'pointer';
 
       const targetFeature = features[0];
-      //targetFeature
       const props = targetFeature.getProperties();
       const layerName = props.layer;
       handler({

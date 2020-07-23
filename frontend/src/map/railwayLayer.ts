@@ -3,9 +3,8 @@ import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import { Style, Stroke, Fill, Circle } from 'ol/style';
 import { config } from '../config';
-import { Feature } from 'ol';
-import { FeatureLike } from 'ol/Feature';
 import { StyleFunction } from 'ol/style/Style';
+import { LINE_LAYER_CONST } from './lineLayerFeature';
 
 const CODELIST_COMPANY_TYPE = {
   '1': '新幹線',
@@ -32,43 +31,9 @@ const stationStyle = new Style({
   }),
 });
 
-export function getLineStyle(
-  companyTypeCode: CompanyTypeCode,
-  isSelected = false
-): Style {
-  return new Style({
-    stroke: new Stroke({
-      width: isSelected ? 5 : 2,
-      color: COMPANY_TYPE_COLOR_LIST[companyTypeCode],
-    }),
-  });
-}
-
-export function getCompanyTypeCodeFromFeature(
-  feature: Feature | FeatureLike
-): CompanyTypeCode {
-  return feature.get('事業者種別');
-}
-
-export function getRailwayLayer(): VectorTileLayer {
-  return new VectorTileLayer({
-    source: new VectorTileSource({
-      format: new MVT(),
-      url: config.railwayTileUrl,
-    }),
-    style: (feature) => {
-      if (feature.get('layer') === 'station') {
-        return stationStyle;
-      }
-      return getLineStyle(
-        getCompanyTypeCodeFromFeature(feature),
-        feature.get('state') === 'hover'
-      );
-    },
-  });
-}
-
 export class RailwayLayer {
+  private static FEATURE_KEY_LAYER = 'layer';
+
   private layer: VectorTileLayer;
 
   public constructor() {
@@ -89,16 +54,31 @@ export class RailwayLayer {
     });
   }
 
-  public reloadStyle(): void {
-    this.layer.setStyle(RailwayLayer.getStyleFunction(true));
+  public selectLine(lineId?: string): void {
+    this.layer.setStyle(RailwayLayer.getStyleFunction(lineId));
   }
 
-  private static getStyleFunction(isSelected = false): StyleFunction {
+  private static getStyleFunction(selectLineId?: string): StyleFunction {
     return (feature) => {
-      if (feature.get('layer') === 'station') {
+      if (feature.get(RailwayLayer.FEATURE_KEY_LAYER) === 'station') {
         return stationStyle;
       }
-      return getLineStyle(getCompanyTypeCodeFromFeature(feature), isSelected);
+      return RailwayLayer.getLineStyle(
+        feature.get(LINE_LAYER_CONST.PROP_KEY.COMPANY_TYPE),
+        feature.get(LINE_LAYER_CONST.PROP_KEY.LINE_ID) === selectLineId
+      );
     };
+  }
+
+  private static getLineStyle(
+    companyTypeCode: CompanyTypeCode,
+    isSelected = false
+  ): Style {
+    return new Style({
+      stroke: new Stroke({
+        width: 2 * (isSelected ? 3 : 1),
+        color: COMPANY_TYPE_COLOR_LIST[companyTypeCode],
+      }),
+    });
   }
 }
