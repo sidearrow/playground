@@ -1,0 +1,35 @@
+{
+  "properties": {
+    "事業者種別": {
+      "name": "company_type",
+      "type": "int"
+    },
+    "路線名": {
+      "name": "line_name",
+      "type": "string"
+    },
+    "運営会社": {
+      "name": "company_name",
+      "type": "string"
+    },
+    "設置開始": {
+      "name": "start_year",
+      "type": "int"
+    },
+    "設置終了": {
+      "name": "end_year",
+      "type": "int",
+      "null_values": [
+        "9999"
+      ]
+    },
+    "関係ID": {
+      "name": "station_id",
+      "type": "string"
+    },
+    "駅名": {
+      "name": "station_name",
+      "type": "string"
+    }
+  }
+}
