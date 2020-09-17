@@ -1,0 +1,13 @@
+{
+  "設置開始": "start",
+  "関係備考": "rel_remarks",
+  "関係ID": "rel_id",
+  "運営会社": "company",
+  "路線名": "line",
+  "設置終了": "end",
+  "備考": "remarks",
+  "供用開始年": "common_start",
+  "事業者種別": "company_type",
+  "変遷ID": null,
+  "変遷備考": null
+}
