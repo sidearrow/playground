@@ -1,0 +1,15 @@
+version: "3.8"
+volumes:
+  postgis-data:
+services:
+  postgis:
+    container_name: express-map-postgis
+    image: postgis/postgis:13-master
+    environment:
+      POSTGRES_DB: express_map
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgis-data:/var/lib/postgresql/data
+    ports:
+      - 15432:5432
