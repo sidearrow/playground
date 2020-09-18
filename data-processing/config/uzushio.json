@@ -1,0 +1,74 @@
+{
+  "line": [
+    {
+      "line": {
+        "id": 2145,
+        "remarks": "宇野線"
+      },
+      "start": {
+        "id": 18420,
+        "remarks": "岡山駅"
+      },
+      "end": {
+        "id": 18436,
+        "remarks": "茶屋町駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2146,
+        "remarks": "本四備讃線"
+      },
+      "start": {
+        "id": 18439,
+        "remarks": "茶屋町駅"
+      },
+      "end": {
+        "id": 18442,
+        "remarks": "児島駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2079,
+        "remarks": "本四備讃線"
+      },
+      "start": {
+        "id": 17610,
+        "remarks": "児島駅"
+      },
+      "end": {
+        "id": 17609,
+        "remarks": "宇多津駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2081,
+        "remarks": "予讃線"
+      },
+      "start": {
+        "id": 17616,
+        "remarks": "宇多津駅"
+      },
+      "end": {
+        "id": 17613,
+        "remarks": "高松駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2103,
+        "remarks": "高徳線"
+      },
+      "start": {
+        "id": 17872,
+        "remarks": "高松駅"
+      },
+      "end": {
+        "id": 17880,
+        "remarks": "徳島駅"
+      }
+    }
+  ]
+}

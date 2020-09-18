@@ -42,7 +42,9 @@ def convert_key_names(args):
         new_props = copy.copy(props)
         for key in props.keys():
             if key in config.keys():
-                new_props[config[key]] = new_props.pop(key)
+                val = new_props.pop(key)
+                if config[key] is not None:
+                    new_props[config[key]] = val
             geojson_dict['features'][i]['properties'] = new_props
     with open(outputpath, 'wt') as f:
         json.dump(geojson_dict, f, ensure_ascii=False)
