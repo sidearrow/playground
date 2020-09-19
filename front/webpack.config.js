@@ -31,15 +31,18 @@ module.exports = function (env, argv) {
         },
         {
           test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
         },
       ],
     },
     plugins: [
       new HTMLWebpackPlugin({
         template: path.resolve(__dirname, 'public/index.html'),
+        hash: true
       }),
-      new MiniCssExtractPlugin(),
+      new MiniCssExtractPlugin({
+        filename: '[name].css'
+      }),
       isEnvProduction && new OptimizeCSSAssetPlugin(),
     ].filter(Boolean),
   };
