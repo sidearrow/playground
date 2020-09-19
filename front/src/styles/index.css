@@ -16,4 +16,20 @@ body {
 
 main {
   flex: 1;
+  position: relative;
+}
+
+#app {
+  position: absolute;
+  width: 300px;
+  top: 0;
+  left: 0;
+  padding: 0.5rem;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
