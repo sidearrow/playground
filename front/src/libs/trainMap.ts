@@ -14,6 +14,13 @@ export class TrainMap {
             tiles: [
               'https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png',
             ],
+            tileSize: 256,
+          },
+          train: {
+            type: 'vector',
+            tiles: [
+              'http://localhost:8888/services/train_map/tiles/{z}/{x}/{y}.pbf',
+            ],
           },
         },
         layers: [
@@ -21,6 +28,12 @@ export class TrainMap {
             id: 'base',
             type: 'raster',
             source: 'base',
+          },
+          {
+            id: 'train',
+            type: 'line',
+            source: 'train',
+            'source-layer': 'line',
           },
         ],
       },
