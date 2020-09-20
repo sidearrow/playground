@@ -5,7 +5,7 @@ import { MVT as MVTFormat } from 'ol/format';
 import { fromLonLat } from 'ol/proj';
 
 import { CONFIG } from '../config';
-import { Style, Stroke, Circle, Fill } from 'ol/style';
+import { Style, Stroke, Circle, Fill, Text } from 'ol/style';
 import { StyleFunction } from 'ol/style/Style';
 
 type TrainProps = {
@@ -34,19 +34,28 @@ export class TrainMap {
       zIndex: 2,
     });
 
-  private trainStationStyle = new Style({
-    image: new Circle({
-      radius: 10,
-      stroke: new Stroke({
-        color: '#ac2926',
-        width: 10,
+  private trainStationStyle = (stationName: string) =>
+    new Style({
+      image: new Circle({
+        radius: 3,
+        stroke: new Stroke({
+          color: '#1a202c',
+          width: 3,
+        }),
+        fill: new Fill({
+          color: '#ffffff',
+        }),
       }),
-      fill: new Fill({
-        color: '#ac2926',
+      text: new Text({
+        offsetX: 5,
+        font: 'bold 15px arial,sans-serif',
+        text: stationName,
+        textAlign: 'left',
+        textBaseline: 'middle',
+        stroke: new Stroke({ color: '#ffffff', width: 1 }),
       }),
-    }),
-    zIndex: 3,
-  });
+      zIndex: 9999,
+    });
 
   private lineStyle = new Style({
     stroke: new Stroke({
@@ -59,12 +68,11 @@ export class TrainMap {
   private mainLayerStyleFunc: StyleFunction = (feature) => {
     const props = feature.getProperties();
     const layer = props.layer;
-    console.log(layer);
     if (layer === this.LAYER_NAMES.LINE) {
       return this.lineStyle;
     }
     if (layer === this.LAYER_NAMES.TRAIN_STATION) {
-      return this.trainStationStyle;
+      return this.trainStationStyle(props.station_name);
     }
     const color = props.color;
     return this.trainStyle(color, props.train_code === this.selectedTrainCode);

@@ -8,16 +8,16 @@ if [ "${1}" = "line" ]; then
 fi
 
 if [ "${1}" = "train" ]; then
-  tippecanoe -B 10 -z15 -Z5 \
+  tippecanoe -z15 -Z5 \
     -o ../mbtiles/train.mbtiles ../geojsons/train.geojson \
-    -l train --base-zoom 10 --force
+    -l train --force
   exit 0
 fi
 
 if [ "${1}" = "train_station" ]; then
-  tippecanoe -B 10 -z15 -Z5 \
+  tippecanoe -z15 -Z5 \
     -o ../mbtiles/train_station.mbtiles ../geojsons/train_station.geojson \
-    -l train --base-zoom 10 --force
+    -l train_station --force
   exit 0
 fi
 
