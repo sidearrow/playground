@@ -1,10 +1,10 @@
 import dataclasses
+from dataclasses import dataclass
 import os
 import json
 from os import name
 import typing
 import argparse
-from dataclasses import dataclass
 
 import psycopg2
 from shapely import wkb
@@ -16,41 +16,29 @@ def get_connection():
     return psycopg2.connect(host='localhost', port='15432', user='user', password='password', dbname='express_map')
 
 
+@dataclasses.dataclass
 class Station():
-    def __init__(self, geom: str, station_name: str) -> None:
-        self.feature = wkb.loads(geom, hex=True)
-        self.station_name = station_name
+    station_name: str
+    geom: str
 
     @property
-    def geojson(self) -> dict:
-        return {
-            'type': 'Feature',
-            'properties': {
-                'station_name': self.station_name,
-            },
-            'geometry': {
-                'type': 'Point',
-                'coordinates': [
-                    self.feature.xy[0][0],
-                    self.feature.xy[1][0],
-                ],
-            }
-        }
+    def geometry(self) -> Point:
+        return wkb.loads(self.geom, hex=True)
 
 
-@dataclass
+@dataclasses.dataclass
 class Train():
-    code: str
-    name: str
+    train_code: str
+    train_name: str
     color: str
     geom: str
-    _stations: dataclasses.InitVar[typing.List[Station]]
 
-    def __post_init__(self, _stations: typing.List[Station]) -> None:
-        self.stations = {
-            'type': 'FeatureCollection',
-            'features': [s.geojson for s in _stations],
-        }
+
+@dataclasses.dataclass
+class TrainStation():
+    train_code: str
+    station_name: str
+    geom: str
 
 
 def get_station(id: int) -> Station:
@@ -67,14 +55,20 @@ def get_line(id: int) -> str:
     return res[0]
 
 
-def create_train(train: Train):
+def bulk_insert_train_and_train_stations(train: Train, train_stations: typing.List[TrainStation]):
     with get_connection() as con:
         cur = con.cursor()
         cur.execute(
-            'insert into train(code, geom, name, color, stations_geojson)'
+            'insert into train(train_code, train_name, color, geom)'
             ' values (%s, %s, %s, %s, %s)',
-            (train.code, train.geom, train.name, train.color, json.dumps(train.stations))
+            (train.train_code, train.train_name, train.color, train.geom)
         )
+        for train_station in train_stations:
+            cur.execute(
+                'insert into train_station(train_code, station_name, geom)'
+                ' values (%s, %s, %s)',
+                (train_station.train_code, train_station.station_name, train_station.geom)
+            )
     con.commit()
 
 
@@ -99,8 +93,8 @@ def split(line_string: LineString, point: Point) -> typing.Tuple[LineString, Lin
 def generate_train_line(config: dict) -> MultiLineString:
     line_sections = []
     for section_config in config['line_sections']:
-        start_station = get_station(section_config['start']['id']).feature
-        end_station = get_station(section_config['end']['id']).feature
+        start_station = get_station(section_config['start']['id']).geometry
+        end_station = get_station(section_config['end']['id']).geometry
         line = wkb.loads(get_line(section_config['line']['id']), hex=True)
 
         if line.intersects(start_station) is False:
@@ -151,19 +145,23 @@ if __name__ == '__main__':
     with open(config_path) as f:
         config = json.load(f)
 
-    code = config['code']
-    train_stations = get_line_stations(config)
     train_line = generate_train_line(config)
-
     train = Train(
-        code=config['code'],
-        name=config['name'],
+        train_code=config['code'],
+        train_name=config['name'],
         color=config['color'],
         geom=train_line.wkb_hex,
-        _stations=train_stations,
     )
+    train_stations = [
+        TrainStation(
+            train_code=config['code'],
+            station_name=station.station_name,
+            geom=station.geom,
+        )
+        for station in get_line_stations(config)
+    ]
 
     if params.dry_run is True:
         print(train_line)
     else:
-        create_train(train)
+        bulk_insert_train_and_train_stations(train, train_stations)
