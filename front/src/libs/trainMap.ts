@@ -1,76 +1,82 @@
-import { Map, Popup, StyleFunction } from 'mapbox-gl';
+import { Map, View } from 'ol';
+import { VectorTile as VectorTileLayer, Tile as TileLayer } from 'ol/layer';
+import { VectorTile as VectorTileSource, XYZ as XYZSource } from 'ol/source';
+import { MVT as MVTFormat } from 'ol/format';
+import { fromLonLat } from 'ol/proj';
+
+import { CONFIG } from '../config';
+import { Style, Stroke } from 'ol/style';
 
 type TrainProps = {
-  train_code: string;
+  code: string;
+  name: string;
+  color: string;
+  stations: string;
 };
+
+const LAYER_NAMES = {
+  LINE: 'line',
+  TRAIN: 'train',
+};
+
+const LINE_STYLE = new Style({
+  stroke: new Stroke({
+    color: '#a0aec0',
+    width: 1,
+  }),
+});
+
+const TRAIN_STYLE = (color: string) =>
+  new Style({
+    stroke: new Stroke({
+      color: color,
+      width: 5,
+    }),
+  });
 
 export class TrainMap {
   private map: Map;
 
   public constructor() {
     this.map = new Map({
-      container: 'map',
-      style: {
-        version: 8,
-        sources: {
-          base: {
-            type: 'raster',
-            tiles: [
-              'https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png',
-            ],
-            tileSize: 256,
+      target: document.getElementById('map') as HTMLElement,
+      view: new View({
+        center: fromLonLat([135, 35]),
+        zoom: 10,
+      }),
+      layers: [
+        new TileLayer({
+          source: new XYZSource({
+            url: CONFIG.BASE_MAP_URL,
+          }),
+        }),
+        new VectorTileLayer({
+          source: new VectorTileSource({
+            format: new MVTFormat(),
+            url: CONFIG.TRAIN_MAP_URL,
+          }),
+          style: (feature) => {
+            const props = feature.getProperties();
+            const layer = props.layer;
+            if (layer === 'line') {
+              return LINE_STYLE;
+            }
+            const color = props.color;
+            return TRAIN_STYLE(color);
           },
-          train: {
-            type: 'vector',
-            tiles: [
-              'http://localhost:8888/services/train_map/tiles/{z}/{x}/{y}.pbf',
-            ],
-          },
-        },
-        layers: [
-          {
-            id: 'base',
-            type: 'raster',
-            source: 'base',
-          },
-          {
-            id: 'line',
-            type: 'line',
-            source: 'train',
-            'source-layer': 'line',
-            paint: { 'line-color': '#a0aec0' },
-          },
-          {
-            id: 'train',
-            type: 'line',
-            source: 'train',
-            'source-layer': 'train',
-            paint: {
-              'line-color': ['get', 'color', ['get', 'props']],
-              'line-width': 4,
-            },
-          },
-        ],
-      },
-      center: [135, 35],
-      zoom: 10,
+        }),
+      ],
     });
-    const popup = new Popup();
-    this.map.on('mouseenter', 'train', (e) => {
-      this.map.getCanvas().style.cursor = 'pointer';
-    });
-    this.map.on('mouseleave', 'train', (e) => {
-      this.map.getCanvas().style.cursor = '';
-    });
-    this.map.on('click', 'train', (e) => {
-      if (e.features === undefined || e.features.length === 0) {
+    this.map.on('click', (e) => {
+      const pixel = this.map.getEventPixel(e.originalEvent);
+      const features = this.map.getFeaturesAtPixel(pixel);
+      const feature = features.find(
+        (f) => f.getProperties().layer === LAYER_NAMES.TRAIN
+      );
+      if (feature === undefined) {
         return;
       }
-      const feature = e.features[0];
-      const props = e.features[0].properties as TrainProps;
-      console.log(props);
-      console.log(e.lngLat);
-      popup.setLngLat(e.lngLat).setHTML(props.train_code).addTo(this.map);
+      console.log(feature);
     });
   }
 }

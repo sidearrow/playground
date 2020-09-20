@@ -1,5 +1,7 @@
+import dataclasses
 import os
 import json
+from os import name
 import typing
 import argparse
 from dataclasses import dataclass
@@ -41,8 +43,14 @@ class Train():
     code: str
     name: str
     color: str
-    stations: dict
     geom: str
+    _stations: dataclasses.InitVar[typing.List[Station]]
+
+    def __post_init__(self, _stations: typing.List[Station]) -> None:
+        self.stations = {
+            'type': 'FeatureCollection',
+            'features': [s.geojson for s in _stations],
+        }
 
 
 def get_station(id: int) -> Station:
@@ -63,7 +71,7 @@ def create_train(train: Train):
     with get_connection() as con:
         cur = con.cursor()
         cur.execute(
-            'insert into train(code, geom, name, color, stations)'
+            'insert into train(code, geom, name, color, stations_geojson)'
             ' values (%s, %s, %s, %s, %s)',
             (train.code, train.geom, train.name, train.color, json.dumps(train.stations))
         )
@@ -121,16 +129,13 @@ def generate_train_line(config: dict) -> MultiLineString:
     return MultiLineString(line_sections)
 
 
-def get_line_station_geojsons(config: dict) -> dict:
+def get_line_stations(config: dict) -> typing.List[Station]:
     station_ids = []
     for i, line_section in enumerate(config['line_sections']):
         if i == 0:
             station_ids.append(line_section['start']['id'])
         station_ids.append(line_section['end']['id'])
-    stations = []
-    for station_id in station_ids:
-        station = get_station(station_id)
-        stations.append(station.geojson)
+    stations = [get_station(id) for id in station_ids]
     return stations
 
 
@@ -147,15 +152,15 @@ if __name__ == '__main__':
         config = json.load(f)
 
     code = config['code']
-    train_stations = get_line_station_geojsons(config)
+    train_stations = get_line_stations(config)
     train_line = generate_train_line(config)
 
     train = Train(
         code=config['code'],
         name=config['name'],
         color=config['color'],
-        stations=train_stations,
         geom=train_line.wkb_hex,
+        _stations=train_stations,
     )
 
     if params.dry_run is True:
