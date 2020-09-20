@@ -1,4 +1,4 @@
-import { Map, Popup } from 'mapbox-gl';
+import { Map, Popup, StyleFunction } from 'mapbox-gl';
 
 type TrainProps = {
   train_code: string;
@@ -45,7 +45,10 @@ export class TrainMap {
             type: 'line',
             source: 'train',
             'source-layer': 'train',
-            paint: { 'line-color': '#ac2926', 'line-width': 4 },
+            paint: {
+              'line-color': ['get', 'color', ['get', 'props']],
+              'line-width': 4,
+            },
           },
         ],
       },
@@ -65,6 +68,7 @@ export class TrainMap {
       }
       const feature = e.features[0];
       const props = e.features[0].properties as TrainProps;
+      console.log(props);
       console.log(e.lngLat);
       popup.setLngLat(e.lngLat).setHTML(props.train_code).addTo(this.map);
     });

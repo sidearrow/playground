@@ -2,6 +2,7 @@ import os
 import json
 import typing
 import argparse
+from dataclasses import dataclass
 
 import psycopg2
 from shapely import wkb
@@ -35,6 +36,15 @@ class Station():
         }
 
 
+@dataclass
+class Train():
+    code: str
+    name: str
+    color: str
+    stations: dict
+    geom: str
+
+
 def get_station(id: int) -> Station:
     cur = get_connection().cursor()
     cur.execute('select geom, n05_011 from station s where s.gid = %s', (id,))
@@ -49,13 +59,13 @@ def get_line(id: int) -> str:
     return res[0]
 
 
-def create_train(code: str, geom: str, props: dict):
+def create_train(train: Train):
     with get_connection() as con:
-        props = json.dumps(props)
         cur = con.cursor()
         cur.execute(
-            'insert into train(code, geom, props) values (%s, %s, %s)',
-            (code, geom, props)
+            'insert into train(code, geom, name, color, stations)'
+            ' values (%s, %s, %s, %s, %s)',
+            (train.code, train.geom, train.name, train.color, json.dumps(train.stations))
         )
     con.commit()
 
@@ -137,14 +147,18 @@ if __name__ == '__main__':
         config = json.load(f)
 
     code = config['code']
-    props = {
-        'name': config['name'],
-        'color': config['color'],
-        'stations': get_line_station_geojsons(config)
-    }
-
+    train_stations = get_line_station_geojsons(config)
     train_line = generate_train_line(config)
+
+    train = Train(
+        code=config['code'],
+        name=config['name'],
+        color=config['color'],
+        stations=train_stations,
+        geom=train_line.wkb_hex,
+    )
+
     if params.dry_run is True:
         print(train_line)
     else:
-        create_train(code=code, geom=train_line.wkb_hex, props=props)
+        create_train(train)
