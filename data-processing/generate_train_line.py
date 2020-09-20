@@ -60,7 +60,7 @@ def bulk_insert_train_and_train_stations(train: Train, train_stations: typing.Li
         cur = con.cursor()
         cur.execute(
             'insert into train(train_code, train_name, color, geom)'
-            ' values (%s, %s, %s, %s, %s)',
+            ' values (%s, %s, %s, %s)',
             (train.train_code, train.train_name, train.color, train.geom)
         )
         for train_station in train_stations:
