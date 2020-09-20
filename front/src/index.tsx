@@ -4,6 +4,7 @@ import { App } from './App';
 import { TrainMap } from './libs/trainMap';
 
 import './styles/index.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 new TrainMap();
 

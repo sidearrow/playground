@@ -13,11 +13,33 @@ def get_connection():
     return psycopg2.connect(host='localhost', port='15432', user='user', password='password', dbname='express_map')
 
 
-def get_station(id: int) -> str:
+class Station():
+    def __init__(self, geom: str, station_name: str) -> None:
+        self.feature = wkb.loads(geom, hex=True)
+        self.station_name = station_name
+
+    @property
+    def geojson(self) -> dict:
+        return {
+            'type': 'Feature',
+            'properties': {
+                'station_name': self.station_name,
+            },
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [
+                    self.feature.xy[0][0],
+                    self.feature.xy[1][0],
+                ],
+            }
+        }
+
+
+def get_station(id: int) -> Station:
     cur = get_connection().cursor()
-    cur.execute('select geom from station s where s.gid = %s', (id,))
+    cur.execute('select geom, n05_011 from station s where s.gid = %s', (id,))
     res = cur.fetchone()
-    return res[0]
+    return Station(geom=res[0], station_name=res[1])
 
 
 def get_line(id: int) -> str:
@@ -27,10 +49,14 @@ def get_line(id: int) -> str:
     return res[0]
 
 
-def create_train(code: str, geom: str):
+def create_train(code: str, geom: str, props: dict):
     with get_connection() as con:
+        props = json.dumps(props)
         cur = con.cursor()
-        cur.execute('insert into train(train_code, geom) values (%s, %s)', (code, geom))
+        cur.execute(
+            'insert into train(code, geom, props) values (%s, %s, %s)',
+            (code, geom, props)
+        )
     con.commit()
 
 
@@ -54,15 +80,21 @@ def split(line_string: LineString, point: Point) -> typing.Tuple[LineString, Lin
 
 def generate_train_line(config: dict) -> MultiLineString:
     line_sections = []
-    for section_config in config['line']:
-        start_station = wkb.loads(get_station(section_config['start']['id']), hex=True)
-        end_station = wkb.loads(get_station(section_config['end']['id']), hex=True)
+    for section_config in config['line_sections']:
+        start_station = get_station(section_config['start']['id']).feature
+        end_station = get_station(section_config['end']['id']).feature
         line = wkb.loads(get_line(section_config['line']['id']), hex=True)
 
         if line.intersects(start_station) is False:
-            raise Exception("Start station doesn't exists in line.: {}".format(section_config['start']['remarks']))
+            raise Exception(
+                "Start station doesn't exists in line.: {}".format(
+                    section_config['start']['remarks'])
+            )
         if line.intersects(end_station) is False:
-            raise Exception("End station doesn't exists in line.: {}".format(section_config['end']['remarks']))
+            raise Exception(
+                "End station doesn't exists in line.: {}".format(
+                    section_config['end']['remarks'])
+            )
 
         split_start_lines = split(line, start_station)
         tmp_line = split_start_lines[0] \
@@ -79,12 +111,23 @@ def generate_train_line(config: dict) -> MultiLineString:
     return MultiLineString(line_sections)
 
 
+def get_line_station_geojsons(config: dict) -> dict:
+    station_ids = []
+    for i, line_section in enumerate(config['line_sections']):
+        if i == 0:
+            station_ids.append(line_section['start']['id'])
+        station_ids.append(line_section['end']['id'])
+    stations = []
+    for station_id in station_ids:
+        station = get_station(station_id)
+        stations.append(station.geojson)
+    return stations
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', required=True)
-    parser.add_argument('-C', '--code', required=True)
     parser.add_argument('--dry-run', action='store_true')
-
     params = parser.parse_args()
 
     config_path = os.path.join(os.getcwd(), params.config)
@@ -93,8 +136,15 @@ if __name__ == '__main__':
     with open(config_path) as f:
         config = json.load(f)
 
+    code = config['code']
+    props = {
+        'name': config['name'],
+        'color': config['color'],
+        'stations': get_line_station_geojsons(config)
+    }
+
     train_line = generate_train_line(config)
     if params.dry_run is True:
         print(train_line)
     else:
-        create_train(code=params.code, geom=train_line.wkb_hex)
+        create_train(code=code, geom=train_line.wkb_hex, props=props)

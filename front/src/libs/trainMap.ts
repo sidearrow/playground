@@ -1,4 +1,8 @@
-import { Map } from 'mapbox-gl';
+import { Map, Popup } from 'mapbox-gl';
+
+type TrainProps = {
+  train_code: string;
+};
 
 export class TrainMap {
   private map: Map;
@@ -30,15 +34,39 @@ export class TrainMap {
             source: 'base',
           },
           {
-            id: 'train',
+            id: 'line',
             type: 'line',
             source: 'train',
             'source-layer': 'line',
+            paint: { 'line-color': '#a0aec0' },
+          },
+          {
+            id: 'train',
+            type: 'line',
+            source: 'train',
+            'source-layer': 'train',
+            paint: { 'line-color': '#ac2926', 'line-width': 4 },
           },
         ],
       },
       center: [135, 35],
       zoom: 10,
+    });
+    const popup = new Popup();
+    this.map.on('mouseenter', 'train', (e) => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+    this.map.on('mouseleave', 'train', (e) => {
+      this.map.getCanvas().style.cursor = '';
+    });
+    this.map.on('click', 'train', (e) => {
+      if (e.features === undefined || e.features.length === 0) {
+        return;
+      }
+      const feature = e.features[0];
+      const props = e.features[0].properties as TrainProps;
+      console.log(e.lngLat);
+      popup.setLngLat(e.lngLat).setHTML(props.train_code).addTo(this.map);
     });
   }
 }
