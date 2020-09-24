@@ -9,8 +9,8 @@ import { Style, Stroke, Circle, Fill, Text } from 'ol/style';
 import { StyleFunction } from 'ol/style/Style';
 
 type TrainProps = {
-  code: string;
-  name: string;
+  train_code: string;
+  train_name: string;
   color: string;
   stations: string;
 };
@@ -25,25 +25,30 @@ export class TrainMap {
     TRAIN_STATION: 'train_station',
   };
 
-  private trainStyle = (color: string, isSelected: boolean) =>
-    new Style({
-      stroke: new Stroke({
-        color: color,
-        width: isSelected ? 5 : 3,
+  private trainStyle = (color: string, isSelected: boolean) => {
+    return [
+      new Style({
+        stroke: new Stroke({
+          color: color,
+          width: 8,
+        }),
       }),
-      zIndex: 2,
-    });
+      new Style({
+        stroke: new Stroke({
+          color: isSelected ? color : 'white',
+          width: 6,
+        }),
+        zIndex: 2,
+      }),
+    ];
+  };
 
   private trainStationStyle = (stationName: string) =>
     new Style({
       image: new Circle({
-        radius: 3,
-        stroke: new Stroke({
-          color: '#1a202c',
-          width: 3,
-        }),
+        radius: 4,
         fill: new Fill({
-          color: '#ffffff',
+          color: '#1a202c',
         }),
       }),
       text: new Text({
@@ -100,7 +105,11 @@ export class TrainMap {
         zoom: 10,
       }),
       layers: [this.baseLayer, this.mainLayer],
+      controls: [],
     });
+  }
+
+  public onClick(callback: (props: TrainProps | null) => void): void {
     this.map.on('click', (e) => {
       const pixel = this.map.getEventPixel(e.originalEvent);
       const features = this.map.getFeaturesAtPixel(pixel);
@@ -109,9 +118,11 @@ export class TrainMap {
       );
       if (feature === undefined) {
         this.selectedTrainCode = null;
+        callback(null);
       } else {
-        const props = feature.getProperties();
+        const props = feature.getProperties() as TrainProps;
         this.selectedTrainCode = props.train_code;
+        callback(props);
       }
       this.mainLayer.setStyle(this.mainLayerStyleFunc);
     });

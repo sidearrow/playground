@@ -10,6 +10,7 @@ body,
 
 body {
   font-family: arial, sans-serif;
+  font-size: 14px;
   display: flex;
   flex-direction: column;
 }
@@ -21,10 +22,10 @@ main {
 
 #app {
   position: absolute;
-  width: 300px;
   top: 0;
   left: 0;
   padding: 0.5rem;
+  width: 100%;
 }
 
 #map {
