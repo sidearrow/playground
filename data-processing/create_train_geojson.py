@@ -1,78 +1,67 @@
 import dataclasses
-from dataclasses import dataclass
 import os
 import json
-from os import name
 import typing
 import argparse
+import geojson
 
 import psycopg2
 from shapely import wkb
-from shapely.geometry import LineString, Point
-from shapely.geometry.multilinestring import MultiLineString
-
-
-def get_connection():
-    return psycopg2.connect(host='localhost', port='15432', user='user', password='password', dbname='express_map')
+from shapely.geometry import LineString, Point, MultiLineString, mapping
 
 
 @dataclasses.dataclass
 class Station():
     station_name: str
-    geom: str
-
-    @property
-    def geometry(self) -> Point:
-        return wkb.loads(self.geom, hex=True)
+    geometry: Point
 
 
 @dataclasses.dataclass
-class Train():
+class TrainLine():
     train_code: str
     train_name: str
     color: str
-    geom: str
+    geometry: MultiLineString
 
 
 @dataclasses.dataclass
 class TrainStation():
     train_code: str
     station_name: str
-    geom: str
+    geometry: Point
 
 
-def get_station(id: int) -> Station:
-    cur = get_connection().cursor()
-    cur.execute('select geom, n05_011 from station s where s.gid = %s', (id,))
-    res = cur.fetchone()
-    return Station(geom=res[0], station_name=res[1])
+class PostGIS:
+    @dataclasses.dataclass
+    class Station:
+        geom: str
+        station_name: str
+
+    @dataclasses.dataclass
+    class Line:
+        geom: str
+
+    def __init__(self) -> None:
+        self.con = psycopg2.connect(host='localhost', port='15432', user='user',
+                                    password='password', dbname='express_map')
+
+    def get_station(self, id: int):
+        cur = self.con.cursor()
+        cur.execute('select geom, n05_011 from station s where s.gid = %s', (id,))
+        res = cur.fetchone()
+        return PostGIS.Station(geom=res[0], station_name=res[1])
+
+    def get_line(self, id: int):
+        cur = self.con.cursor()
+        cur.execute('select st_linemerge((select geom from line l where l.gid = %s))', (id,))
+        res = cur.fetchone()
+        return PostGIS.Line(geom=res[0])
 
 
-def get_line(id: int) -> str:
-    cur = get_connection().cursor()
-    cur.execute('select st_linemerge((select geom from line l where l.gid = %s))', (id,))
-    res = cur.fetchone()
-    return res[0]
+postgis = PostGIS()
 
 
-def bulk_insert_train_and_train_stations(train: Train, train_stations: typing.List[TrainStation]):
-    with get_connection() as con:
-        cur = con.cursor()
-        cur.execute(
-            'insert into train(train_code, train_name, color, geom)'
-            ' values (%s, %s, %s, %s)',
-            (train.train_code, train.train_name, train.color, train.geom)
-        )
-        for train_station in train_stations:
-            cur.execute(
-                'insert into train_station(train_code, station_name, geom)'
-                ' values (%s, %s, %s)',
-                (train_station.train_code, train_station.station_name, train_station.geom)
-            )
-    con.commit()
-
-
-def split(line_string: LineString, point: Point) -> typing.Tuple[LineString, LineString]:
+def split_line_string(line_string: LineString, point: Point) -> typing.Tuple[LineString, LineString]:
     coords = line_string.coords
     j = None
     for i in range(len(coords) - 1):
@@ -93,9 +82,18 @@ def split(line_string: LineString, point: Point) -> typing.Tuple[LineString, Lin
 def generate_train_line(config: dict) -> MultiLineString:
     line_sections = []
     for section_config in config['line_sections']:
-        start_station = get_station(section_config['start']['id']).geometry
-        end_station = get_station(section_config['end']['id']).geometry
-        line = wkb.loads(get_line(section_config['line']['id']), hex=True)
+        start_station = wkb.loads(
+            postgis.get_station(section_config['start']['id']).geom,
+            hex=True
+        )
+        end_station = wkb.loads(
+            postgis.get_station(section_config['end']['id']).geom,
+            hex=True
+        )
+        line = wkb.loads(
+            postgis.get_line(section_config['line']['id']).geom,
+            hex=True
+        )
 
         if line.intersects(start_station) is False:
             raise Exception(
@@ -108,12 +106,12 @@ def generate_train_line(config: dict) -> MultiLineString:
                     section_config['end']['remarks'])
             )
 
-        split_start_lines = split(line, start_station)
+        split_start_lines = split_line_string(line, start_station)
         tmp_line = split_start_lines[0] \
             if split_start_lines[0] is not None and split_start_lines[0].intersects(end_station) \
             else split_start_lines[1]
 
-        split_lines = split(tmp_line, end_station)
+        split_lines = split_line_string(tmp_line, end_station)
         split_line = split_lines[0] \
             if split_lines[0] is not None and split_lines[0].intersects(start_station) \
             else split_lines[1]
@@ -123,14 +121,21 @@ def generate_train_line(config: dict) -> MultiLineString:
     return MultiLineString(line_sections)
 
 
-def get_line_stations(config: dict) -> typing.List[Station]:
+def get_train_stations(config: dict) -> typing.List[TrainStation]:
     station_ids = []
     for i, line_section in enumerate(config['line_sections']):
         if i == 0:
             station_ids.append(line_section['start']['id'])
         station_ids.append(line_section['end']['id'])
-    stations = [get_station(id) for id in station_ids]
-    return stations
+    train_stations = []
+    for id in station_ids:
+        station = postgis.get_station(id)
+        train_stations.append(TrainStation(
+            station_name=station.station_name,
+            train_code=config['code'],
+            geometry=wkb.loads(station.geom, hex=True)
+        ))
+    return train_stations
 
 
 if __name__ == '__main__':
@@ -145,23 +150,23 @@ if __name__ == '__main__':
     with open(config_path) as f:
         config = json.load(f)
 
-    train_line = generate_train_line(config)
-    train = Train(
+    train_line = TrainLine(
         train_code=config['code'],
         train_name=config['name'],
         color=config['color'],
-        geom=train_line.wkb_hex,
+        geometry=generate_train_line(config),
     )
-    train_stations = [
-        TrainStation(
-            train_code=config['code'],
-            station_name=station.station_name,
-            geom=station.geom,
-        )
-        for station in get_line_stations(config)
+    train_stations = get_train_stations(config)
+
+    train_line_geojson = geojson.MultiLineString(mapping(train_line.geometry)['coordinates'])
+    train_station_geojsons = [
+        geojson.Point(mapping(train_station.geometry)['coordinates'])
+        for train_station in train_stations
     ]
+    fc_geojson = geojson.FeatureCollection([train_line_geojson] + train_station_geojsons)
 
     if params.dry_run is True:
-        print(train_line)
+        # print(train_line)
+        pass
     else:
-        bulk_insert_train_and_train_stations(train, train_stations)
+        print(fc_geojson)

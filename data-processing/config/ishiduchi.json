@@ -1,0 +1,22 @@
+{
+  "code": "ishiduchi",
+  "name": "いしづち",
+  "wiki": "https://ja.wikipedia.org/wiki/%E3%81%84%E3%81%97%E3%81%A5%E3%81%A1_(%E5%88%97%E8%BB%8A)",
+  "color": "#ffcc00",
+  "line_sections": [
+    {
+      "line": {
+        "id": 2081,
+        "remarks": "予讃線"
+      },
+      "start": {
+        "id": 17872,
+        "remarks": "高松駅"
+      },
+      "end": {
+        "id": 17649,
+        "remarks": "松山駅"
+      }
+    }
+  ]
+}
