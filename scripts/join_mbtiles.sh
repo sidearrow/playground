@@ -1,4 +1,8 @@
 #!/bin/bash
 
-tile-join -f -o ../mbtiles/train_map.mbtiles \
-  ../mbtiles/line.mbtiles ../mbtiles/train.mbtiles ../mbtiles/train_station.mbtiles
+MBTILES_DIR=../tmp/mbtiles
+
+tile-join -f -o ${MBTILES_DIR}/train_map.mbtiles \
+  ${MBTILES_DIR}/line.mbtiles \
+  ${MBTILES_DIR}/train.mbtiles \
+  ${MBTILES_DIR}/train_station.mbtiles
