@@ -3,11 +3,15 @@ import os
 import json
 import typing
 import argparse
-import geojson
 
 import psycopg2
 from shapely import wkb
 from shapely.geometry import LineString, Point, MultiLineString, mapping
+
+OUT_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    '../geojsons/train'
+)
 
 
 @dataclasses.dataclass
@@ -162,6 +166,15 @@ def get_train_stations(config: dict) -> typing.List[TrainStation]:
     return train_stations
 
 
+def yes_no_input():
+    while True:
+        choice = input("Please respond with 'yes' or 'no' [y/N]: ").lower()
+        if choice in ['y', 'yes']:
+            return True
+        elif choice in ['n', 'no']:
+            return False
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', required=True)
@@ -173,6 +186,13 @@ if __name__ == '__main__':
         raise Exception('Config file does not exist: {}'.format(config_path))
     with open(config_path) as f:
         config = json.load(f)
+
+    train_code = config['code']
+    out_filepath = os.path.join(OUT_DIR, '{}.geojson'.format(train_code))
+    if os.path.exists(out_filepath):
+        print('File already exists, overwrite OK ? : {}'.format(out_filepath))
+        if yes_no_input() is False:
+            exit(0)
 
     train_line = TrainLine(
         train_code=config['code'],
@@ -190,9 +210,7 @@ if __name__ == '__main__':
         'features': [train_line_geojson] + train_station_geojsons
     }
 
-    if params.dry_run is True:
-        # print(train_line)
-        pass
-    else:
-        with open('./aaaa', 'w') as f:
-            json.dump(geojson_dict, f, ensure_ascii=False)
+    with open(out_filepath, 'w') as f:
+        json.dump(geojson_dict, f, ensure_ascii=False)
+
+    print('Success.')
