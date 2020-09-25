@@ -23,12 +23,36 @@ class TrainLine():
     color: str
     geometry: MultiLineString
 
+    def to_geojson_dict(self) -> dict:
+        return {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'MultiLineString',
+                'coordinates': mapping(self.geometry)['coordinates']
+            },
+            'properties': {
+                'trainName': self.train_name,
+            },
+        }
+
 
 @dataclasses.dataclass
 class TrainStation():
     train_code: str
     station_name: str
     geometry: Point
+
+    def to_geojson_dict(self) -> dict:
+        return {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': mapping(self.geometry)['coordinates']
+            },
+            'properties': {
+                'stationName': self.station_name,
+            },
+        }
 
 
 class PostGIS:
@@ -158,15 +182,17 @@ if __name__ == '__main__':
     )
     train_stations = get_train_stations(config)
 
-    train_line_geojson = geojson.MultiLineString(mapping(train_line.geometry)['coordinates'])
-    train_station_geojsons = [
-        geojson.Point(mapping(train_station.geometry)['coordinates'])
-        for train_station in train_stations
-    ]
-    fc_geojson = geojson.FeatureCollection([train_line_geojson] + train_station_geojsons)
+    train_line_geojson = train_line.to_geojson_dict()
+    train_station_geojsons = [train_station.to_geojson_dict() for train_station in train_stations]
+
+    geojson_dict = {
+        'type': 'FeatureCollection',
+        'features': [train_line_geojson] + train_station_geojsons
+    }
 
     if params.dry_run is True:
         # print(train_line)
         pass
     else:
-        print(fc_geojson)
+        with open('./aaaa', 'w') as f:
+            json.dump(geojson_dict, f, ensure_ascii=False)
