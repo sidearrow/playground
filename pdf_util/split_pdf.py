@@ -4,7 +4,7 @@ import os
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
 
-def main(start: int, end: int, input_filepath: str, output_filepath: str):
+def split_pdf(start: int, end: int, input_filepath: str, output_filepath: str):
     r = PdfFileReader(open(input_filepath, "rb"), strict=False)
     w = PdfFileWriter()
     if r.isEncrypted:
@@ -29,4 +29,4 @@ if __name__ == "__main__":
     input_filepath = os.path.join(os.getcwd(), args.input)
     output_filepath = os.path.join(os.getcwd(), args.output)
 
-    main(start, end, input_filepath, output_filepath)
+    split_pdf(start, end, input_filepath, output_filepath)
