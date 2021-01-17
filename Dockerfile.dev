@@ -1,0 +1,5 @@
+FROM lambda-python-sample:base as base
+
+FROM lambci/lambda:python3.8
+
+COPY --from=base /var/task /var/task
