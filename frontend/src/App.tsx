@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { apiGetSite } from "./api";
+import { apiGetSite, apiGetSites } from "./api";
 import { EntriesViewer } from "./components/EntriesViewer";
-import { SiteListViewer } from "./components/SiteListViewer";
+import { SitesViewer } from "./components/SitesViewer";
 import { Entry } from "./models";
-
-import sites from "./sites.json";
 
 export const App: React.FC = () => {
   const [isMenuShow, setIsMenuShow] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [sites, setSites] = useState([]);
+  console.log(sites);
 
   useEffect(() => {
     (async () => {
-      const res = await apiGetSite("alfalfalfa");
-      setEntries(res);
+      const res = await apiGetSites();
+      setSites(res);
     })();
   }, []);
 
@@ -28,25 +28,29 @@ export const App: React.FC = () => {
         </div>
         <main className="flex-grow overflow-auto">
           {!isMenuShow && <EntriesViewer entries={entries} />}
-          {isMenuShow && <SiteListViewer sites={sites} />}
+          {isMenuShow && <SitesViewer sites={sites} />}
         </main>
-        <div className="w-full bg-gray-200 grid grid-cols-2 border-t border-gray-400">
-          <div
-            className="p-1 text-center border-r border-gray-400"
+        <div className="w-full grid grid-cols-2 border-t">
+          <button
+            className={`p-1 text-center ${
+              isMenuShow ? "bg-gray-200" : "bg-gray-300"
+            }`}
             onClick={() => {
               setIsMenuShow(false);
             }}
           >
             記事一覧
-          </div>
-          <div
-            className="p-1 text-center"
+          </button>
+          <button
+            className={`p-1 text-center ${
+              isMenuShow ? "bg-gray-300" : "bg-gray-200"
+            }`}
             onClick={() => {
               setIsMenuShow(true);
             }}
           >
             サイト一覧
-          </div>
+          </button>
         </div>
       </div>
     </React.Fragment>

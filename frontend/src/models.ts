@@ -5,7 +5,7 @@ export type Entry = {
 };
 
 export type Site = {
-  site_id: string;
-  site_name: string;
-  site_url: string;
+  id: string;
+  title: string;
+  url: string;
 };

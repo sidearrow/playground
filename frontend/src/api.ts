@@ -11,3 +11,7 @@ async function fetchGet(url: string) {
 export async function apiGetSite(siteId: string): Promise<Entry[]> {
   return await fetchGet(`http://localhost:9999/latest/${siteId}.json`);
 }
+
+export async function apiGetSites() {
+  return await fetchGet("http://localhost:9999/latest/sites");
+}
