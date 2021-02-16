@@ -30,3 +30,6 @@ upload-config: config-to-json
 
 start-dev:
 	docker-compose up
+
+stop-dev:
+	docker-compose down

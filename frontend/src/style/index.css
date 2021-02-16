@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 html,
-body,
-.wrapper {
-  height: 100%;
+body {
+  font-size: 12px;
+  height: 100vh;
+}
+
+body {
+  font-family: arial, sans-serif;
 }
