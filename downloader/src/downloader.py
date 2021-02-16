@@ -3,26 +3,24 @@ import feedparser
 import json
 import traceback
 from urllib.request import Request, urlopen
+from base64 import b64encode
 
 from src.s3 import S3Client
 from src.app_logger import get_logger
-from src.download_list import DownloadListSite
 
 
 class Downloader:
     def __init__(
         self,
-        execute_id: str,
-        s3_client: S3Client,
-        content_bucket: str,
-        download_list_site: DownloadListSite,
+        rss_url: str,
     ) -> None:
-        self.__execute_id = execute_id
         self.__logger = get_logger(__name__)
-        self.__s3_client = s3_client
-        self.__site = download_list_site
-        self.__content_bucket = content_bucket
-        self.__s3key = "latest/{}.json".format(self.__site.site_id)
+        self.__rss_url = rss_url
+        self.__id = b64encode(rss_url).decode("utf-8")
+        self.__s3key = "latest/{}.json".format(self.__id)
+
+        self.__site_title = None
+        self.__site_url = None
 
     def exec(self):
         res = None
@@ -50,20 +48,19 @@ class Downloader:
         return res
 
     def __download(self):
-        req = Request(self.__site.rss_url)
+        req = Request(self.__rss_url)
         res = None
         with urlopen(req) as r:
             res = r.read()
         fpd = feedparser.parse(res)
+        self.__site_title = fpd["feed"]["title"]
+        self.__site_url = fpd["feed"]["link"]
         entries = []
         for entry in fpd["entries"]:
             d = {
                 "url": entry["id"],
                 "title": entry["title"],
                 "updated": entry["updated"],
-                "updated_formated": datetime.fromisoformat(entry["updated"]).strftime(
-                    "%Y/%m/%d %H:%M"
-                ),
             }
             entries.append(d)
         return entries

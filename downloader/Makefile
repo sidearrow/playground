@@ -29,7 +29,7 @@ upload-config: config-to-json
 	aws s3 cp ./config.json s3://$(S3_BUCKET_NAME)/config.json
 
 start-dev:
-	docker-compose up
+	docker-compose up -d
 
 stop-dev:
 	docker-compose down

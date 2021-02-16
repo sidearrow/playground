@@ -1,9 +1,0 @@
-sites:
-  - site_id: alfalfalfa
-    site_name: アルファルファモザイク
-    site_url: http://alfalfalfa.com/
-    rss_url: http://alfalfalfa.com/index.rdf
-  - site_id: itainews
-    site_name: 痛いニュース(ﾉ∀`)
-    site_url: http://blog.livedoor.jp/dqnplus/
-    rss_url: http://blog.livedoor.jp/dqnplus/index.rdf
