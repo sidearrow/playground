@@ -2,14 +2,12 @@ import json
 from typing import List
 import traceback
 import feedparser
-from datetime import datetime
-from urllib import request
+from urllib import request, parse
 from base64 import b64encode
 
 from src.s3 import S3Client
 from src.app_config import AppConfig
 from src.app_logger import get_logger
-from src.downloader import Downloader
 
 logger = get_logger(__name__)
 
@@ -28,7 +26,6 @@ def donwload_rss(rss_url: str):
     fpd = feedparser.parse(res)
     title = fpd["feed"]["title"]
     url = fpd["feed"]["link"]
-    updated = fpd["feed"]["updated"]
 
     entries = []
     for entry in fpd["entries"]:
@@ -42,13 +39,12 @@ def donwload_rss(rss_url: str):
     return {
         "title": title,
         "url": url,
-        "updated": updated,
         "entries": entries,
     }
 
 
 def upload_data(s3_client: S3Client, bucket: str, id: str, data: str):
-    s3key = "latest/" + id
+    s3key = "_/" + id
     s3_client.put(bucket, s3key, data)
 
 
@@ -74,40 +70,44 @@ def main(app_config: AppConfig):
         logger.debug(traceback.format_exc())
         return
 
-    sites = {}
+    prev_sites = {}
     try:
-        sites = get_sites(s3_client, content_bucket)
+        prev_sites = get_sites(s3_client, content_bucket)
     except Exception as e:
         logger.warn("fail to get sites")
         logger.debug(traceback.format_exc())
 
+    sites = []
     for rss_url in download_list:
-        id = b64encode(rss_url).decode("utf-8")
+        id = parse.quote(b64encode(rss_url.encode()).decode("utf-8"))
         res = None
         try:
             res = donwload_rss(rss_url)
-            res = json.dumps(res)
-            upload_data(s3_client, app_config.s3_content_bucket, id, res)
+            res_json = json.dumps(res, ensure_ascii=False)
+            upload_data(s3_client, app_config.s3_content_bucket, id, res_json)
         except Exception as e:
-            logger.warn("fail to download rss: {}".format(rss_url))
+            logger.warning("fail to download rss: {}".format(rss_url))
             logger.debug(traceback.format_exc())
         if res is not None:
-            sites[id] = {
+            site = {
                 "id": id,
                 "title": res["title"],
                 "url": res["url"],
-                "updated": res["updated"],
                 "entry_num": len(res["entries"]),
             }
+            sites.append(site)
+        else:
+            if id in prev_sites:
+                sites.append(prev_sites[id])
 
     try:
-        sites = json.dumps(sites)
+        sites = json.dumps(sites, ensure_ascii=False)
         put_sites(s3_client, content_bucket, sites)
     except Exception as e:
-        logger.warn("fail to put sites")
+        logger.warning("fail to put sites")
         logger.debug(traceback.format_exc())
 
-    logger.info("DONE")
+    logger.info("done")
 
 
 def lambda_handler(event, context):
