@@ -1,10 +1,7 @@
-IMAGE_NAME=matome-manager
+IMAGE_NAME=matome-downloader
 SRC_DIR=$(CURDIR)/src
 LAMBDA_NAME_DEV=matome-manager-dev
 LAMBDA_NAME_PROD=matome-manager-prod
-
-download-list-yaml-to-json:
-	yq e -j -I 0 download_list.yaml > download_list.json
 
 build-base:
 	docker build --tag $(IMAGE_NAME):base --no-cache -f ./Dockerfile.base .
@@ -19,7 +16,7 @@ run-dev:
 		src.executor.lambda_handler
 
 build-deploy-package: build-base
-	docker run -v $(PWD)/deploy:/var/task/deploy $(IMAGE_NAME):base \
+	docker run -v $(CURDIR)/deploy:/var/task/deploy $(IMAGE_NAME):base \
 	zip -9yr deploy/lambda.zip .
 
 deploy-dev:

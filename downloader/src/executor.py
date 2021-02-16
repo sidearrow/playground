@@ -1,9 +1,11 @@
-import json
-from typing import List
-import traceback
+import csv
 import feedparser
-from urllib import request, parse
-from base64 import b64encode
+import json
+import traceback
+from dataclasses import dataclass
+from io import StringIO
+from typing import List
+from urllib import request
 
 from src.s3 import S3Client
 from src.app_config import AppConfig
@@ -12,9 +14,20 @@ from src.app_logger import get_logger
 logger = get_logger(__name__)
 
 
-def get_download_list(s3_client: S3Client, config_bucket: str) -> List[str]:
-    data = s3_client.get(config_bucket, "download_list.json")
-    return json.loads(data)
+@dataclass
+class DownloadSite:
+    id: str
+    rss_url: str
+
+
+def get_download_list(s3_client: S3Client, config_bucket: str) -> List[DownloadSite]:
+    csvstr = s3_client.get(config_bucket, "download_list.csv")
+    csvr = csv.reader(StringIO(csvstr))
+    res = []
+    for row in csvr:
+        ds = DownloadSite(id=row[0], rss_url=row[1])
+        res.append(ds)
+    return res
 
 
 def donwload_rss(rss_url: str):
@@ -44,19 +57,19 @@ def donwload_rss(rss_url: str):
 
 
 def upload_data(s3_client: S3Client, bucket: str, id: str, data: str):
-    s3key = "_/" + id
+    s3key = "latest/_/" + id
     s3_client.put(bucket, s3key, data)
 
 
 def get_sites(s3_client: S3Client, bucket: str) -> dict:
-    res = s3_client.get(bucket, "sites")
+    res = s3_client.get(bucket, "latest/sites")
     res = json.loads(res)
     res = {v["id"]: v for v in res}
     return res
 
 
 def put_sites(s3_client: S3Client, bucket: str, data: str):
-    s3_client.put(bucket, "sites", data)
+    s3_client.put(bucket, "latest/sites", data)
 
 
 def main(app_config: AppConfig):
@@ -78,8 +91,10 @@ def main(app_config: AppConfig):
         logger.debug(traceback.format_exc())
 
     sites = []
-    for rss_url in download_list:
-        id = parse.quote(b64encode(rss_url.encode()).decode("utf-8"))
+    for ds in download_list:
+        id = ds.id
+        rss_url = ds.rss_url
+
         res = None
         try:
             res = donwload_rss(rss_url)
@@ -111,8 +126,5 @@ def main(app_config: AppConfig):
 
 
 def lambda_handler(event, context):
-    app_config = AppConfig(event.get("env"))
+    app_config = AppConfig()
     main(app_config)
-
-
-lambda_handler({}, {})

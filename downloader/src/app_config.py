@@ -9,11 +9,7 @@ except:
 
 
 class AppConfig:
-    def __init__(self, env: str) -> None:
-        self.is_prod = env == "PRODUCTION"
-        self.is_stg = env == "STAGING"
-        self.is_dev = self.is_prod is False and self.is_stg is False
-
+    def __init__(self) -> None:
         self.s3_endpoint_url = os.environ.get("S3_ENDPOINT_URL")
         self.s3_content_bucket = os.environ.get("S3_CONTENT_BUCKET")
         self.s3_config_bucket = os.environ.get("S3_CONFIG_BUCKET")
