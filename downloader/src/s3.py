@@ -14,7 +14,9 @@ class S3Client:
 
     def put(self, bucket: str, key: str, data: str):
         logger.info("Upload s3 object: s3://{}/{}".format(bucket, key))
-        self.__client.put_object(Bucket=bucket, Key=key, Body=data)
+        self.__client.put_object(
+            Bucket=bucket, Key=key, Body=data, ContentType="application/json"
+        )
 
     def get(self, bucket: str, key: str) -> str:
         logger.info("Get s3 object: s3://{}/{}".format(bucket, key))

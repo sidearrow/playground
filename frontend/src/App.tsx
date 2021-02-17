@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { apiGetSite, apiGetSites } from "./api";
+import { Switch, Route, useLocation, Link } from "react-router-dom";
+import { apiGetSites } from "./api";
+import { BottomBarContent } from "./components/BottomBarContent";
 import { EntriesViewer } from "./components/EntriesViewer";
 import { SitesViewer } from "./components/SitesViewer";
-import { Entry } from "./models";
+import { SiteInfo } from "./models";
 
 export const App: React.FC = () => {
+  const pathname = useLocation().pathname;
   const [isMenuShow, setIsMenuShow] = useState(false);
-  const [entries, setEntries] = useState<Entry[]>([]);
   const [sites, setSites] = useState([]);
-  console.log(sites);
+  const [siteInfo, setSiteInfo] = useState<SiteInfo>({
+    id: "",
+    title: "",
+    url: "#",
+    entries: [],
+  });
+  console.log(siteInfo);
 
   useEffect(() => {
     (async () => {
@@ -16,41 +24,43 @@ export const App: React.FC = () => {
       setSites(res);
     })();
   }, []);
+  useEffect(() => {
+    setIsMenuShow(false);
+  }, [pathname]);
 
   return (
     <React.Fragment>
       <div className="h-full flex flex-col">
-        <div>
-          <header className="bg-gray-300 p-1 flex justify-between">
-            <div>まとめ</div>
-            <div>サイト名</div>
-          </header>
-        </div>
+        <header className="flex justify-between bg-gray-200 px-2 py-1">
+          <span>まとめ</span>
+          <a href={siteInfo.url}>{siteInfo.title}</a>
+        </header>
         <main className="flex-grow overflow-auto">
-          {!isMenuShow && <EntriesViewer entries={entries} />}
-          {isMenuShow && <SitesViewer sites={sites} />}
+          <div className="sm:flex sm:flex-row w-full h-full relative">
+            <div
+              className={`bg-white overflow-auto w-full h-full sm:max-w-sm sm:border-r absolute sm:static ${
+                isMenuShow ? "" : "hidden sm:block"
+              }`}
+            >
+              <SitesViewer sites={sites} />
+            </div>
+            <div className="top-0 left-0 bg-white w-full h-full overflow-auto flex-grow">
+              <Switch>
+                <Route path="/site/:id">
+                  <EntriesViewer
+                    siteInfo={siteInfo}
+                    setSiteInfo={setSiteInfo}
+                  />
+                </Route>
+              </Switch>
+            </div>
+          </div>
         </main>
-        <div className="w-full grid grid-cols-2 border-t">
-          <button
-            className={`p-1 text-center ${
-              isMenuShow ? "bg-gray-200" : "bg-gray-300"
-            }`}
-            onClick={() => {
-              setIsMenuShow(false);
-            }}
-          >
-            記事一覧
-          </button>
-          <button
-            className={`p-1 text-center ${
-              isMenuShow ? "bg-gray-300" : "bg-gray-200"
-            }`}
-            onClick={() => {
-              setIsMenuShow(true);
-            }}
-          >
-            サイト一覧
-          </button>
+        <div className="w-full border-t sm:hidden">
+          <BottomBarContent
+            isMenuShow={isMenuShow}
+            setIsMenuShow={setIsMenuShow}
+          />
         </div>
       </div>
     </React.Fragment>

@@ -16,7 +16,9 @@ logger = get_logger(__name__)
 
 @dataclass
 class DownloadSite:
-    id: str
+    site_id: str
+    site_name: str
+    site_url: str
     rss_url: str
 
 
@@ -25,21 +27,18 @@ def get_download_list(s3_client: S3Client, config_bucket: str) -> List[DownloadS
     csvr = csv.reader(StringIO(csvstr))
     res = []
     for row in csvr:
-        ds = DownloadSite(id=row[0], rss_url=row[1])
+        ds = DownloadSite(
+            site_id=row[0], site_name=row[1], site_url=row[2], rss_url=row[3]
+        )
         res.append(ds)
     return res
 
 
 def donwload_rss(rss_url: str):
-    req = request.Request(rss_url)
     res = None
-    with request.urlopen(req) as r:
+    with request.urlopen(rss_url) as r:
         res = r.read()
-
     fpd = feedparser.parse(res)
-    title = fpd["feed"]["title"]
-    url = fpd["feed"]["link"]
-
     entries = []
     for entry in fpd["entries"]:
         d = {
@@ -48,24 +47,18 @@ def donwload_rss(rss_url: str):
             "updated": entry["updated"],
         }
         entries.append(d)
-
-    return {
-        "title": title,
-        "url": url,
-        "entries": entries,
-    }
+    return entries
 
 
-def upload_data(s3_client: S3Client, bucket: str, id: str, data: str):
+def put_entries(s3_client: S3Client, bucket: str, id: str, data: str):
     s3key = "latest/_/" + id
     s3_client.put(bucket, s3key, data)
 
 
-def get_sites(s3_client: S3Client, bucket: str) -> dict:
-    res = s3_client.get(bucket, "latest/sites")
-    res = json.loads(res)
-    res = {v["id"]: v for v in res}
-    return res
+def get_entries(s3_client: S3Client, bucket: str, id: str):
+    s3key = "latest/_/" + id
+    res = s3_client.get(bucket, s3key)
+    return json.loads(res)
 
 
 def put_sites(s3_client: S3Client, bucket: str, data: str):
@@ -83,37 +76,42 @@ def main(app_config: AppConfig):
         logger.debug(traceback.format_exc())
         return
 
-    prev_sites = {}
-    try:
-        prev_sites = get_sites(s3_client, content_bucket)
-    except Exception as e:
-        logger.warn("fail to get sites")
-        logger.debug(traceback.format_exc())
-
     sites = []
     for ds in download_list:
-        id = ds.id
+        site_id = ds.site_id
         rss_url = ds.rss_url
+        site = {
+            "siteId": ds.site_id,
+            "siteName": ds.site_name,
+            "siteUrl": ds.site_url,
+        }
 
-        res = None
+        entries = []
         try:
-            res = donwload_rss(rss_url)
-            res_json = json.dumps(res, ensure_ascii=False)
-            upload_data(s3_client, app_config.s3_content_bucket, id, res_json)
+            entries = donwload_rss(rss_url)
         except Exception as e:
             logger.warning("fail to download rss: {}".format(rss_url))
             logger.debug(traceback.format_exc())
-        if res is not None:
-            site = {
-                "id": id,
-                "title": res["title"],
-                "url": res["url"],
-                "entry_num": len(res["entries"]),
-            }
-            sites.append(site)
-        else:
-            if id in prev_sites:
-                sites.append(prev_sites[id])
+
+        if len(entries) == 0:
+            try:
+                entries = get_entries(site_id)
+            except Exception as e:
+                logger.warning("fail to download entries: {}".format(rss_url))
+                logger.debug(traceback.format_exc())
+
+        entries_res = {
+            "site": site,
+            "entries": entries,
+        }
+        entries_json = json.dumps(entries_res, ensure_ascii=False)
+        try:
+            put_entries(s3_client, app_config.s3_content_bucket, site_id, entries_json)
+        except Exception as e:
+            logger.debug(traceback.format_exc())
+
+        site["entryNum"] = len(entries)
+        sites.append(site)
 
     try:
         sites = json.dumps(sites, ensure_ascii=False)
@@ -128,3 +126,7 @@ def main(app_config: AppConfig):
 def lambda_handler(event, context):
     app_config = AppConfig()
     main(app_config)
+
+
+if __name__ == "__main__":
+    lambda_handler({}, {})

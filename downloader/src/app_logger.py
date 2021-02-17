@@ -1,10 +1,12 @@
 from logging import getLogger, StreamHandler, DEBUG
+import os
 
 
 def get_logger(name: str):
     logger = getLogger(name)
-    handler = StreamHandler()
-    handler.setLevel(DEBUG)
     logger.setLevel(DEBUG)
-    logger.addHandler(handler)
+    if os.environ.get("ENV") == "DEVELOPMENT":
+        handler = StreamHandler()
+        handler.setLevel(DEBUG)
+        logger.addHandler(handler)
     return logger

@@ -1,7 +1,7 @@
 IMAGE_NAME=matome-downloader
 SRC_DIR=$(CURDIR)/src
 LAMBDA_NAME_DEV=matome-manager-dev
-LAMBDA_NAME_PROD=matome-manager-prod
+LAMBDA_NAME_PROD=matome-downloader
 
 build-base:
 	docker build --tag $(IMAGE_NAME):base --no-cache -f ./Dockerfile.base .
@@ -22,8 +22,11 @@ build-deploy-package: build-base
 deploy-dev:
 	aws lambda update-function-code --function-name $(LAMBDA_NAME_DEV) --zip-file fileb://deploy/lambda.zip
 
-upload-config: config-to-json
-	aws s3 cp ./config.json s3://$(S3_BUCKET_NAME)/config.json
+update-production:
+	aws lambda update-function-code --function-name $(LAMBDA_NAME_PROD) --zip-file fileb://deploy/lambda.zip
+
+release-production:
+	bash ./release_production.sh
 
 start-dev:
 	docker-compose up -d

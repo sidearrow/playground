@@ -43,5 +43,8 @@ module.exports = function (env, argv) {
       }),
       isEnvProduction && new OptimizeCSSAssetPlugin(),
     ].filter(Boolean),
+    devServer: {
+      historyApiFallback: true,
+    },
   };
 };
