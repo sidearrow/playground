@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { apiGetSite } from "../api";
-import { SiteEntries, SiteInfo } from "../models";
+import { apiGetEntries } from "../api";
+import { ModelEntries } from "../models";
 import { getDateString } from "../utils";
 
 type Props = {
-  siteInfo: SiteInfo;
-  setSiteInfo: React.Dispatch<React.SetStateAction<SiteInfo>>;
+  entries: ModelEntries;
+  setEntries: React.Dispatch<React.SetStateAction<ModelEntries>>;
 };
 
-export const EntriesViewer: React.FC<Props> = ({ siteInfo, setSiteInfo }) => {
+export const EntriesViewer: React.FC<Props> = ({ entries, setEntries }) => {
   const siteId = useParams<{ id: string }>().id;
 
   useEffect(() => {
-    setSiteInfo({ ...siteInfo, ...{ id: siteId } });
+    setEntries(entries);
     (async () => {
-      const res = await apiGetSite(siteId);
-      setSiteInfo({ ...siteInfo, ...res });
+      const res = await apiGetEntries(siteId);
+      setEntries(res);
     })();
   }, [siteId]);
 
   return (
     <React.Fragment>
-      {siteInfo.entries.map((entry, i) => (
+      {entries.entries.map((entry, i) => (
         <div key={i} className="px-2 py-1 border-b">
           <a href={entry.url} target="_blank">
             {entry.title}

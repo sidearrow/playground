@@ -1,22 +1,21 @@
-export type Entry = {
-  title: string;
-  url: string;
-  updated: string;
+export type ModelSite = {
+  siteId: string;
+  siteName: string;
+  siteUrl: string;
+  entryNum: number;
 };
 
-export type Site = {
-  id: string;
-  title: string;
-  url: string;
-  entry_num: number;
-};
+export type ModelSites = ModelSite[];
 
-export type SiteEntries = {
-  title: string;
-  url: string;
-  entries: Entry[];
+export type ModelEntries = {
+  site: {
+    siteId: string;
+    siteName: string;
+    siteUrl: string;
+  };
+  entries: {
+    title: string;
+    url: string;
+    updated: string;
+  }[];
 };
-
-export type SiteInfo = {
-  id: string;
-} & SiteEntries;

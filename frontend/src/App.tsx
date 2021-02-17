@@ -4,19 +4,21 @@ import { apiGetSites } from "./api";
 import { BottomBarContent } from "./components/BottomBarContent";
 import { EntriesViewer } from "./components/EntriesViewer";
 import { SitesViewer } from "./components/SitesViewer";
-import { SiteInfo } from "./models";
+import { ModelEntries, ModelSites } from "./models";
 
 export const App: React.FC = () => {
   const pathname = useLocation().pathname;
   const [isMenuShow, setIsMenuShow] = useState(false);
-  const [sites, setSites] = useState([]);
-  const [siteInfo, setSiteInfo] = useState<SiteInfo>({
-    id: "",
-    title: "",
-    url: "#",
+  const [sites, setSites] = useState<ModelSites>([]);
+  const [entries, setEntries] = useState<ModelEntries>({
+    site: {
+      siteId: "",
+      siteName: "",
+      siteUrl: "",
+    },
     entries: [],
   });
-  console.log(siteInfo);
+  console.log({ sites: sites, entries: entries });
 
   useEffect(() => {
     (async () => {
@@ -33,7 +35,7 @@ export const App: React.FC = () => {
       <div className="h-full flex flex-col">
         <header className="flex justify-between bg-gray-200 px-2 py-1">
           <span>まとめ</span>
-          <a href={siteInfo.url}>{siteInfo.title}</a>
+          <a href={entries.site.siteUrl}>{entries.site.siteName}</a>
         </header>
         <main className="flex-grow overflow-auto">
           <div className="sm:flex sm:flex-row w-full h-full relative">
@@ -47,10 +49,7 @@ export const App: React.FC = () => {
             <div className="top-0 left-0 bg-white w-full h-full overflow-auto flex-grow">
               <Switch>
                 <Route path="/site/:id">
-                  <EntriesViewer
-                    siteInfo={siteInfo}
-                    setSiteInfo={setSiteInfo}
-                  />
+                  <EntriesViewer entries={entries} setEntries={setEntries} />
                 </Route>
               </Switch>
             </div>
