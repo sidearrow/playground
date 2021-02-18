@@ -1,11 +1,10 @@
 import csv
-import feedparser
+from src.rss import download_rss
 import json
 import traceback
 from dataclasses import dataclass
 from io import StringIO
 from typing import List
-from urllib import request
 
 from src.s3 import S3Client
 from src.app_config import AppConfig
@@ -32,22 +31,6 @@ def get_download_list(s3_client: S3Client, config_bucket: str) -> List[DownloadS
         )
         res.append(ds)
     return res
-
-
-def donwload_rss(rss_url: str):
-    res = None
-    with request.urlopen(rss_url) as r:
-        res = r.read()
-    fpd = feedparser.parse(res)
-    entries = []
-    for entry in fpd["entries"]:
-        d = {
-            "url": entry["id"],
-            "title": entry["title"],
-            "updated": entry["updated"],
-        }
-        entries.append(d)
-    return entries
 
 
 def put_entries(s3_client: S3Client, bucket: str, id: str, data: str):
@@ -80,41 +63,37 @@ def main(app_config: AppConfig):
     for ds in download_list:
         site_id = ds.site_id
         rss_url = ds.rss_url
-        site = {
-            "siteId": ds.site_id,
-            "siteName": ds.site_name,
-            "siteUrl": ds.site_url,
-        }
 
         entries = []
         try:
-            entries = donwload_rss(rss_url)
+            entries = download_rss(rss_url)
         except Exception as e:
             logger.warning("fail to download rss: {}".format(rss_url))
             logger.debug(traceback.format_exc())
 
-        if len(entries) == 0:
-            try:
-                entries = get_entries(site_id)
-            except Exception as e:
-                logger.warning("fail to download entries: {}".format(rss_url))
-                logger.debug(traceback.format_exc())
+        entry_num = len(entries)
+        if entry_num == 0:
+            continue
 
-        entries_res = {
-            "site": site,
-            "entries": entries,
+        m_site = {
+            "siteId": ds.site_id,
+            "siteName": ds.site_name,
+            "siteUrl": ds.site_url,
+            "entryNum": entry_num,
         }
-        entries_json = json.dumps(entries_res, ensure_ascii=False)
+        m_entries = {"site": m_site, "entries": entries}
+        entries_json = json.dumps(m_entries, ensure_ascii=False)
         try:
             put_entries(s3_client, app_config.s3_content_bucket, site_id, entries_json)
         except Exception as e:
             logger.debug(traceback.format_exc())
 
-        site["entryNum"] = len(entries)
-        sites.append(site)
+        sites.append(m_site)
+        break
 
     try:
-        sites = json.dumps(sites, ensure_ascii=False)
+        m_sites = {"sites": sites}
+        sites = json.dumps(m_sites, ensure_ascii=False)
         put_sites(s3_client, content_bucket, sites)
     except Exception as e:
         logger.warning("fail to put sites")
