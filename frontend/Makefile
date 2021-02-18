@@ -9,3 +9,6 @@ clean-content:
 
 copy-content:
 	cp -r ../downloader/docker/minio/data/matome-content-dev/latest ./docker/nginx/shared/
+
+deploy:
+	firebase deploy --only hosting

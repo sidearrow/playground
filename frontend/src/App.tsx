@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, useLocation, Link } from "react-router-dom";
+import { Switch, Route, useLocation, Link, useHistory } from "react-router-dom";
 import { apiGetSites } from "./api";
 import { BottomBarContent } from "./components/BottomBarContent";
 import { EntriesViewer } from "./components/EntriesViewer";
 import { SitesViewer } from "./components/SitesViewer";
 import { ModelEntries, ModelSites } from "./models";
+import { settings } from "./settings";
 
 export const App: React.FC = () => {
   const pathname = useLocation().pathname;
@@ -18,9 +19,11 @@ export const App: React.FC = () => {
     },
     entries: [],
   });
-  console.log({ sites: sites, entries: entries });
 
   useEffect(() => {
+    window.gtag("config", settings.gaMeasurementId, {
+      page_path: pathname,
+    });
     (async () => {
       const res = await apiGetSites();
       setSites(res);
