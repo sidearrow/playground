@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 html,
-body {
+body,
+#app {
   font-size: 12px;
-  height: 100vh;
+  height: 100%;
 }
 
 body {

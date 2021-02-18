@@ -33,3 +33,9 @@ start-dev:
 
 stop-dev:
 	docker-compose down
+
+upload-code:
+	scp ./scripts/downloader.py matometane@s205.xrea.com:/virtual/matometane/matome
+
+upload-download-list:
+	scp ./download_list.csv matometane@s205.xrea.com:/virtual/matometane/matome

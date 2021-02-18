@@ -1,7 +1,7 @@
 import { ModelEntries, ModelSites } from "./models";
 
 //const apiUrl = "http://localhost:9999";
-const apiUrl = "https://matome-public.s3-ap-northeast-1.amazonaws.com";
+const apiUrl = "https://ss1.xrea.com/matometane.s205.xrea.com/content";
 
 async function fetchGet(url: string) {
   const res = await fetch(url);
@@ -12,9 +12,9 @@ async function fetchGet(url: string) {
 }
 
 export async function apiGetEntries(siteId: string): Promise<ModelEntries> {
-  return await fetchGet(`${apiUrl}/latest/_/${siteId}`);
+  return await fetchGet(`${apiUrl}/_/${siteId}.json`);
 }
 
 export async function apiGetSites(): Promise<ModelSites> {
-  return await fetchGet(`${apiUrl}/latest/sites`);
+  return await fetchGet(`${apiUrl}/sites.json`);
 }
