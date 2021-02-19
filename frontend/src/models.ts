@@ -2,17 +2,12 @@ export type ModelSite = {
   siteId: string;
   siteName: string;
   siteUrl: string;
-  entryNum: number;
 };
 
 export type ModelSites = ModelSite[];
 
 export type ModelEntries = {
-  site: {
-    siteId: string;
-    siteName: string;
-    siteUrl: string;
-  };
+  site: ModelSite;
   entries: {
     title: string;
     url: string;
