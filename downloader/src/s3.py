@@ -14,7 +14,8 @@ class S3Client:
         else:
             self.__client = boto3.client("s3", endpoint_url=Config.S3_ENDPOINT_URL)
 
-    def put_entries(self, site_id: str, data: str):
+    def put_entries(self, site_id: str, data: dict):
+        data = json.dumps(data, ensure_ascii=False)
         key = "latest/_/{}.json".format(site_id)
         bucket = Config.S3_PUBLIC_BUCKET
         logger.info("Upload s3 object: s3://{}/{}".format(bucket, key))
@@ -29,7 +30,7 @@ class S3Client:
         return json.loads(data)
 
     def get_download_list(self):
-        return self.get(Config.S3_PRIVATE_BUCKET, "downloade_list.csv")
+        return self.get(Config.S3_PRIVATE_BUCKET, "download_list.csv")
 
     def put(self, bucket: str, key: str, data: str):
         logger.info("Upload s3 object: s3://{}/{}".format(bucket, key))

@@ -1,34 +1,12 @@
-import csv
 import traceback
-from dataclasses import dataclass
-from io import StringIO
-from typing import List
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from src.app_logger import get_logger
 from src.downloader import Downloader
+from src.download_site import get_download_list
 from src.s3 import S3Client
 
 logger = get_logger(__name__)
-
-
-@dataclass
-class DownloadSite:
-    site_id: str
-    site_name: str
-    site_url: str
-    rss_url: str
-
-
-def get_download_list(s3_client: S3Client) -> List[DownloadSite]:
-    csvstr = s3_client.get_download_list()
-    csvr = csv.reader(StringIO(csvstr))
-    res = []
-    for row in csvr:
-        ds = DownloadSite(
-            site_id=row[0], site_name=row[1], site_url=row[2], rss_url=row[3]
-        )
-        res.append(ds)
-    return res
 
 
 def main():
@@ -41,9 +19,15 @@ def main():
         logger.debug(traceback.format_exc())
         return
 
-    for ds in download_list:
-        downloader = Downloader(s3_client, ds)
-        downloader.exec()
+    futures = []
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        for ds in download_list:
+            downloader = Downloader(s3_client, ds)
+            future = executor.submit(fn=downloader.exec)
+            futures.append(future)
+        _ = as_completed(fs=futures)
+
+    logger.info("success")
 
 
 def lambda_handler(event, context):

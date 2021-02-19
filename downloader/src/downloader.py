@@ -1,10 +1,10 @@
-from src.executor import DownloadSite
 import feedparser
 import traceback
 from urllib import request
 
-from src.s3 import S3Client
 from src.app_logger import getLogger
+from src.download_site import DownloadSite
+from src.s3 import S3Client
 
 logger = getLogger(__file__)
 
@@ -56,6 +56,7 @@ class Downloader:
         try:
             entries, update_num = self.__merge_entries(old_entries, entries)
             if update_num == 0:
+                logger.info("no update")
                 return
         except Exception as e:
             logger.debug(traceback.format_exc())
@@ -73,7 +74,6 @@ class Downloader:
             }
             self.__s3_client.put_entries(self.__download_list.site_id, data)
         except Exception as e:
-            print(traceback.format_exc())
             logger.debug(traceback.format_exc())
 
     @staticmethod
