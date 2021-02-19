@@ -8,8 +8,8 @@ except:
     pass
 
 
-class AppConfig:
-    def __init__(self) -> None:
-        self.s3_endpoint_url = os.environ.get("S3_ENDPOINT_URL")
-        self.s3_content_bucket = os.environ.get("S3_CONTENT_BUCKET")
-        self.s3_config_bucket = os.environ.get("S3_CONFIG_BUCKET")
+class Config:
+    ENV = os.environ.get("ENV")
+    S3_ENDPOINT_URL = os.environ.get("S3_ENDPOINT_URL")
+    S3_PRIVATE_BUCKET = os.environ.get("S3_PRIVATE_BUCKET")
+    S3_PUBLIC_BUCKET = os.environ.get("S3_PUBLIC_BUCKET")

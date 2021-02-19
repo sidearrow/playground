@@ -1,4 +1,11 @@
-FROM lambda-python-sample:base as base
+FROM lambci/lambda:build-python3.8 as base
+
+ADD ./requirements.txt /tmp
+ADD ./requirements.dev.txt /tmp
+RUN pip install -r /tmp/requirements.txt -t /var/task
+RUN pip install -r /tmp/requirements.dev.txt -t /var/task
+
+ADD ./src /var/task/src
 
 FROM lambci/lambda:python3.8
 
