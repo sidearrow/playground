@@ -1,14 +1,14 @@
 import csv
-from src.rss import download_rss
 import json
 import traceback
 from dataclasses import dataclass
 from io import StringIO
 from typing import List
 
-from src.s3 import S3Client
 from src.app_config import AppConfig
 from src.app_logger import get_logger
+from src.rss import download_rss
+from src.s3 import S3Client
 
 logger = get_logger(__name__)
 
@@ -68,7 +68,6 @@ def main(app_config: AppConfig):
         logger.debug(traceback.format_exc())
         return
 
-    sites = []
     for ds in download_list:
         site_id = ds.site_id
         rss_url = ds.rss_url
@@ -106,9 +105,6 @@ def main(app_config: AppConfig):
             put_entries(s3_client, content_bucket, site_id, entries_json)
         except Exception as e:
             logger.debug(traceback.format_exc())
-
-        sites.append(m_site)
-        break
 
     logger.info("done")
 

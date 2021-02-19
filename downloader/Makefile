@@ -25,6 +25,15 @@ deploy-dev:
 update-production:
 	aws lambda update-function-code --function-name $(LAMBDA_NAME_PROD) --zip-file fileb://deploy/lambda.zip
 
+upload-download-list-dev:
+	aws s3 cp ./download_list.csv s3://matome-private-dev/download_list.csv
+
+upload-download-list-production:
+	aws s3 cp ./download_list.csv s3://matome-private/download_list.csv
+
+upload-sites-json:
+	aws s3 cp ./sites.json s3://matome-public/latest/sites.json
+
 release-production:
 	bash ./release_production.sh
 
@@ -33,9 +42,3 @@ start-dev:
 
 stop-dev:
 	docker-compose down
-
-upload-code:
-	scp ./scripts/downloader.py matometane@s205.xrea.com:/virtual/matometane/matome
-
-upload-download-list:
-	scp ./download_list.csv matometane@s205.xrea.com:/virtual/matometane/matome
