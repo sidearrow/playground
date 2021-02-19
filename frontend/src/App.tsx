@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Route, useLocation, Link, useHistory } from "react-router-dom";
 import { apiGetSites } from "./api";
-import { BottomBarContent } from "./components/BottomBarContent";
+import { BottomBarContent } from "./components/BottomBar";
 import { EntriesViewer } from "./components/EntriesViewer";
 import { SitesViewer } from "./components/SitesViewer";
 import { ModelEntries, ModelSites } from "./models";
@@ -37,7 +37,7 @@ export const App: React.FC = () => {
     <React.Fragment>
       <div className="h-full flex flex-col">
         <header className="flex justify-between bg-gray-200 px-2 py-1">
-          <span>まとめ</span>
+          <span>まとめたね</span>
           <a href={entries.site.siteUrl}>{entries.site.siteName}</a>
         </header>
         <main className="flex-grow overflow-auto">

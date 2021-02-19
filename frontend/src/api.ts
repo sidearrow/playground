@@ -1,7 +1,7 @@
 import { ModelEntries, ModelSites } from "./models";
 
-//const apiUrl = "http://localhost:9999/latest";
-const apiUrl = "https://matome-public.s3-ap-northeast-1.amazonaws.com/latest";
+const apiUrl = "http://localhost:9999/latest";
+//const apiUrl = "https://matome-public.s3-ap-northeast-1.amazonaws.com/latest";
 
 async function fetchGet(url: string) {
   const res = await fetch(url);

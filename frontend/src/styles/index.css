@@ -4,7 +4,7 @@
 
 html,
 body,
-#app {
+#__next {
   font-size: 12px;
   height: 100%;
 }

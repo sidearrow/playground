@@ -1,5 +1,5 @@
-run-dev:
-	docker-compose up
+start-dev:
+	docker-compose up -d
 
 stop-dev:
 	docker-compose down
@@ -8,7 +8,7 @@ clean-content:
 	rm -rf docker/nginx/shared/latest
 
 copy-content:
-	cp -r ../downloader/docker/minio/data/matome-content-dev/latest ./docker/nginx/shared/
+	cp -r ../downloader/docker/minio/data/matome-public-local/latest ./docker/nginx/shared/
 
 deploy:
 	firebase deploy --only hosting

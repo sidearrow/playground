@@ -25,10 +25,7 @@ type Props = {
   setIsMenuShow: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const BottomBarContent: React.FC<Props> = ({
-  isMenuShow,
-  setIsMenuShow,
-}) => {
+export const BottomBar: React.FC<Props> = ({ isMenuShow, setIsMenuShow }) => {
   return (
     <div className="grid grid-cols-2">
       <Button
