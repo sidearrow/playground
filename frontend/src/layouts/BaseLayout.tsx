@@ -20,12 +20,7 @@ export const BaseLayout: React.FC<Props> = ({
         <title>{title}</title>
         <meta />
       </Head>
-      <div className="h-full flex flex-col">
-        <header>
-          <TopBar>{topBarString}</TopBar>
-        </header>
-        {children}
-      </div>
+      <div className="h-full flex flex-col">{children}</div>
     </React.Fragment>
   );
 };

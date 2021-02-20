@@ -12,3 +12,7 @@ body,
 body {
   font-family: arial, sans-serif;
 }
+
+a {
+  @apply text-blue-700;
+}

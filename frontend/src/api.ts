@@ -1,7 +1,7 @@
-import { ModelEntries, ModelSites } from "./models";
+import { ModelEntries } from "./models";
+import { API_URL } from "./settings";
 
-const apiUrl = "http://localhost:9999/latest";
-//const apiUrl = "https://matome-public.s3-ap-northeast-1.amazonaws.com/latest";
+const apiUrl = API_URL;
 
 async function fetchGet(url: string) {
   const res = await fetch(url);
@@ -13,8 +13,4 @@ async function fetchGet(url: string) {
 
 export async function apiGetEntries(siteId: string): Promise<ModelEntries> {
   return await fetchGet(`${apiUrl}/_/${siteId}.json`);
-}
-
-export async function apiGetSites(): Promise<ModelSites> {
-  return await fetchGet(`${apiUrl}/sites.json`);
 }

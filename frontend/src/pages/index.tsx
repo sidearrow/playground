@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { BaseLayout } from "../layouts/BaseLayout";
+import { TopBar } from "../components/TopBar";
 
 const description =
   "色々なサイト様から取得させていただきました情報をまとめています。" +
@@ -9,6 +10,9 @@ const description =
 const Component: React.FC = () => {
   return (
     <BaseLayout>
+      <header>
+        <TopBar />
+      </header>
       <main className="flex-grow overflow-auto">
         <p className="p-2">{description}</p>
         <div className="p-2">

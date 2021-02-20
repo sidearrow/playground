@@ -26,7 +26,7 @@ update-production:
 	aws lambda update-function-code --function-name $(LAMBDA_NAME_PROD) --zip-file fileb://deploy/lambda.zip
 
 upload-download-list-dev:
-	aws s3 cp ./download_list.csv s3://matome-private-dev/download_list.csv
+	aws s3 cp ./download_list.dev.csv s3://matome-private-dev/download_list.csv
 
 upload-download-list-production:
 	aws s3 cp ./download_list.csv s3://matome-private/download_list.csv
