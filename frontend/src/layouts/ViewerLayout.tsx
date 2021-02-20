@@ -2,8 +2,8 @@ import React from "react";
 import Head from "next/head";
 import { TopBar } from "../components/TopBar";
 import { BottomBar } from "../components/BottomBar";
-import { SitesViewer } from "../components/SitesViewer";
-import { EntriesViewer } from "../components/EntriesViewer";
+import { SitesViewer } from "../components/SiteList";
+import { EntriesViewer } from "../components/EntryList";
 
 type Props = {
   title?: string;

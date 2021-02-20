@@ -6,11 +6,13 @@ export type ModelSite = {
 
 export type ModelSites = ModelSite[];
 
+export type ModelEntry = {
+  title: string;
+  url: string;
+  updated: string;
+};
+
 export type ModelEntries = {
   site: ModelSite;
-  entries: {
-    title: string;
-    url: string;
-    updated: string;
-  }[];
+  entries: ModelEntry[];
 };

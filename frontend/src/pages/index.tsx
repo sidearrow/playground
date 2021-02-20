@@ -9,10 +9,12 @@ const description =
 const Component: React.FC = () => {
   return (
     <BaseLayout>
-      <p className="p-2">{description}</p>
-      <div className="p-2">
-        <Link href="/2chmatome">2ch まとめサイト</Link>
-      </div>
+      <main className="flex-grow overflow-auto">
+        <p className="p-2">{description}</p>
+        <div className="p-2">
+          <Link href="/2chmatome">2ch まとめサイト</Link>
+        </div>
+      </main>
     </BaseLayout>
   );
 };

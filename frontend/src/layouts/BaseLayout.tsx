@@ -24,7 +24,7 @@ export const BaseLayout: React.FC<Props> = ({
         <header>
           <TopBar>{topBarString}</TopBar>
         </header>
-        <main className="flex-grow overflow-auto">{children}</main>
+        {children}
       </div>
     </React.Fragment>
   );

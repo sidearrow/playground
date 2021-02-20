@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Switch, Route, useLocation, Link, useHistory } from "react-router-dom";
 import { apiGetSites } from "./api";
 import { BottomBarContent } from "./components/BottomBar";
-import { EntriesViewer } from "./components/EntriesViewer";
-import { SitesViewer } from "./components/SitesViewer";
+import { EntriesViewer } from "./components/EntryList";
+import { SitesViewer } from "./components/SiteList";
 import { ModelEntries, ModelSites } from "./models";
 import { settings } from "./settings";
 
