@@ -7,7 +7,7 @@
 html,
 body,
 #__next {
-  font-size: 12px;
+  font-size: 13px;
   height: 100%;
 }
 
@@ -16,5 +16,9 @@ body {
 }
 
 a {
-  @apply text-blue-700;
+  @apply text-blue-500;
+}
+
+a[target="_blank"] {
+  @apply text-blue-700 underline;
 }

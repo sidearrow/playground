@@ -64,7 +64,6 @@ class DownloaderTest(TestCase):
 
         s3_client = MagicMock()
         s3_client.get_entries.return_value = {
-            "sites": "sites",
             "entries": [
                 {"url": "url1", "updated": "updated1"},
                 {"url": "url3", "updated": "updated3"},

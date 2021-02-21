@@ -16,7 +16,7 @@ const Component: React.FC = () => {
       <main className="flex-grow overflow-auto">
         <p className="p-2">{description}</p>
         <div className="p-2">
-          <Link href="/2chmatome">2ch まとめサイト</Link>
+          <Link href="/sites">サイト一覧</Link>
         </div>
       </main>
     </BaseLayout>

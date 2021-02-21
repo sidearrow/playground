@@ -34,45 +34,41 @@ class Downloader:
         self.__max_entry_num = max_entry_num
 
     def exec(self):
-        entries = []
         try:
-            entries = get_rss(self.__download_list.rss_url)
-        except Exception as e:
-            logger.debug(traceback.format_exc())
-            logger.warning("fail to get rss")
-            return
-        if len(entries) == 0:
-            logger.warning("entries in rss is emprty")
-            return
-
-        old_entries = []
-        try:
-            old_data = self.__s3_client.get_entries(self.__download_list.site_id)
-            old_entries = old_data["entries"]
-        except Exception as e:
-            logger.debug(traceback.format_exc())
-            logger.warning("fail to get old entries")
-
-        try:
-            entries, update_num = self.__merge_entries(old_entries, entries)
-            if update_num == 0:
-                logger.info("no update")
+            entries = []
+            try:
+                entries = get_rss(self.__download_list.rss_url)
+            except Exception as e:
+                logger.warning("fail to get rss")
+                raise e
+            if len(entries) == 0:
+                logger.warning("entries in rss is emprty")
                 return
-        except Exception as e:
-            logger.debug(traceback.format_exc())
-            logger.warning("fail to merge entries")
 
-        entries = entries[: self.__max_entry_num]
-        try:
-            data = {
-                "site": {
-                    "siteId": self.__download_list.site_id,
-                    "siteName": self.__download_list.site_name,
-                    "siteUrl": self.__download_list.site_url,
-                },
-                "entries": entries,
-            }
-            self.__s3_client.put_entries(self.__download_list.site_id, data)
+            old_entries = []
+            try:
+                old_data = self.__s3_client.get_entries(self.__download_list.site_id)
+                old_entries = old_data["entries"]
+            except Exception as e:
+                logger.debug(traceback.format_exc())
+                logger.warning("fail to get old entries")
+
+            try:
+                entries, update_num = self.__merge_entries(old_entries, entries)
+                if update_num == 0:
+                    logger.info("no update")
+                    return
+            except Exception as e:
+                logger.debug(traceback.format_exc())
+                logger.warning("fail to merge entries")
+
+            entries = entries[: self.__max_entry_num]
+            try:
+                data = {"entries": entries}
+                self.__s3_client.put_entries(self.__download_list.site_id, data)
+            except Exception as e:
+                logger.warning("fail to put entries")
+                raise e
         except Exception as e:
             logger.debug(traceback.format_exc())
 

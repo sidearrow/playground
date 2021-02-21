@@ -10,7 +10,7 @@ export const Button: React.FC<ButtonProps> = ({
   onClick,
   children,
 }) => {
-  const className = `p-1 text-center bg-gray-200 ${
+  const className = `p-2 text-center bg-gray-200 ${
     isActive ? "border-b-4 border-gray-900" : ""
   }`;
   return (

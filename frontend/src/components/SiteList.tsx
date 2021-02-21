@@ -9,7 +9,9 @@ export const SiteList: React.FC<Props> = ({ sites }) => {
     <div>
       {sites.map((site, i) => (
         <div key={i} className="block px-2 py-1 border-b flex justify-between">
-          <Link href={"/2chmatome/" + site.siteId}>{site.siteName}</Link>
+          <Link href={"/sites/" + site.siteId} scroll={false}>
+            {site.siteName}
+          </Link>
         </div>
       ))}
     </div>

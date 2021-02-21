@@ -6,7 +6,7 @@ import Document, {
   NextScript,
 } from "next/document";
 import React from "react";
-import { GA_TRACKING_ID } from "../settings";
+import { AD_ID, GA_TRACKING_ID } from "../settings";
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -37,6 +37,11 @@ export default class MyDocument extends Document {
               `,
             }}
           />
+          <script
+            data-ad-client={AD_ID}
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          ></script>
         </Head>
         <body>
           <Main />

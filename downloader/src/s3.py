@@ -20,7 +20,11 @@ class S3Client:
         bucket = Config.S3_PUBLIC_BUCKET
         logger.info("Upload s3 object: s3://{}/{}".format(bucket, key))
         self.__client.put_object(
-            Bucket=bucket, Key=key, Body=data, ContentType="application/json"
+            Bucket=bucket,
+            Key=key,
+            Body=data,
+            ContentType="application/json",
+            CacheControl="max-age=3600",
         )
 
     def get_entries(self, site_id: str):
@@ -31,12 +35,6 @@ class S3Client:
 
     def get_download_list(self):
         return self.get(Config.S3_PRIVATE_BUCKET, "download_list.csv")
-
-    def put(self, bucket: str, key: str, data: str):
-        logger.info("Upload s3 object: s3://{}/{}".format(bucket, key))
-        self.__client.put_object(
-            Bucket=bucket, Key=key, Body=data, ContentType="application/json"
-        )
 
     def get(self, bucket: str, key: str) -> str:
         logger.info("Get s3 object: s3://{}/{}".format(bucket, key))
