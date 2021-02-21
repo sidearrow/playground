@@ -3,10 +3,10 @@ SRC_DIR=$(CURDIR)/src
 LAMBDA_NAME_DEV=matome-manager-dev
 LAMBDA_NAME_PROD=matome-downloader
 
-build-base:
+build-image-base:
 	docker build --tag $(IMAGE_NAME):base --no-cache -f ./Dockerfile.base .
 
-build-dev: build-base
+build-image-dev:
 	docker build --tag $(IMAGE_NAME):dev -f ./Dockerfile.dev .
 
 run-dev:
@@ -15,7 +15,7 @@ run-dev:
 		$(IMAGE_NAME):dev \
 		src.executor.lambda_handler
 
-build-deploy-package: build-base
+build-deploy-package: build-image-base
 	docker run -v $(CURDIR)/deploy:/var/task/deploy $(IMAGE_NAME):base \
 	zip -9yr deploy/lambda.zip .
 

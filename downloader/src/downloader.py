@@ -1,6 +1,6 @@
 import feedparser
 import traceback
-from urllib import request
+from urllib.request import Request, urlopen
 
 from src.app_logger import getLogger
 from src.download_site import DownloadSite
@@ -11,7 +11,9 @@ logger = getLogger(__file__)
 
 def get_rss(rss_url):
     res = None
-    with request.urlopen(rss_url) as r:
+    req = Request(rss_url)
+    req.add_header("User-Agent", "Mozilla/5.0")
+    with urlopen(req) as r:
         res = r.read()
     fpd = feedparser.parse(res)
     entries = []

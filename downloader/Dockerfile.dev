@@ -1,4 +1,4 @@
-FROM lambci/lambda:build-python3.8 as base
+FROM lambci/lambda:build-python3.8 as build
 
 ADD ./requirements.txt /tmp
 ADD ./requirements.dev.txt /tmp

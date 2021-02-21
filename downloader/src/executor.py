@@ -24,7 +24,7 @@ def main(site_ids: List[str]):
         download_list = [v for v in download_list if v.site_id in site_ids]
 
     futures = []
-    with ThreadPoolExecutor(max_workers=4) as executor:
+    with ThreadPoolExecutor(max_workers=16) as executor:
         for ds in download_list:
             downloader = Downloader(s3_client, ds)
             future = executor.submit(downloader.exec)
@@ -40,4 +40,4 @@ def lambda_handler(event, context):
 
 
 if __name__ == "__main__":
-    lambda_handler({"site_ids": ["gurum", "oryouri", "dummy"]}, {})
+    lambda_handler({}, {})
