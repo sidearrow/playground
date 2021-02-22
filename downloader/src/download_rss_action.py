@@ -1,6 +1,7 @@
 import feedparser
 import json
 import os
+import shutil
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
@@ -47,7 +48,7 @@ class DownloadRSSAction:
         }
 
         try:
-            os.rmdir(self.DIR)
+            shutil.rmtree(self.DIR)
         except Exception:
             pass
         os.makedirs(self.DIR)
