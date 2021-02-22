@@ -15,7 +15,6 @@ class DBTest(TestCase):
         db.upsert_many(data)
 
         res = db.get_entries("site1")
-        res = [dict(r) for r in res]
         expect_res = [
             {"url": "url12", "title": "title12", "updated": "12"},
             {"url": "url11", "title": "title11", "updated": "11"},
@@ -23,7 +22,6 @@ class DBTest(TestCase):
         self.assertListEqual(res, expect_res)
 
         res = db.get_entries("site2")
-        res = [dict(r) for r in res]
         expect_res = [
             {"url": "url21", "title": "title21", "updated": "21"},
         ]
@@ -37,7 +35,6 @@ class DBTest(TestCase):
 
         db.delete_old_entries("site1", "12")
         res = db.get_entries("site1")
-        res = [dict(r) for r in res]
         expect_res = [
             {"url": "url13", "title": "title13", "updated": "13"},
             {"url": "url12", "title": "title12", "updated": "12"},

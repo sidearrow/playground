@@ -45,7 +45,7 @@ class DB:
         cur = self.__con.cursor()
         cur.execute(SELECT_BY_SITE_ID_SQL, (site_id,))
         res = cur.fetchall()
-        return res
+        return [dict(r) for r in res]
 
     def delete_old_entries(self, site_id: str, updated: str):
         cur = self.__con.cursor()
@@ -62,3 +62,6 @@ class DB:
         cur = self.__con.cursor()
         cur.executemany(UPSERT_SQL, data)
         self.__con.commit()
+
+    def close(self):
+        self.__con.close()
