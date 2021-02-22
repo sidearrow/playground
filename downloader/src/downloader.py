@@ -1,3 +1,4 @@
+from src.db import DB
 import feedparser
 import traceback
 from urllib.request import Request, urlopen
@@ -29,60 +30,47 @@ def get_rss(rss_url):
 
 class Downloader:
     def __init__(
-        self, s3_client: S3Client, download_site: DownloadSite, max_entry_num: int = 100
+        self,
+        s3_client: S3Client,
+        download_site: DownloadSite,
+        db: DB,
     ) -> None:
         self.__s3_client = s3_client
         self.__download_list = download_site
-        self.__max_entry_num = max_entry_num
+        self.__db = db
 
     def exec(self):
+        site_id = self.__download_list.site_id
         try:
-            entries = []
+            new_entries = []
             try:
-                entries = get_rss(self.__download_list.rss_url)
+                new_entries = get_rss(self.__download_list.rss_url)
             except Exception as e:
                 logger.warning("fail to get rss")
                 raise e
-            if len(entries) == 0:
+            if len(new_entries) == 0:
                 logger.warning("entries in rss is emprty")
                 return
 
-            old_entries = []
             try:
-                old_data = self.__s3_client.get_entries(self.__download_list.site_id)
-                old_entries = old_data["entries"]
+                upsert_entries = [
+                    [site_id, v["url"], v["title"], v["updated"]] for v in new_entries
+                ]
+                self.__db.upsert_many(upsert_entries)
             except Exception as e:
-                logger.debug(traceback.format_exc())
-                logger.warning("fail to get old entries")
+                print(traceback.format_exc())
+                logger.warning("fail to update db")
+                raise e
 
             try:
-                entries, update_num = self.__merge_entries(old_entries, entries)
-                if update_num == 0:
-                    logger.info("no update")
-                    return
-            except Exception as e:
-                logger.debug(traceback.format_exc())
-                logger.warning("fail to merge entries")
-
-            entries = entries[: self.__max_entry_num]
-            try:
+                entries = self.__db.get_entries(site_id)
                 data = {"entries": entries}
                 self.__s3_client.put_entries(self.__download_list.site_id, data)
+                oldest_updates = entries[-1]["updated"]
+                self.__db.delete_old_entries(site_id, oldest_updates)
             except Exception as e:
-                logger.warning("fail to put entries")
-                raise e
+                logger.debug(traceback.format_exc())
+                logger.warning("fail to upload entries")
+
         except Exception as e:
             logger.debug(traceback.format_exc())
-
-    @staticmethod
-    def __merge_entries(old, new):
-        old_keys = [v["url"] for v in old]
-        res = [*old]
-        append_num = 0
-        for v in new:
-            if v["url"] not in old_keys:
-                res.append(v)
-                append_num += 1
-        if append_num > 0:
-            res.sort(key=lambda v: v["updated"], reverse=True)
-        return res, append_num

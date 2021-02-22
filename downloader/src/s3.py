@@ -36,6 +36,9 @@ class S3Client:
     def get_download_list(self):
         return self.get(Config.S3_PRIVATE_BUCKET, "download_list.csv")
 
+    def download_entries_db(self, local_path: str):
+        self.__client.download_file(Config.S3_PRIVATE_BUCKET, "entries.db", local_path)
+
     def get(self, bucket: str, key: str) -> str:
         logger.info("Get s3 object: s3://{}/{}".format(bucket, key))
         obj = self.__client.get_object(Bucket=bucket, Key=key)
