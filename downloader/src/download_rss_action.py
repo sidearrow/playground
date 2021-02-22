@@ -29,7 +29,7 @@ def get_rss(rss_url):
         except Exception:
             pass
         d = {
-            "url": entry["id"],
+            "url": entry["link"],
             "title": entry["title"],
             "updated": updated,
         }
@@ -83,12 +83,6 @@ class DownloadRSSAction:
             filepath = os.path.join(self.DIR, "{}.json".format(site_id))
             with open(filepath, "w") as f:
                 json.dump(entries, f, ensure_ascii=False)
-            """
-            self.__local_db.upsert_many(upsert_entries)
-            entries = self.__local_db.get_entries(site_id)
-            oldest_updated = entries[-1]["updated"]
-            self.__local_db.delete_old_entries(site_id, oldest_updated)
-            """
         except Exception as e:
             logger.warning("fail to update entries site_id: {}".format(site_id))
             logger.warning(traceback.format_exc())

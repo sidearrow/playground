@@ -1,4 +1,3 @@
-from src.utils import format_datetime
+from src.download_rss_action import get_rss
 
-a = format_datetime("2021-02-21T13:11:54+00:00")
-print(a)
+get_rss("http://beasoku.com/index20.rdf")
