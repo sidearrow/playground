@@ -1,16 +1,15 @@
 import feedparser
-import json
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 from urllib.request import Request, urlopen
 
-from src.app_logger import getLogger
+from src.app_logger import get_logger
 from src.db import DB
 from src.download_site import DownloadSite
-from src.s3 import S3Client
+from src.utils import format_datetime
 
-logger = getLogger(__file__)
+logger = get_logger(__name__)
 
 
 def get_rss(rss_url):
@@ -22,10 +21,15 @@ def get_rss(rss_url):
     fpd = feedparser.parse(res)
     entries = []
     for entry in fpd["entries"]:
+        updated = ""
+        try:
+            updated = format_datetime(entry["updated"])
+        except Exception:
+            pass
         d = {
             "url": entry["id"],
             "title": entry["title"],
-            "updated": entry["updated"],
+            "updated": updated,
         }
         entries.append(d)
     return entries
@@ -72,6 +76,8 @@ class DownloadRSSAction:
             ]
             db.upsert_many(upsert_entries)
             entries = db.get_entries(site_id)
+            oldest_updated = entries[-1]["updated"]
+            db.delete_old_entries(site_id, oldest_updated)
             db.close()
         except Exception as e:
             logger.warning("fail to update entries site_id: {}".format(site_id))

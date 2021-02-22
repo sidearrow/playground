@@ -1,4 +1,3 @@
-import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 from src.db import DB
@@ -21,5 +20,5 @@ class UploadAction:
     def __upload(self, site_id: str):
         db = DB("/tmp/db.db")
         entries = db.get_entries(site_id)
-        data = json.dumps({"entries": entries}, ensure_ascii=False)
+        data = {"entries": entries}
         self.__s3_client.put_entries(site_id, data)
