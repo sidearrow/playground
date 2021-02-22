@@ -1,11 +1,12 @@
 import feedparser
+import json
+import os
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 from urllib.request import Request, urlopen
 
 from src.app_logger import get_logger
-from src.db import DB
 from src.download_site import DownloadSite
 from src.utils import format_datetime
 
@@ -36,12 +37,20 @@ def get_rss(rss_url):
 
 
 class DownloadRSSAction:
+    DIR = "/tmp/download_rss"
+
     def __init__(self, download_site: List[DownloadSite]) -> None:
         self.__download_list = download_site
         self.__result = {
             "success_site_id_list": [],
             "fail_site_id_list": [],
         }
+
+        try:
+            os.rmdir(self.DIR)
+        except Exception:
+            pass
+        os.makedirs(self.DIR)
 
     def exec(self):
         futures = []
@@ -70,15 +79,15 @@ class DownloadRSSAction:
             self.__add_fail_site_id(site_id)
             return
         try:
-            db = DB("/tmp/db.db")
-            upsert_entries = [
-                [site_id, v["url"], v["title"], v["updated"]] for v in entries
-            ]
-            db.upsert_many(upsert_entries)
-            entries = db.get_entries(site_id)
+            filepath = os.path.join(self.DIR, "{}.json".format(site_id))
+            with open(filepath, "w") as f:
+                json.dump(entries, f, ensure_ascii=False)
+            """
+            self.__local_db.upsert_many(upsert_entries)
+            entries = self.__local_db.get_entries(site_id)
             oldest_updated = entries[-1]["updated"]
-            db.delete_old_entries(site_id, oldest_updated)
-            db.close()
+            self.__local_db.delete_old_entries(site_id, oldest_updated)
+            """
         except Exception as e:
             logger.warning("fail to update entries site_id: {}".format(site_id))
             logger.warning(traceback.format_exc())

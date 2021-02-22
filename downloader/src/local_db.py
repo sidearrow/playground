@@ -32,9 +32,9 @@ insert or replace into entries (
 """
 
 
-class DB:
+class LocalDB:
     def __init__(self, db: str) -> None:
-        con = connect(db)
+        con = connect(db, check_same_thread=False)
         con.row_factory = Row
         self.__con = con
 
