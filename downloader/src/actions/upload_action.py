@@ -27,6 +27,8 @@ class UploadAction(BaseAction):
             for site_id in self.__site_id_list:
                 future = executor.submit(self.__upload, site_id)
                 futures.append(future)
+            future = executor.submit(self.__upload_latest)
+            futures.append(future)
         as_completed(futures)
         logger.info("finish upload action")
         logger.info("fail site ids: {}".format(self._fail_site_ids))
@@ -35,6 +37,18 @@ class UploadAction(BaseAction):
         try:
             entries = self.__local_db.get_entries(site_id)
             data = {"entries": entries}
+            self.__s3_client.put_entries(site_id, data)
+        except Exception:
+            self._fail_site_ids.append(site_id)
+            logger.warning("fail to upload: {}".format(site_id))
+            logger.warning(traceback.format_exc())
+        else:
+            self._success_site_ids.append(site_id)
+
+    def __upload_latest(self):
+        site_id = "_latest"
+        try:
+            data = self.__local_db.get_entries_all()
             self.__s3_client.put_entries(site_id, data)
         except Exception:
             self._fail_site_ids.append(site_id)

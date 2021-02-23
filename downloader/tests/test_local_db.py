@@ -49,15 +49,18 @@ class DBTest(TestCase):
 
         site_id = "test1"
         data = [
-            {"url": "url13", "title": "title1", "updated": "updated3"},
-            {"url": "url14", "title": "title2", "updated": "updated4"},
+            {"url": "url13", "title": "title3", "updated": "updated3"},
+            {"url": "url14", "title": "title4", "updated": "updated4"},
         ]
         local_db.update_and_remove_old(site_id, data, 3)
 
         expect_data = [
-            {"url": "url14", "title": "title2", "updated": "updated4"},
-            {"url": "url13", "title": "title1", "updated": "updated3"},
+            {"url": "url14", "title": "title4", "updated": "updated4"},
+            {"url": "url13", "title": "title3", "updated": "updated3"},
             {"url": "url12", "title": "title2", "updated": "updated2"},
         ]
         entries = local_db.get_entries("test1")
         self.assertListEqual(expect_data, entries)
+
+        entries = local_db.get_entries_all()
+        print(entries)

@@ -74,13 +74,28 @@ class LocalDB:
         select s.site_id, s.site_name, s.site_url, e.title, e.url, e.updated
         from entries e
         left join sites s on s.site_id = e.site_id
-        order by s.updated desc
+        order by e.updated desc
         limit 100
         """
         cur = self.__con.cursor()
         cur.execute(sql)
-        res = cur.fetchall()
-        return [dict(r) for r in res]
+        rows = cur.fetchall()
+        data = []
+        for row in rows:
+            r = {
+                "site": {
+                    "siteId": row["site_id"],
+                    "siteName": row["site_name"],
+                    "siteUrl": row["site_url"],
+                },
+                "entry": {
+                    "title": row["title"],
+                    "url": row["url"],
+                    "updated": row["updated"],
+                },
+            }
+            data.append(r)
+        return data
 
     def update_and_remove_old(self, site_id, data, num=100):
         upsert_sql = """
