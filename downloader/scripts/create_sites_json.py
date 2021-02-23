@@ -1,7 +1,7 @@
 import csv
 import json
 
-csv_r = csv.reader(open("./download_list.csv"))
+csv_r = csv.reader(open("./sites.csv"))
 
 res = []
 for row in csv_r:
