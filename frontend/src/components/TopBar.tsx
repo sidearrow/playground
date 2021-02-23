@@ -11,7 +11,9 @@ export const TopBar: React.FC = ({ children }) => {
           <FontAwesomeIcon icon={faHome} />
         </a>
       </Link>
-      <span className="flex-1 text-right">{children}</span>
+      <span className="flex-1 text-right">
+        <Link href="/sites">サイト一覧</Link>
+      </span>
     </div>
   );
 };

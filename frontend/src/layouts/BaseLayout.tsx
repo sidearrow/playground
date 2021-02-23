@@ -4,14 +4,9 @@ import { TopBar } from "../components/TopBar";
 
 type Props = {
   title?: string;
-  topBarString?: string;
 };
 
-export const BaseLayout: React.FC<Props> = ({
-  children,
-  title,
-  topBarString,
-}) => {
+export const BaseLayout: React.FC<Props> = ({ children, title }) => {
   title = title ? `${title} | まとめたね` : "まとめたね";
 
   return (
@@ -20,7 +15,10 @@ export const BaseLayout: React.FC<Props> = ({
         <title>{title}</title>
         <meta />
       </Head>
-      <div className="h-full flex flex-col">{children}</div>
+      <header className="sticky top-0 z-50">
+        <TopBar />
+      </header>
+      <main className="max-w-screen-sm mx-auto">{children}</main>
     </React.Fragment>
   );
 };

@@ -16,3 +16,8 @@ export type ModelEntries = {
   site: ModelSite;
   entries: ModelEntry[];
 };
+
+export type ModelEntryWithSite = {
+  site: ModelSite;
+  entry: ModelEntry;
+};

@@ -5,8 +5,7 @@
 @import "@fortawesome/fontawesome-svg-core/styles.css";
 
 html,
-body,
-#__next {
+body {
   font-size: 13px;
   height: 100%;
 }

@@ -1,24 +1,23 @@
-import React from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { BaseLayout } from "../layouts/BaseLayout";
-import { TopBar } from "../components/TopBar";
-
-const description =
-  "色々なサイト様から取得させていただきました情報をまとめています。" +
-  "節度ある情報収集を心がけているため、最新の情報が反映されていない、情報に漏れがある、等あるかと思いますが、ご容赦ください。";
+import { ModelEntryWithSite } from "../models";
+import { apiGetEntriesAll } from "../api";
+import { EntryCard } from "../components/EntryCard";
 
 const Component: React.FC = () => {
+  const [entries, setEntries] = useState<ModelEntryWithSite[]>([]);
+  useEffect(() => {
+    (async () => {
+      const _entries = await apiGetEntriesAll();
+      setEntries(_entries);
+    })();
+  }, []);
+
   return (
     <BaseLayout>
-      <header>
-        <TopBar />
-      </header>
-      <main className="flex-grow overflow-auto">
-        <p className="p-2">{description}</p>
-        <div className="p-2">
-          <Link href="/sites">サイト一覧</Link>
-        </div>
-      </main>
+      {entries.map((entry, i) => (
+        <EntryCard entry={entry.entry} site={entry.site} />
+      ))}
     </BaseLayout>
   );
 };
