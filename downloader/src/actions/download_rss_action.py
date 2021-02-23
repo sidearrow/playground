@@ -7,9 +7,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 from urllib.request import Request, urlopen
 
+from src.actions.base_action import BaseAction
 from src.app_logger import get_logger
-from src.download_site import DownloadSite
 from src.utils import format_datetime
+
 
 logger = get_logger(__name__)
 
@@ -37,16 +38,12 @@ def get_rss(rss_url):
     return entries
 
 
-class DownloadRSSAction:
+class DownloadRSSAction(BaseAction):
     DIR = "/tmp/download_rss"
 
-    def __init__(self, download_site: List[DownloadSite]) -> None:
-        self.__download_list = download_site
-        self.__result = {
-            "success_site_id_list": [],
-            "fail_site_id_list": [],
-        }
-
+    def __init__(self, sites: List[dict]) -> None:
+        super().__init__()
+        self.__sites = sites
         try:
             shutil.rmtree(self.DIR)
         except Exception:
@@ -54,38 +51,30 @@ class DownloadRSSAction:
         os.makedirs(self.DIR)
 
     def exec(self):
+        logger.info("download rss action start")
         futures = []
         with ThreadPoolExecutor(max_workers=16) as executor:
-            for v in self.__download_list:
-                future = executor.submit(self.__main, v.site_id, v.rss_url)
+            for v in self.__sites:
+                future = executor.submit(self.__main, v["site_id"], v["rss_url"])
                 futures.append(future)
         as_completed(futures)
-        return self.__result
-
-    def __add_success_site_id(self, site_id: str):
-        self.__result["success_site_id_list"].append(site_id)
-
-    def __add_fail_site_id(self, site_id: str):
-        self.__result["fail_site_id_list"].append(site_id)
+        logger.info("download rss action success")
+        logger.info("fail site ids: {}".format(self._fail_site_ids))
 
     def __main(self, site_id: str, rss_url: str):
         entries = []
         try:
             entries = get_rss(rss_url)
-        except Exception as e:
-            logger.warning("fail to download rss site_id: {}".format(site_id))
-            logger.warning(traceback.format_exc())
-            self.__add_fail_site_id(site_id)
-        if len(entries) == 0:
-            self.__add_fail_site_id(site_id)
-            return
-        try:
+            if len(entries) == 0:
+                raise Exception("entries is empty")
             filepath = os.path.join(self.DIR, "{}.json".format(site_id))
             with open(filepath, "w") as f:
                 json.dump(entries, f, ensure_ascii=False)
-        except Exception as e:
-            logger.warning("fail to update entries site_id: {}".format(site_id))
+        except Exception:
+            self._fail_site_ids.append(site_id)
+            logger.warning("fail to download rss site_id: {}".format(site_id))
             logger.warning(traceback.format_exc())
-            self.__add_fail_site_id(site_id)
-        logger.info("download rss action success: {}".format(site_id))
-        self.__add_success_site_id(site_id)
+            return
+        else:
+            logger.warning("success to download rss site_id: {}".format(site_id))
+            self._success_site_ids.append(site_id)

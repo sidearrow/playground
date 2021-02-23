@@ -27,14 +27,14 @@ class S3Client:
             CacheControl="max-age=3600",
         )
 
-    def get_download_list(self):
-        return self.get(Config.S3_PRIVATE_BUCKET, "download_list.csv")
+    def get_sites_csv(self):
+        return self.get(Config.S3_PRIVATE_BUCKET, "sites.csv")
 
-    def download_entries_db(self, local_path: str):
-        self.__client.download_file(Config.S3_PRIVATE_BUCKET, "entries.db", local_path)
+    def download_local_db(self, local_path: str):
+        self.__client.download_file(Config.S3_PRIVATE_BUCKET, "local.db", local_path)
 
-    def upload_entries_db(self, local_path: str):
-        self.__client.upload_file(local_path, Config.S3_PRIVATE_BUCKET, "entries.db")
+    def upload_local_db(self, local_path: str):
+        self.__client.upload_file(local_path, Config.S3_PRIVATE_BUCKET, "local.db")
 
     def get(self, bucket: str, key: str) -> str:
         logger.info("Get s3 object: s3://{}/{}".format(bucket, key))
