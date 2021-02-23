@@ -3,6 +3,7 @@ import feedparser
 import traceback
 from urllib import request
 from collections import Counter
+from uuid import uuid4
 
 out = []
 with open("./download_list.csv") as f:

@@ -1,3 +1,3 @@
-from src.download_rss_action import get_rss
+from uuid import uuid4
 
-get_rss("http://beasoku.com/index20.rdf")
+print(uuid4())

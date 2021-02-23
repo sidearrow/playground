@@ -8,8 +8,8 @@ export const Component: React.FC = () => {
     <BaseLayout title="サイト一覧">
       <h1>サイト一覧</h1>
       {sites.map((site, i) => (
-        <div className="my-1">
-          <Link href={`/sites/${site.siteId}`}>
+        <div className="my-1" key={i}>
+          <Link href={`/sites/detail?id=${site.siteId}`}>
             <a>{site.siteName}</a>
           </Link>
         </div>
