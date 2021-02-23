@@ -5,7 +5,7 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 
 export const TopBar: React.FC = ({ children }) => {
   return (
-    <div className="flex justify-between items-center bg-white px-2 py-2">
+    <div className="flex justify-between items-center bg-white py-2">
       <Link href="/">
         <a className="flex-1 text-2xl">
           <FontAwesomeIcon icon={faHome} />

@@ -6,6 +6,34 @@ import { apiGetEntries } from "../../api";
 import { EntryCard } from "../../components/EntryCard";
 import sites from "../../content/sites.json";
 
+const Entries: React.FC<{
+  site: ModelSite;
+  entries: ModelEntry[];
+}> = ({ site, entries }) => {
+  return (
+    <React.Fragment>
+      <div className="mb-4">
+        <a target="_blank" href={site.siteUrl}>
+          {site.siteName}
+        </a>
+      </div>
+      {entries.map((entry, i) => (
+        <EntryCard entry={entry} site={site} />
+      ))}
+    </React.Fragment>
+  );
+};
+
+const NotFound: React.FC = () => {
+  return (
+    <div>
+      各サイトの記事一覧ページです。
+      <br />
+      サイト一覧からサイトを選択してください。
+    </div>
+  );
+};
+
 const Component: React.FC = () => {
   const router = useRouter();
   const siteId = router.query.id as string;
@@ -28,11 +56,7 @@ const Component: React.FC = () => {
 
   return (
     <BaseLayout title="">
-      {site ? (
-        entries.map((entry, i) => <EntryCard entry={entry} site={site} />)
-      ) : (
-        <div>情報が見つかりませんでした</div>
-      )}
+      {site ? <Entries site={site} entries={entries} /> : <NotFound />}
     </BaseLayout>
   );
 };

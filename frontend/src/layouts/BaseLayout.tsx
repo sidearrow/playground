@@ -18,7 +18,7 @@ export const BaseLayout: React.FC<Props> = ({ children, title }) => {
       </Head>
       <div className="flex flex-col min-h-screen">
         <header className="sticky top-0 z-50 border-b">
-          <div className="max-w-screen-sm mx-auto">
+          <div className="max-w-screen-sm mx-auto px-2">
             <TopBar />
           </div>
         </header>
@@ -26,7 +26,7 @@ export const BaseLayout: React.FC<Props> = ({ children, title }) => {
           {children}
         </main>
         <footer className="bg-gray-200 py-8 border-t">
-          <div className="max-w-screen-sm mx-auto">
+          <div className="max-w-screen-sm mx-auto px-2">
             <Link href="/about">このサイトについて</Link>
           </div>
         </footer>
