@@ -27,7 +27,7 @@ export const TopBar: React.FC = () => {
       <div className={`bg-white py-2 ${isMenuShow ? "" : "hidden"}`}>
         {categories.map((v, i) => (
           <Link href={`/_/${v.categoryId}`}>
-            <a className="pr-4">{v.categoryName}</a>
+            <a className="pr-4 inline-block">{v.categoryName}</a>
           </Link>
         ))}
       </div>

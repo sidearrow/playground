@@ -11,7 +11,7 @@ export const EntryCard: React.FC<Props> = ({ entry, site }) => {
   return (
     <div className="py-2 border-b">
       <div className="mb-1">
-        <a target="_blank" href={entry.url}>
+        <a target="_blank" href={entry.url} className="break-all">
           {entry.title}
         </a>
       </div>
