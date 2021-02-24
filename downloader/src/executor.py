@@ -2,7 +2,6 @@ import traceback
 from typing import List
 
 from src.app_logger import get_logger
-from src.local_db import LocalDB
 from src.s3 import S3Client
 from src.actions.setup_action import SetupAction
 from src.actions.download_rss_action import DownloadRSSAction
@@ -32,12 +31,10 @@ def main(site_ids: List[str]):
     download_rss_action.exec()
     success_site_ids = download_rss_action.success_site_ids
 
-    local_db = LocalDB("/tmp/local.db")
-    update_local_db_action = UpdateLocalDBAction(local_db, success_site_ids)
+    update_local_db_action = UpdateLocalDBAction(success_site_ids)
     update_local_db_action.exec()
-    success_site_ids = update_local_db_action.success_site_ids
 
-    upload_action = UploadAction(local_db, s3_client, success_site_ids)
+    upload_action = UploadAction(s3_client)
     upload_action.exec()
 
     try:

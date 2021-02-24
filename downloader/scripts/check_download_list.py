@@ -6,7 +6,7 @@ from collections import Counter
 from uuid import uuid4
 
 out = []
-with open("./download_list.csv") as f:
+with open("./master/pazudora.csv") as f:
     csv_r = csv.reader(f)
     for row in csv_r:
         site_id = row[0]
@@ -15,7 +15,8 @@ with open("./download_list.csv") as f:
         rss_url = row[3]
 
         try:
-            if title == "" or link == "":
+            if site_id == "" or title == "" or link == "":
+                site_id = uuid4()
                 print(rss_url)
                 req = request.Request(rss_url)
                 req.add_header("User-Agent", "Mozilla/5.0")
@@ -34,5 +35,5 @@ print(dup_title)
 out.sort(key=lambda v: v[1])
 
 
-csv_w = csv.writer(open("./download_list.csv", "w"))
+csv_w = csv.writer(open("./master/pazudora.fix.csv", "w"))
 csv_w.writerows(out)
