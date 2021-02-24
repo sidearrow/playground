@@ -4,8 +4,6 @@ export type ModelSite = {
   siteUrl: string;
 };
 
-export type ModelSites = ModelSite[];
-
 export type ModelEntry = {
   title: string;
   url: string;
@@ -20,4 +18,9 @@ export type ModelEntries = {
 export type ModelEntryWithSite = {
   site: ModelSite;
   entry: ModelEntry;
+};
+
+export type ModelCategory = {
+  categoryId: string;
+  categoryName: string;
 };

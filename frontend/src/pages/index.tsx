@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { BaseLayout } from "../layouts/BaseLayout";
 import { ModelEntryWithSite } from "../models";
-import { apiGetEntriesAll } from "../api";
+import { apiGetEntries } from "../api";
 import { EntryCard } from "../components/EntryCard";
 
 const Component: React.FC = () => {
   const [entries, setEntries] = useState<ModelEntryWithSite[]>([]);
   useEffect(() => {
     (async () => {
-      const _entries = await apiGetEntriesAll();
+      const _entries = await apiGetEntries("_all");
       setEntries(_entries);
     })();
   }, []);
