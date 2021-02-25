@@ -19,7 +19,7 @@ def get_rss(rss_url):
     res = None
     req = Request(rss_url)
     req.add_header("User-Agent", "Mozilla/5.0")
-    with urlopen(req) as r:
+    with urlopen(req, timeout=10) as r:
         res = r.read()
     fpd = feedparser.parse(res)
     entries = []

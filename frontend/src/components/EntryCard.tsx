@@ -10,8 +10,12 @@ type Props = {
 export const EntryCard: React.FC<Props> = ({ entry, site }) => {
   return (
     <div className="py-2 border-b">
-      <div className="mb-1">
-        <a target="_blank" href={entry.url} className="break-all">
+      <div className="pb-1 break-all">
+        <a
+          target="_blank"
+          href={entry.url}
+          className="break-all block sm:inline"
+        >
           {entry.title}
         </a>
       </div>

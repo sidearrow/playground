@@ -1,1 +1,38 @@
-[{"categoryId": "22f09298-883a-4878-b814-e52a7eae83b8", "categoryName": "IT"}, {"categoryId": "84031be0-23c2-4fb0-b38b-ce4dee8a56e0", "categoryName": "野球"}, {"categoryId": "055c05dc-5d41-484c-a84e-261a3085c6b9", "categoryName": "パチンコ・パチスロ"}, {"categoryId": "77101754-8fbf-46b0-ab0b-a696eb7a5667", "categoryName": "パズドラ"}, {"categoryId": "81c59278-bcbd-41cc-b4f9-aa625fd5cdfe", "categoryName": "未分類"}]
+[
+  {
+    "categoryId": "22f09298-883a-4878-b814-e52a7eae83b8",
+    "categoryName": "IT"
+  },
+  {
+    "categoryId": "84031be0-23c2-4fb0-b38b-ce4dee8a56e0",
+    "categoryName": "野球"
+  },
+  {
+    "categoryId": "055c05dc-5d41-484c-a84e-261a3085c6b9",
+    "categoryName": "パチンコ・パチスロ"
+  },
+  {
+    "categoryId": "77101754-8fbf-46b0-ab0b-a696eb7a5667",
+    "categoryName": "パズドラ"
+  },
+  {
+    "categoryId": "1485d0a9-e06a-42ae-a3ca-b1f7f347d239",
+    "categoryName": "ゲーム"
+  },
+  {
+    "categoryId": "1eb1527a-ba54-46cf-a22b-336aa570dff8",
+    "categoryName": "車・バイク"
+  },
+  {
+    "categoryId": "35de0684-6a22-4b4e-a84f-02ca2de93aa6",
+    "categoryName": "投資"
+  },
+  {
+    "categoryId": "efec2c9f-c9c4-4cb5-830d-903529884a73",
+    "categoryName": "食べ物"
+  },
+  {
+    "categoryId": "81c59278-bcbd-41cc-b4f9-aa625fd5cdfe",
+    "categoryName": "未分類"
+  }
+]
