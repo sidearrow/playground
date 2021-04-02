@@ -233,7 +233,6 @@ def get_message():
     rows = cur.fetchall()
     response = []
     for row in rows:
-        print(row)
         r = {}
         r["id"] = row["id"]
         r["user"] = {
@@ -263,32 +262,47 @@ def fetch_unread():
     if not user_id:
         flask.abort(403)
 
-    time.sleep(1.0)
+    # time.sleep(1.0)
 
     cur = dbh().cursor()
-    cur.execute("SELECT id FROM channel")
-    rows = cur.fetchall()
-    channel_ids = [row["id"] for row in rows]
 
     res = []
-    for channel_id in channel_ids:
-        cur.execute(
-            "SELECT * FROM haveread WHERE user_id = %s AND channel_id = %s",
-            (user_id, channel_id),
+    cur.execute(
+        """
+        select m.channel_id, count(*) as cnt
+        from message m
+        where m.channel_id not in (
+            select h.channel_id from haveread as h where h.user_id = %s
         )
-        row = cur.fetchone()
-        if row:
-            cur.execute(
-                "SELECT COUNT(*) as cnt FROM message WHERE channel_id = %s AND %s < id",
-                (channel_id, row["message_id"]),
-            )
-        else:
-            cur.execute(
-                "SELECT COUNT(*) as cnt FROM message WHERE channel_id = %s",
-                (channel_id,),
-            )
+        group by m.channel_id
+        """,
+        (user_id,),
+    )
+    rows = cur.fetchall()
+    for r in rows:
+        res.append(
+            {
+                "channel_id": r["channel_id"],
+                "unread": int(r["cnt"]),
+            }
+        )
+
+    cur.execute(
+        """
+        select h.channel_id, h.message_id
+        from haveread as h
+        where h.user_id = %s
+        """,
+        (user_id,),
+    )
+    rows = cur.fetchall()
+    for row in rows:
+        cur.execute(
+            "SELECT COUNT(*) as cnt FROM message WHERE channel_id = %s AND %s < id",
+            (row["channel_id"], row["message_id"]),
+        )
         r = {}
-        r["channel_id"] = channel_id
+        r["channel_id"] = row["channel_id"]
         r["unread"] = int(cur.fetchone()["cnt"])
         res.append(r)
     return flask.jsonify(res)
