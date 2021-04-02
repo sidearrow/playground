@@ -223,19 +223,24 @@ def get_message():
     last_message_id = int(flask.request.args.get("last_message_id"))
     cur = dbh().cursor()
     cur.execute(
-        "SELECT * FROM message WHERE id > %s AND channel_id = %s ORDER BY id DESC LIMIT 100",
+        """
+        select m.id, m.created_at, m.content, u.name, u.display_name, u.avatar_icon from message as m
+        left join user as u on u.id = m.user_id
+        where m.id > %s and channel_id = %s order by id desc limit 100
+        """,
         (last_message_id, channel_id),
     )
     rows = cur.fetchall()
     response = []
     for row in rows:
+        print(row)
         r = {}
         r["id"] = row["id"]
-        cur.execute(
-            "SELECT name, display_name, avatar_icon FROM user WHERE id = %s",
-            (row["user_id"],),
-        )
-        r["user"] = cur.fetchone()
+        r["user"] = {
+            "name": row["name"],
+            "display_name": row["display_name"],
+            "avatar_icon": row["avatar_icon"],
+        }
         r["date"] = row["created_at"].strftime("%Y/%m/%d %H:%M:%S")
         r["content"] = row["content"]
         response.append(r)
