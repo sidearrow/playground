@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    container_name: isucon7-qualify-init-web
+    ports:
+      - 10080:80
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    container_name: isucon7-qualify-init-app
+    environment:
+      ISUBATA_DB_HOST: isucon7-qualify-init-db
+      ISUBATA_DB_USER: isucon
+      ISUBATA_DB_PASSWORD: isucon
+    #command: sh entrypoint.dev.sh
+    volumes:
+      - ./app/python:/app
+    tty: true
+    #ports:
+    #  - 5000:5000
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    container_name: isucon7-qualify-init-db
+    ports:
+      - 3306:3306
