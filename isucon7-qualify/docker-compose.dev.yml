@@ -1,4 +1,6 @@
 version: "3.8"
+volumes:
+  shared-web-app:
 services:
   web:
     build:
@@ -7,21 +9,19 @@ services:
     container_name: isucon7-qualify-init-web
     ports:
       - 10080:80
+    volumes:
+      - shared-web-app:/shared-web-app
   app:
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
+    build: ./app
     container_name: isucon7-qualify-init-app
     environment:
       ISUBATA_DB_HOST: isucon7-qualify-init-db
       ISUBATA_DB_USER: isucon
       ISUBATA_DB_PASSWORD: isucon
-    #command: sh entrypoint.dev.sh
     volumes:
-      - ./app/python:/app
+      - ./app:/app
+      - shared-web-app:/shared-web-app
     tty: true
-    #ports:
-    #  - 5000:5000
   db:
     build:
       context: .

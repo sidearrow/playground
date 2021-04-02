@@ -1,4 +1,3 @@
-import MySQLdb.cursors
 import flask
 import functools
 import hashlib
@@ -8,12 +7,14 @@ import pathlib
 import random
 import string
 import time
+import pymysql
+import pymysql.cursors
 from flask import send_from_directory
 from uuid import uuid4
 
 
 static_folder = pathlib.Path(__file__).resolve().parent.parent / "public"
-icons_folder = static_folder / "icons"
+icons_folder = "/shared-web-app/icons"
 app = flask.Flask(__name__, static_folder=str(static_folder), static_url_path="")
 app.secret_key = "tonymoris"
 avatar_max_size = 1 * 1024 * 1024
@@ -33,14 +34,14 @@ def dbh():
     if hasattr(flask.g, "db"):
         return flask.g.db
 
-    flask.g.db = MySQLdb.connect(
+    flask.g.db = pymysql.connect(
         host=config["db_host"],
         port=config["db_port"],
         user=config["db_user"],
         passwd=config["db_password"],
         db="isubata",
         charset="utf8mb4",
-        cursorclass=MySQLdb.cursors.DictCursor,
+        cursorclass=pymysql.cursors.DictCursor,
         autocommit=True,
     )
     cur = flask.g.db.cursor()
@@ -119,7 +120,7 @@ def register(cur, user, password):
         )
         cur.execute("SELECT LAST_INSERT_ID() AS last_insert_id")
         return cur.fetchone()["last_insert_id"]
-    except MySQLdb.IntegrityError:
+    except pymysql.IntegrityError:
         flask.abort(409)
 
 
