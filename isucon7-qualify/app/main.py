@@ -6,9 +6,9 @@ import os
 import pathlib
 import random
 import string
-import time
 import pymysql
 import pymysql.cursors
+from pymysql.cursors import Cursor
 from flask import send_from_directory
 from uuid import uuid4
 
@@ -60,17 +60,17 @@ def teardown(error):
 @app.route("/initialize")
 def get_initialize():
     cur = dbh().cursor()
-    cur.execute("DELETE FROM user WHERE id > 1000")
-    cur.execute("DELETE FROM image WHERE id > 1001")
-    cur.execute("DELETE FROM channel WHERE id > 10")
-    cur.execute("DELETE FROM message WHERE id > 10000")
-    cur.execute("DELETE FROM haveread")
-    cur.execute("SELECT * FROM image")
-    images = cur.fetchall()
-    for v in images:
-        fpath = os.path.join(icons_folder, v["name"])
-        with open(fpath, "wb") as f:
-            f.write(v["data"])
+    cur.execute("delete from user where id > 1000")
+    cur.execute("delete from channel where id > 10")
+    cur.execute("delete from message where id > 10000")
+    cur.execute("delete from channel_message_num")
+    cur.execute("delete from channel_message_read_num")
+    cur.execute(
+        """
+        insert into channel_message_num
+        select channel_id, count(*) from message m group by m.channel_id
+        """
+    )
     cur.close()
     return ("", 204)
 
@@ -80,11 +80,78 @@ def db_get_user(cur, user_id):
     return cur.fetchone()
 
 
-def db_add_message(cur, channel_id, user_id, content):
-    cur.execute(
-        "INSERT INTO message (channel_id, user_id, content, created_at) VALUES (%s, %s, %s, NOW())",
-        (channel_id, user_id, content),
-    )
+class DBUtil:
+    @staticmethod
+    def is_exist_user(cur: Cursor, user_id):
+        cur.execute("select count(1) as num from user where id = %s", (user_id,))
+        res = cur.fetchone()
+        return res["num"] > 0
+
+    @staticmethod
+    def add_message(cur: Cursor, channel_id, user_id, content):
+        cur.execute(
+            "insert into message (channel_id, user_id, content, created_at) values (%s, %s, %s, now())",
+            (channel_id, user_id, content),
+        )
+        DBUtil.update_channel_message_num(cur, channel_id)
+
+    @staticmethod
+    def add_channel(cur: Cursor, name, description):
+        cur.execute(
+            "insert into channel (name, description, updated_at, created_at) values (%s, %s, now(), now())",
+            (name, description),
+        )
+        channel_id = cur.lastrowid
+        sql = """
+        insert channel_message_num(channel_id, num)
+        values (%s, 0)
+        """
+        cur.execute(sql, (channel_id,))
+        return channel_id
+
+    @staticmethod
+    def update_channel_message_num(cur: Cursor, channel_id: str):
+        sql = """
+        update channel_message_num
+        set num = num + 1
+        where channel_id = %s
+        """
+        cur.execute(sql, (channel_id,))
+
+    @staticmethod
+    def get_channel_message_num(cur: Cursor):
+        sql = "select channel_id, num from channel_message_num"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        return rows
+
+    @staticmethod
+    def upsert_channel_message_read_num(
+        cur: Cursor, user_id: str, channel_id: str, message_id: str
+    ):
+        sql = """
+        insert into channel_message_read_num
+            (user_id, channel_id, num)
+        values (%s, %s, (
+            select count(1) from message m
+            where m.channel_id = %s and m.id <= %s
+        ))
+        on duplicate key update
+            num = (
+                select count(1) from message m
+                where m.channel_id = %s and m.id <= %s
+            )
+        """
+        cur.execute(
+            sql, (user_id, channel_id, channel_id, message_id, channel_id, message_id)
+        )
+
+    @staticmethod
+    def get_channel_message_read_num(cur: Cursor, user_id: str):
+        sql = "select channel_id, num from channel_message_read_num where user_id = %s"
+        cur.execute(sql, (user_id,))
+        rows = cur.fetchall()
+        return rows
 
 
 def login_required(func):
@@ -205,12 +272,13 @@ def get_logout():
 @app.route("/message", methods=["POST"])
 def post_message():
     user_id = flask.session["user_id"]
-    user = db_get_user(dbh().cursor(), user_id)
+    cur = dbh().cursor()
+    is_exist_user = DBUtil.is_exist_user(cur, user_id)
     message = flask.request.form["message"]
     channel_id = int(flask.request.form["channel_id"])
-    if not user or not message or not channel_id:
+    if not is_exist_user or not message or not channel_id:
         flask.abort(403)
-    db_add_message(dbh().cursor(), channel_id, user_id, message)
+    DBUtil.add_message(cur, channel_id, user_id, message)
     return ("", 204)
 
 
@@ -247,12 +315,7 @@ def get_message():
     response.reverse()
 
     max_message_id = max(r["id"] for r in rows) if rows else 0
-    cur.execute(
-        "INSERT INTO haveread (user_id, channel_id, message_id, updated_at, created_at)"
-        " VALUES (%s, %s, %s, NOW(), NOW())"
-        " ON DUPLICATE KEY UPDATE message_id = %s, updated_at = NOW()",
-        (user_id, channel_id, max_message_id, max_message_id),
-    )
+    DBUtil.upsert_channel_message_read_num(cur, user_id, channel_id, max_message_id)
 
     return flask.jsonify(response)
 
@@ -263,48 +326,17 @@ def fetch_unread():
     if not user_id:
         flask.abort(403)
 
-    # time.sleep(1.0)
-
     cur = dbh().cursor()
 
     res = []
-    cur.execute(
-        """
-        select m.channel_id, count(*) as cnt
-        from message m
-        where m.channel_id not in (
-            select h.channel_id from haveread as h where h.user_id = %s
-        )
-        group by m.channel_id
-        """,
-        (user_id,),
-    )
-    rows = cur.fetchall()
-    for r in rows:
-        res.append(
-            {
-                "channel_id": r["channel_id"],
-                "unread": int(r["cnt"]),
-            }
-        )
-
-    cur.execute(
-        """
-        select h.channel_id, h.message_id
-        from haveread as h
-        where h.user_id = %s
-        """,
-        (user_id,),
-    )
-    rows = cur.fetchall()
-    for row in rows:
-        cur.execute(
-            "SELECT COUNT(*) as cnt FROM message WHERE channel_id = %s AND %s < id",
-            (row["channel_id"], row["message_id"]),
-        )
-        r = {}
-        r["channel_id"] = row["channel_id"]
-        r["unread"] = int(cur.fetchone()["cnt"])
+    channel_message_nums = DBUtil.get_channel_message_num(cur)
+    channel_message_read_nums = DBUtil.get_channel_message_read_num(cur, user_id)
+    channel_message_read_nums = {
+        v["channel_id"]: v["num"] for v in channel_message_read_nums
+    }
+    for v in channel_message_nums:
+        unread = v["num"] - channel_message_read_nums.get(v["channel_id"], 0)
+        r = {"channel_id": v["channel_id"], "unread": unread}
         res.append(r)
     return flask.jsonify(res)
 
@@ -322,9 +354,9 @@ def get_history(channel_id):
     N = 20
     cur = dbh().cursor()
     cur.execute(
-        "SELECT COUNT(*) as cnt FROM message WHERE channel_id = %s", (channel_id,)
+        "select num from channel_message_num where channel_id = %s", (channel_id,)
     )
-    cnt = int(cur.fetchone()["cnt"])
+    cnt = int(cur.fetchone()["num"])
     max_page = math.ceil(cnt / N)
     if not max_page:
         max_page = 1
@@ -372,7 +404,10 @@ def get_profile(user_name):
     channels, _ = get_channel_list_info()
 
     cur = dbh().cursor()
-    cur.execute("SELECT * FROM user WHERE name = %s", (user_name,))
+    cur.execute(
+        "select id, name, display_name, avatar_icon from user where name = %s",
+        (user_name,),
+    )
     user = cur.fetchone()
 
     if not user:
@@ -399,11 +434,7 @@ def post_add_channel():
     if not name or not description:
         flask.abort(400)
     cur = dbh().cursor()
-    cur.execute(
-        "INSERT INTO channel (name, description, updated_at, created_at) VALUES (%s, %s, NOW(), NOW())",
-        (name, description),
-    )
-    channel_id = cur.lastrowid
+    channel_id = DBUtil.add_channel(cur, name, description)
     return flask.redirect("/channel/" + str(channel_id), 303)
 
 
@@ -445,23 +476,6 @@ def post_profile():
         )
 
     return flask.redirect("/", 303)
-
-
-def ext2mime(ext):
-    if ext in (".jpg", ".jpeg"):
-        return "image/jpeg"
-    if ext == ".png":
-        return "image/png"
-    if ext == ".gif":
-        return "image/gif"
-    return ""
-
-
-@app.route("/icons/<file_name>")
-def get_icon(file_name):
-    resp = send_from_directory(icons_folder, file_name)
-    resp.headers["Cache-Control"] = 86400
-    return resp
 
 
 if __name__ == "__main__":

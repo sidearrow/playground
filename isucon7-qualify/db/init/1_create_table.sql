@@ -5,13 +5,8 @@ CREATE TABLE user (
   password VARCHAR(40),
   display_name TEXT,
   avatar_icon TEXT,
-  created_at DATETIME NOT NULL
-) Engine=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE image (
-  id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  name VARCHAR(191),
-  data LONGBLOB
+  created_at DATETIME NOT NULL,
+  INDEX user_name_idx (name)
 ) Engine=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE channel (
@@ -30,11 +25,14 @@ CREATE TABLE message (
   created_at DATETIME NOT NULL
 ) Engine=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE haveread (
+CREATE TABLE channel_message_num (
+  channel_id BIGINT NOT NULL PRIMARY KEY,
+  num BIGINT NOT NULL
+) Engine=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE channel_message_read_num (
   user_id BIGINT NOT NULL,
   channel_id BIGINT NOT NULL,
-  message_id BIGINT,
-  updated_at DATETIME NOT NULL,
-  created_at DATETIME NOT NULL,
+  num BIGINT NOT NULL,
   PRIMARY KEY(user_id, channel_id)
-) Engine=InnoDB DEFAULT CHARSET=utf8mb4;
+) Engine=InnoDB DEFAULT CHARSET=utf8mb4

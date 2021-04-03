@@ -26,9 +26,18 @@ dev/up:
 dev/down:
 	docker-compose -f docker-compose.dev.yml down
 
+dev/start:
+	docker-compose -f docker-compose.dev.yml start
+
+dev/stop:
+	docker-compose -f docker-compose.dev.yml stop
+
 bench/build:
-	docker build -t isucon7-qualify-bench -f ./docker/bench/Dockerfile .
+	docker build -t isucon7-qualify-bench ./bench
 
 bench/run:
 	docker run --rm --network isucon7-qualify_default -v $(PWD)/result:/result \
-		isucon7-qualify-bench bin/bench -remotes isucon7-qualify-init-web -output /result/result.json
+		isucon7-qualify-bench bin/bench -remotes isucon7-qualify-dev-web -output /result/result.json
+
+output-stats:
+	while true; do docker stats -a --no-stream >> stats.txt; done
