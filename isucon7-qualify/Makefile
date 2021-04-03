@@ -37,7 +37,7 @@ bench/build:
 
 bench/run:
 	docker run --rm --network isucon7-qualify_default -v $(PWD)/result:/result \
-		isucon7-qualify-bench bin/bench -remotes isucon7-qualify-dev-web -output /result/result.json
+		isucon7-qualify-bench bin/bench -remotes isucon7-qualify-web -output /result/result.json
 
 output-stats:
 	while true; do docker stats -a --no-stream >> stats.txt; done
