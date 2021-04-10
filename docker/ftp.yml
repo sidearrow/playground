@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  ftp-passive:
+    container_name: file-transfer-sandbox-ftp-passive
+    image: fauria/vsftpd:latest
+    environment:
+      FTP_USER: test-user
+      FTP_PASS: test-password

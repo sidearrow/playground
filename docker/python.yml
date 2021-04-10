@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  python:
+    container_name: file-transfer-sandbox-python-dev
+    build: ../python
+    volumes:
+      - ../python:/app
+    tty: true
