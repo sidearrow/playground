@@ -1,0 +1,19 @@
+input_file_name: mlit_transport_result_quantity_2012.xlsx
+input_file_type: xlsx
+output_file_name: mlit_transport_result_quantity_2012.csv
+start_row_index: 6
+end_row_index: 412
+skip_empty_col_indexes:
+  - 0
+col_mappings:
+  0: company_name
+  2: transport_passengers_teiki_tsukin
+  3: transport_passengers_teiki_tsugaku
+  4: transport_passengers_teiki_total
+  5: transport_passengers_teiki_percent
+  7: transport_passengers_teikigai
+  8: transport_passengers_teikigai_percent
+  10: transport_passengers_sum
+
+remarks:
+  url: http://www.mlit.go.jp/tetudo/tetudo_tk2_000050.html

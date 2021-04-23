@@ -1,0 +1,21 @@
+input_file_name: mlit_transport_result_revenue_2014.xlsx
+input_file_type: xlsx
+output_file_name: mlit_transport_result_revenue_2014.csv
+start_row_index: 6
+end_row_index: 431
+skip_empty_col_indexes:
+  - 0
+col_mappings:
+  0: company_name
+  2: transport_revenue_passenger_teiki_tsukin
+  3: transport_revenue_passenger_teiki_tsugaku
+  4: transport_revenue_passenger_teiki_total
+  5: transport_revenue_passenger_teiki_percent
+  6: transport_revenue_passenger_teikigai
+  7: transport_revenue_passenger_teikigai_percent
+  8: transport_revenue_passenger_total
+  9: transport_revenue_passenger_baggage
+  10: transport_revenue_passenger_total2
+
+remarks:
+  url: http://www.mlit.go.jp/tetudo/tetudo_tk2_000050.html

@@ -1,0 +1,196 @@
+openapi: 3.0.3
+info:
+  title: railway-statistics-api
+  description: Railway Statistics API
+  version: 0.0.1
+servers:
+  - url: http://localhost:5000/api
+paths:
+  /company:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+  /company/{companyId}:
+    get:
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Company"
+  /company/{companyId}/statistics:
+    get:
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompanyStatistics"
+  /line:
+    get:
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/Line"
+                    - properties:
+                        company:
+                          $ref: "#/components/schemas/Company"
+  /line/{lineId}:
+    get:
+      parameters:
+        - in: path
+          name: lineId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: _
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: "#/components/schemas/Line"
+                  - type: object
+                    properties:
+                      company:
+                        $ref: "#/components/schemas/Company"
+                  - type: object
+                    properties:
+                      lineSections:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: "#/components/schemas/LineSection"
+                            - type: object
+                              properties:
+                                stations:
+                                  type: array
+                                  items:
+                                    allOf:
+                                      - $ref: "#/components/schemas/Station"
+                                      - type: object
+                                        properties:
+                                          groupStations:
+                                            type: array
+                                            items:
+                                              allOf:
+                                                - $ref: "#/components/schemas/Station"
+                                                - type: object
+                                                  properties:
+                                                    company:
+                                                      $ref: "#/components/schemas/Company"
+                                                    lines:
+                                                      type: array
+                                                      items:
+                                                        $ref: "#/components/schemas/Line"
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        companyId:
+          type: integer
+        companyName:
+          type: string
+        companyNameAlias:
+          type: string
+        companyTypeId:
+          type: integer
+        corporateColor:
+          type: string
+        status:
+          type: integer
+    Line:
+      type: object
+      properties:
+        lineId:
+          type: integer
+        lineCode:
+          type: string
+        lineName:
+          type: string
+        lineNameAlias:
+          type: string
+        lineNameKana:
+          type: string
+    LineSection:
+      type: object
+      properties:
+        lineId:
+          type: integer
+        sectionId:
+          type: integer
+        lineSectionName:
+          type: string
+    Station:
+      type: object
+      properties:
+        stationId:
+          type: integer
+        stationName:
+          type: string
+        stationNameKana:
+          type: string
+    CompanyStatistics:
+      type: object
+      properties:
+        companyId:
+          type: number
+        yaer:
+          type: number
+        transportPassengersTeikiTsukin:
+          type: number
+        transportPassengersTeikiTsugaku:
+          type: number
+        transportPassengersTeikiTotal:
+          type: number
+        transportPassengersTeikiPercent:
+          type: number
+        transportPassengersTeikigai:
+          type: number
+        transportPassengersTeikigaiPercent:
+          type: number
+        transportPassengersSum:
+          type: number
+        transportRevenuePassengerTeikiTsukin:
+          type: number
+        transportRevenuePassengerTeikiTsugaku:
+          type: number
+        transportRevenuePassengerTeikiTotal:
+          type: number
+        transportRevenuePassengerTeikigai:
+          type: number
+        transportRevenuePassengerTotal:
+          type: number
