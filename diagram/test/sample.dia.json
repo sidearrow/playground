@@ -1,0 +1,173 @@
+{
+  "stations": [
+    {
+      "stationName": "天王寺",
+      "stationTimeDisplayPattern": [
+        [
+          true,
+          false
+        ],
+        [
+          true,
+          false
+        ]
+      ]
+    },
+    {
+      "stationName": "美章園",
+      "stationTimeDisplayPattern": [
+        [
+          true,
+          false
+        ],
+        [
+          true,
+          false
+        ]
+      ]
+    },
+    {
+      "stationName": "南田辺",
+      "stationTimeDisplayPattern": [
+        [
+          true,
+          false
+        ],
+        [
+          true,
+          false
+        ]
+      ]
+    },
+    {
+      "stationName": "鶴ケ丘",
+      "stationTimeDisplayPattern": [
+        [
+          false,
+          true
+        ],
+        [
+          false,
+          true
+        ]
+      ]
+    },
+    {
+      "stationName": "長居",
+      "stationTimeDisplayPattern": [
+        [
+          false,
+          true
+        ],
+        [
+          false,
+          true
+        ]
+      ]
+    }
+  ],
+  "trainTypes": [
+    {
+      "trainTypeName": "普通",
+      "trainTypeNameShort": null,
+      "lineStyle": {
+        "style": "solid",
+        "width": 1,
+        "color": "#ac2926"
+      }
+    }
+  ],
+  "dias": [
+    {
+      "diaName": "平日",
+      "diaData": [
+        {
+          "trainNumber": "",
+          "trainName": "",
+          "trainType": null,
+          "trainStationTime": [
+            [
+              1,
+              null,
+              "06:00:00"
+            ],
+            [
+              1,
+              null,
+              "06:02:00"
+            ],
+            [
+              1,
+              null,
+              "06:05:00"
+            ],
+            [
+              1,
+              "06:07:00",
+              null
+            ]
+          ]
+        },
+        {
+          "trainNumber": "",
+          "trainName": "",
+          "trainType": null,
+          "trainStationTime": [
+            [
+              1,
+              null,
+              "06:04:00"
+            ],
+            [
+              2,
+              null,
+              null
+            ],
+            [
+              2,
+              null,
+              null
+            ],
+            [
+              1,
+              "06:06:00",
+              null
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "diaName": "土休日",
+      "diaData": [
+        {
+          "trainNumber": "",
+          "trainName": "",
+          "trainType": null,
+          "trainStationTime": [
+            [
+              1,
+              null,
+              "06:00:00"
+            ],
+            [
+              1,
+              null,
+              "06:02:00"
+            ],
+            [
+              1,
+              null,
+              "06:05:00"
+            ],
+            [
+              1,
+              "06:07:00",
+              null
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
