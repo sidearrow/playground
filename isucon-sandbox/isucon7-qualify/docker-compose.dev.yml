@@ -1,0 +1,33 @@
+version: "3.8"
+volumes:
+  shared-web-app:
+services:
+  web:
+    build: ./web
+    container_name: isucon7-qualify-dev-web
+    ports:
+      - 10080:80
+    volumes:
+      - shared-web-app:/shared-web-app
+  app:
+    build: ./app
+    container_name: isucon7-qualify-dev-app
+    environment:
+      ISUBATA_DB_HOST: isucon7-qualify-dev-db
+      ISUBATA_DB_USER: isucon
+      ISUBATA_DB_PASSWORD: isucon
+    volumes:
+      - ./app:/app
+      - shared-web-app:/shared-web-app
+    tty: true
+  db:
+    build: ./db
+    container_name: isucon7-qualify-dev-db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: isubata
+      MYSQL_USER: isucon
+      MYSQL_PASSWORD: isucon
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    ports:
+      - 3306:3306
