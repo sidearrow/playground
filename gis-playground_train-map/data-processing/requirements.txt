@@ -1,0 +1,4 @@
+shapely==1.7.1
+psycopg2==2.8.6
+geojson==2.5.0
+ndjson==0.3.1

@@ -1,0 +1,64 @@
+{
+  "code": "shiokaze",
+  "name": "しおかぜ",
+  "wiki": "https://ja.wikipedia.org/wiki/%E3%81%97%E3%81%8A%E3%81%8B%E3%81%9C_(%E5%88%97%E8%BB%8A)",
+  "color": "#ffcc00",
+  "line_sections": [
+    {
+      "line": {
+        "id": 2145,
+        "remarks": "宇野線"
+      },
+      "start": {
+        "id": 18420,
+        "remarks": "岡山駅"
+      },
+      "end": {
+        "id": 18436,
+        "remarks": "茶屋町駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2146,
+        "remarks": "本四備讃線"
+      },
+      "start": {
+        "id": 18439,
+        "remarks": "茶屋町駅"
+      },
+      "end": {
+        "id": 18442,
+        "remarks": "児島駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2079,
+        "remarks": "本四備讃線"
+      },
+      "start": {
+        "id": 17610,
+        "remarks": "児島駅"
+      },
+      "end": {
+        "id": 17609,
+        "remarks": "宇多津駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2081,
+        "remarks": "予讃線"
+      },
+      "start": {
+        "id": 17616,
+        "remarks": "宇多津駅"
+      },
+      "end": {
+        "id": 17649,
+        "remarks": "松山駅"
+      }
+    }
+  ]
+}

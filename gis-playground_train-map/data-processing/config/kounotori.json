@@ -1,0 +1,50 @@
+{
+  "code": "kounotori",
+  "name": "こうのとり",
+  "wiki": "https://ja.wikipedia.org/wiki/%E3%81%93%E3%81%86%E3%81%AE%E3%81%A8%E3%82%8A_(%E5%88%97%E8%BB%8A)",
+  "color": "#ffcc00",
+  "line_sections": [
+    {
+      "line": {
+        "id": 1721,
+        "remarks": "東海道本線"
+      },
+      "start": {
+        "id": 14961,
+        "remarks": "新大阪駅"
+      },
+      "end": {
+        "id": 14972,
+        "remarks": "尼崎駅"
+      }
+    },
+    {
+      "line": {
+        "id": 1724,
+        "remarks": "福知山線"
+      },
+      "start": {
+        "id": 15034,
+        "remarks": "尼崎駅"
+      },
+      "end": {
+        "id": 15010,
+        "remarks": "福知山駅"
+      }
+    },
+    {
+      "line": {
+        "id": 2171,
+        "remarks": "山陰本線"
+      },
+      "start": {
+        "id": 18767,
+        "remarks": "福知山駅"
+      },
+      "end": {
+        "id": 18745,
+        "remarks": "城崎温泉駅"
+      }
+    }
+  ]
+}

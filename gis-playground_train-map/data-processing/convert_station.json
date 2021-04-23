@@ -1,0 +1,13 @@
+{
+  "事業者種別": "company_type",
+  "路線名": "line_name",
+  "変遷備考": "change_remarks",
+  "関係ID": "rel_id",
+  "備考": "remarks",
+  "運営会社": "company",
+  "変遷ID": "change_id",
+  "設置開始": "start",
+  "駅名": "station_name",
+  "設置終了": "end",
+  "供用開始年": "common_start_year"
+}
