@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fortawesome/fontawesome-svg-core/styles.css";
+
+html,
+body {
+  font-size: 13px;
+  height: 100%;
+  @apply text-gray-800;
+}
+
+#__next {
+  min-height: 100%;
+}
+
+body {
+  font-family: arial, sans-serif;
+}
+
+a {
+  @apply text-blue-500;
+}
+
+a[target="_blank"] {
+  @apply text-blue-700 hover:underline;
+}
