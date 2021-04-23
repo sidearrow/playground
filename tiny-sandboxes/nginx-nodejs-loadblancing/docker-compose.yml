@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+  app1:
+    build: ./app
+    volumes:
+      - ./app:/usr/src/app
+  app2:
+    build: ./app
+    volumes:
+      - ./app:/usr/src/app
