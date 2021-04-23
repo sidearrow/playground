@@ -1,0 +1,5 @@
+# 一括で指定せず、各ファイル毎に指定する
+
+# 国土数値情報 鉄道時系列データ 令和元年
+N05-19_RailroadSection2.geojson
+N05-19_Station2.geojson
