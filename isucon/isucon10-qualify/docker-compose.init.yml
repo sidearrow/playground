@@ -5,8 +5,8 @@ services:
   mysql:
     image: mysql:5.7
     volumes:
-      - ../mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ../mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: isuumo
@@ -16,7 +16,7 @@ services:
       - "3306:3306"
 
   api-server:
-    build: ../python
+    build: ./python
     entrypoint:
       - dockerize
       - -timeout
@@ -25,7 +25,7 @@ services:
       - tcp://mysql:3306
     volumes:
       #- ../mysql/db:/go/src/mysql/db
-      - ../fixture:/fixture
+      - ./fixture:/fixture
     environment:
       MYSQL_DBNAME: isuumo
       MYSQL_USER: isucon
@@ -40,16 +40,16 @@ services:
     command: python app.py
 
   frontend:
-    build: ../isucon10-qualify/webapp/frontend
+    build: ./isucon10-qualify/webapp/frontend
     volumes:
       - nginx-frontend-shared:/frontend/out
 
   nginx:
-    build: ../nginx
+    build: ./nginx
     volumes:
-      - ../nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
+      - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
       #- ../logs/nginx:/var/log/nginx
-      - ../nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - nginx-frontend-shared:/www/data
     ports:
       - "8080:80"
